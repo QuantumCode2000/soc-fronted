@@ -36,7 +36,7 @@ const Reportes = () => {
         for="message"
         className="block mb-2 text-sm font-medium text-gray-900 "
       >
-        Descripcion Novedad
+        Descripción Novedad
       </label>
       <textarea
         id="message"
@@ -44,7 +44,40 @@ const Reportes = () => {
         className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 "
         placeholder="Detalle la novedad ...."
       ></textarea>
-    </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+        <form className="max-w-sm">
+          <label htmlFor="small" className="block mb-2 text-sm font-medium text-gray-900 ">Tipo de ganado o vegetal</label>
+            <select id="small" className="block w-full p-2 mb-6 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500">
+              <option selected>Selecciona tipo</option>
+              <option value="Vacuno">Vacuno</option>
+              <option value="Pisicola">Pisicola</option>
+              <option value="Flores">Flores</option>
+              <option value="Lombricultura">Lombricultura</option>
+            </select>
+            <label htmlFor="default" className="block mb-2 text-sm font-medium text-gray-900">Observacion</label>
+              <select id="default" className="bg-gray-50 border border-gray-300 text-gray-900 mb-6 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                <option selected>Seleccione tipo de observación</option>
+                <option value="Nacimiento">Nacimiento</option>
+                <option value="Deceso">Deceso</option>
+                <option value="Descarte">Descarte</option>
+                <option value="Compra">Compra</option>
+            </select>
+            </form>
+            <form className="max-w-sm">
+              <label for="number-input" class="block mb-2 text-sm font-medium text-gray-900 ">Cantidad</label>
+              <input type="number" id="number-input" aria-describedby="helper-text-explanation" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Cantidad" required />
+            </form>              
+        </div>
+        <div>
+        <label for="number-input" class="block mb-2 text-sm font-medium text-gray-900 ">Efectivo</label>
+        <input type="number" id="number-input" aria-describedby="helper-text-explanation" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Cantidad de efectivo" required />
+        <label for="number-input" class="block mb-2 text-sm font-medium text-gray-900 ">Efectivo actual</label>
+        <input type="number" id="number-input" aria-describedby="helper-text-explanation" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Efectivo actual" required />
+        </div>
+      </div>
+    </div>  
   );
 };
 
