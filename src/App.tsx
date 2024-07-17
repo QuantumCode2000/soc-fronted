@@ -5,6 +5,7 @@ import WeaponExit from "./views/WeaponExit/WeaponExit";
 import WeaponEntry from "./views/WeaponEntry/WeaponEntry";
 import WeaponMovementHistory from "./views/WeaponMovementHistory/WeaponMovementHistory";
 import Layout from "./layout/Layout";
+import Login from "./pages/Login/Login";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -31,6 +32,10 @@ const router = createBrowserRouter([
         element: <WeaponMovementHistory />,
       },
     ],
+  },
+  {
+    path: "login",
+    element: <Login />,
   },
 ]);
 

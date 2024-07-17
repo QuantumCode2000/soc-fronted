@@ -1,5 +1,6 @@
 import Select from "../../components/Select/Select";
 import { FaRegCalendarAlt } from "react-icons/fa";
+import Input from "../../components/Input/Input";
 const Reportes = () => {
   const date = new Date();
   const day = date.getDate();
@@ -25,8 +26,6 @@ const Reportes = () => {
         </div>
         <input
           id="datepicker-autohide"
-          datepicker
-          datepicker-autohide
           type="text"
           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  "
           // placeholder="Select date"
@@ -56,50 +55,27 @@ const Reportes = () => {
             />
           </form>
           <form className="max-w-sm">
-            <label
-              for="number-input"
-              class="block mb-2 text-sm font-medium text-gray-900 "
-            >
-              Cantidad
-            </label>
-            <input
-              type="number"
+            <Input
               id="number-input"
-              aria-describedby="helper-text-explanation"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-              placeholder="Cantidad"
-              required
+              label="Efectivo"
+              type="number"
+              placeholder="Cantidad de efectivo"
             />
           </form>
         </div>
         <div>
-          <label
-            for="number-input"
-            class="block mb-2 text-sm font-medium text-gray-900 "
-          >
-            Efectivo
-          </label>
-          <input
-            type="number"
+          <Input
             id="number-input"
-            aria-describedby="helper-text-explanation"
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+            label="Efectivo"
+            type="number"
             placeholder="Cantidad de efectivo"
-            required
           />
-          <label
-            for="number-input"
-            class="block mb-2 text-sm font-medium text-gray-900 "
-          >
-            Efectivo actual
-          </label>
-          <input
-            type="number"
+
+          <Input
             id="number-input"
-            aria-describedby="helper-text-explanation"
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-            placeholder="Efectivo actual"
-            required
+            label="Efectivo"
+            type="number"
+            placeholder="Cantidad de efectivo"
           />
         </div>
       </div>

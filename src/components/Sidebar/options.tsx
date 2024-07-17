@@ -23,6 +23,21 @@ const options = [
     icon: <TbLogout />,
     text: "Salir",
   },
+  {
+    to: "armas-salida",
+    icon: <FaBuildingFlag />,
+    text: "Armas Salida",
+  },
+  {
+    to: "armas-entrada",
+    icon: <FaBuildingFlag />,
+    text: "Armas Entrada",
+  },
+  {
+    to: "historial-movimientos",
+    icon: <FaBuildingFlag />,
+    text: "Historial Movimientos",
+  },
 ];
 
 export { options };

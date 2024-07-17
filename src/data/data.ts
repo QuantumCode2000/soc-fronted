@@ -1,32 +1,49 @@
 const users = [
   {
-    id: 1,
-    grado: "Cnl.",
-    nombre: "Cesar Narvaez",
-    carnetIdentidad: "2705215",
-    carnetMilitar: "98741074",
-    fechaNacimiento: "1974-01-01",
-    situacionActual: "Activo",
+    ci: "12421511",
+    extention: "LP",
+    cm: "1234342",
+    militaryRank: "Tte.",
+    nombre: "Juan Ivan Arias",
   },
   {
-    id: 2,
-    grado: "Tte.",
-    nombre: "Juan Perez",
-    carnetIdentidad: "2705215",
-    carnetMilitar: "98741074",
-    fechaNacimiento: "1974-01-01",
-    situacionActual: "Activo",
+    ci: "1234568",
+    extention: "LP",
+    cm: "1234342",
+    militaryRank: "Tte.",
+    nombre: "Juan Ivan Arias",
+  },
+]
+
+const weapons = [
+  {
+    codigo: "4524324324",
+    tipoDeArma: "fusil",
+    estado: "operable",
+    clasificacion: "organica",
+    propietario: "Luis bandara",
+    nroSerie: "4324234",
+    modelo: "ak47",
+    procedencia: "austria",
+    calibre: "2",
+    marca: "styer",
+    nroCargadores: "1",
+    gestionDeDotacion: "2016",
   },
   {
-    id: 3,
-    grado: "Tte.",
-    nombre: "Pedro Perez",
-    carnetIdentidad: "2705215",
-    carnetMilitar: "98741074",
-    fechaNacimiento: "1974-01-01",
-    situacionActual: "Activo",
+    codigo: "4524324325",
+    tipoDeArma: "subfusil",
+    estado: "operable",
+    clasificacion: "organica",
+    propietario: "Luis bandara",
+    nroSerie: "4324234",
+    modelo: "ak47",
+    procedencia: "austria",
+    calibre: "2",
+    marca: "styer",
+    nroCargadores: "1",
+    gestionDeDotacion: "2016",
   },
-];
+]
 
-
-
+export { users, weapons };
