@@ -9,7 +9,7 @@ const Sidebar = ({ selectedTitle }) => {
           <a href="#" className="inline-flex flex-row items-center">
             <img src={logo_principal} alt="" className="w-10 h-10" />
             <span className="leading-10 text-gray-100 text-2xl font-bold ml-1 uppercase">
-              DPTO. VII
+              SCA
             </span>
           </a>
         </div>
