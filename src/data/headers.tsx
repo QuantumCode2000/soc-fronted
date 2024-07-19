@@ -6,4 +6,26 @@ const headerMovimientos = {
   solicitante: "CI Solicitante",
   motivo: "Motivo",
 };
-export { headerMovimientos };
+const headersUsers = {
+  ci: "Carnet de Identidad",
+  extention: "Extensión",
+  nombre: "Nombre",
+  militaryRank: "Grado",
+  cm: "Carnet Militar",
+};
+
+const headersWeapons = {
+  codigo: "Código",
+  tipoDeArma: "Tipo de Arma",
+  estado: "Estado",
+  clasificacion: "Clasificación",
+  propietario: "Propietario",
+  nroSerie: "Número de Serie",
+  modelo: "Modelo",
+  procedencia: "Procedencia",
+  calibre: "Calibre",
+  marca: "Marca",
+  nroCargadores: "Número de Cargadores",
+  gestionDeDotacion: "Gestión de Dotación",
+};
+export { headerMovimientos, headersUsers, headersWeapons };

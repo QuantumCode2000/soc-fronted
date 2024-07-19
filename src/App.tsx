@@ -6,6 +6,8 @@ import WeaponEntry from "./views/WeaponEntry/WeaponEntry";
 import WeaponMovementHistory from "./views/WeaponMovementHistory/WeaponMovementHistory";
 import Layout from "./layout/Layout";
 import Login from "./pages/Login/Login";
+import WeaponRegister from "./views/WeaponRegister/WeaponRegister";
+import PersonalRegister from "./views/PersonalRegister/PersonalRegister";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -30,6 +32,14 @@ const router = createBrowserRouter([
       {
         path: "historial-movimientos",
         element: <WeaponMovementHistory />,
+      },
+      {
+        path: "registro-armas",
+        element: <WeaponRegister />,
+      },
+      {
+        path: "registro-personal",
+        element: <PersonalRegister />,
       },
     ],
   },
