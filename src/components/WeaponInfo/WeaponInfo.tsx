@@ -113,29 +113,17 @@ function WeaponInfo({
           <p className="mt-4 text-blue-500 col-span-2">Cargando...</p>
         ) : weaponDetails ? (
           <>
-            <WeaponCard label="Tipo de Arma" value={weaponDetails.tipoDeArma} />
+            <WeaponCard label="Armamento" value={weaponDetails.armamento} />
             <WeaponCard label="Estado" value={weaponDetails.estado} />
             <WeaponCard
               label="Clasificación"
-              value={weaponDetails.clasificacion}
+              value={weaponDetails.clasification}
             />
             <WeaponCard label="Propietario" value={weaponDetails.propietario} />
-            <WeaponCard
-              label="Número de Serie"
-              value={weaponDetails.nroSerie}
-            />
+            <WeaponCard label="Número de Arma" value={weaponDetails.nroarma} />
             <WeaponCard label="Modelo" value={weaponDetails.modelo} />
-            <WeaponCard label="Procedencia" value={weaponDetails.procedencia} />
+            <WeaponCard label="Procedencia" value={weaponDetails.industria} />
             <WeaponCard label="Calibre" value={weaponDetails.calibre} />
-            <WeaponCard label="Marca" value={weaponDetails.marca} />
-            <WeaponCard
-              label="Número de Cargadores"
-              value={weaponDetails.nroCargadores}
-            />
-            <WeaponCard
-              label="Gestión de Dotación"
-              value={weaponDetails.gestionDeDotacion}
-            />
           </>
         ) : (
           <p className="mt-4 text-red-500 col-span-2">

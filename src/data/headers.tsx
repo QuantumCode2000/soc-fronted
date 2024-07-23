@@ -1,5 +1,4 @@
 const headerMovimientos = {
-  id: "ID",
   fechaSalida: "Fecha de Salida",
   fechaRegreso: "Fecha de Devolución",
   codigo: "Código",
@@ -12,20 +11,20 @@ const headersUsers = {
   nombre: "Nombre",
   militaryRank: "Grado",
   cm: "Carnet Militar",
+  correo: "Correo Electrónico",
+  inSystemPermission: "Permiso en Sistema",
+  rol: "Rol",
+  estado: "Estado",
 };
 
 const headersWeapons = {
   codigo: "Código",
-  tipoDeArma: "Tipo de Arma",
+  nroarma: "Nro. de Arma",
   estado: "Estado",
-  clasificacion: "Clasificación",
+  observations: "Observaciones",
   propietario: "Propietario",
-  nroSerie: "Número de Serie",
+  armamento: "Armamento",
   modelo: "Modelo",
-  procedencia: "Procedencia",
-  calibre: "Calibre",
-  marca: "Marca",
-  nroCargadores: "Número de Cargadores",
-  gestionDeDotacion: "Gestión de Dotación",
+  acciones: "Acciones",
 };
 export { headerMovimientos, headersUsers, headersWeapons };

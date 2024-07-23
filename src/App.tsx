@@ -8,6 +8,7 @@ import Layout from "./layout/Layout";
 import Login from "./pages/Login/Login";
 import WeaponRegister from "./views/WeaponRegister/WeaponRegister";
 import PersonalRegister from "./views/PersonalRegister/PersonalRegister";
+import Example from "./views/Example/Example";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -40,6 +41,10 @@ const router = createBrowserRouter([
       {
         path: "registro-personal",
         element: <PersonalRegister />,
+      },
+      {
+        path: "example",
+        element: <Example />,
       },
     ],
   },

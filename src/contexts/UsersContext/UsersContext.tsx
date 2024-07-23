@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
-
+import { users as importedUsers } from "../../data/data";
 interface User {
   ci: string;
   extention: string;
@@ -18,22 +18,7 @@ interface UsersContextProps {
 const UsersContext = createContext<UsersContextProps | undefined>(undefined);
 
 const UsersProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [users, setUsers] = useState<User[]>([
-    {
-      ci: "12421511",
-      extention: "LP",
-      cm: "1234342",
-      militaryRank: "Tte.",
-      nombre: "Juan Ivan Arias",
-    },
-    {
-      ci: "1234568",
-      extention: "LP",
-      cm: "1234342",
-      militaryRank: "Tte.",
-      nombre: "Juan Ivan Arias",
-    },
-  ]);
+  const [users, setUsers] = useState<User[]>(importedUsers);
 
   const addUser = (user: User) => {
     setUsers((prevUsers) => [...prevUsers, user]);

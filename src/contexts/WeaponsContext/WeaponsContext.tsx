@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
+import { weapons as importedWeapons } from "../../data/data";
 
 interface Weapon {
   codigo: string;
@@ -20,6 +21,8 @@ interface WeaponsContextProps {
   addWeapon: (weapon: Weapon) => void;
   removeWeapon: (codigo: string) => void;
   updateWeapon: (weapon: Weapon) => void;
+  getAllWeapons: () => Weapon[];
+  getWeaponByCodigo: (codigo: string) => Weapon | undefined;
 }
 
 const WeaponsContext = createContext<WeaponsContextProps | undefined>(
@@ -27,36 +30,7 @@ const WeaponsContext = createContext<WeaponsContextProps | undefined>(
 );
 
 const WeaponsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [weapons, setWeapons] = useState<Weapon[]>([
-    {
-      codigo: "4524324324",
-      tipoDeArma: "fusil",
-      estado: "operable",
-      clasificacion: "organica",
-      propietario: "Luis bandara",
-      nroSerie: "4324234",
-      modelo: "ak47",
-      procedencia: "austria",
-      calibre: "2",
-      marca: "styer",
-      nroCargadores: "1",
-      gestionDeDotacion: "2016",
-    },
-    {
-      codigo: "4524324325",
-      tipoDeArma: "subfusil",
-      estado: "operable",
-      clasificacion: "organica",
-      propietario: "Luis bandara",
-      nroSerie: "4324234",
-      modelo: "ak47",
-      procedencia: "austria",
-      calibre: "2",
-      marca: "styer",
-      nroCargadores: "1",
-      gestionDeDotacion: "2016",
-    },
-  ]);
+  const [weapons, setWeapons] = useState<Weapon[]>(importedWeapons);
 
   const addWeapon = (weapon: Weapon) => {
     setWeapons((prevWeapons) => [...prevWeapons, weapon]);
@@ -76,9 +50,24 @@ const WeaponsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     );
   };
 
+  const getAllWeapons = (): Weapon[] => {
+    return weapons;
+  };
+
+  const getWeaponByCodigo = (codigo: string): Weapon | undefined => {
+    return weapons.find((weapon) => weapon.codigo === codigo);
+  };
+
   return (
     <WeaponsContext.Provider
-      value={{ weapons, addWeapon, removeWeapon, updateWeapon }}
+      value={{
+        weapons,
+        addWeapon,
+        removeWeapon,
+        updateWeapon,
+        getAllWeapons,
+        getWeaponByCodigo,
+      }}
     >
       {children}
     </WeaponsContext.Provider>

@@ -1,52 +1,76 @@
+// import { FaBuildingFlag } from "react-icons/fa6";
+// const options = [
+//   {
+//     text: "Gestión de Personal",
+//   },
+//   {
+//     to: "/registro-personal",
+//     icon: <FaBuildingFlag />,
+//     text: "Registro Personal",
+//   },
+//   {
+//     text: "Gestión de Armas",
+//   },
+//   {
+//     to: "/armas-salida",
+//     icon: <FaBuildingFlag />,
+//     text: "Armas Salida",
+//   },
+//   {
+//     to: "/armas-entrada",
+//     icon: <FaBuildingFlag />,
+//     text: "Armas Entrada",
+//   },
+//   {
+//     to: "/historial-movimientos",
+//     icon: <FaBuildingFlag />,
+//     text: "Historial Movimientos",
+//   },
+//   {
+//     to: "/registro-armas",
+//     icon: <FaBuildingFlag />,
+//     text: "Registro Armas",
+//   },
+// ];
+
+// export { options };
 import { FaBuildingFlag } from "react-icons/fa6";
-import { TfiDashboard } from "react-icons/tfi";
-import { HiOutlineDocumentReport } from "react-icons/hi";
-import { TbLogout } from "react-icons/tb";
+
 const options = [
-  // {
-  //   to: "/unidades",
-  //   icon: <FaBuildingFlag />,
-  //   text: "Unidades",
-  // },
-  // {
-  //   to: "/",
-  //   icon: <TfiDashboard />,
-  //   text: "Cuadro de Mando",
-  // },
-  // {
-  //   to: "/reportes",
-  //   icon: <HiOutlineDocumentReport />,
-  //   text: "Reportes",
-  // },
   {
-    to: "/",
-    icon: <TbLogout />,
-    text: "Salir",
+    text: "Gestión de Personal",
+    options: [
+      {
+        to: "/registro-personal",
+        icon: <FaBuildingFlag />,
+        text: "Registro Personal",
+      },
+    ],
   },
   {
-    to: "armas-salida",
-    icon: <FaBuildingFlag />,
-    text: "Armas Salida",
-  },
-  {
-    to: "armas-entrada",
-    icon: <FaBuildingFlag />,
-    text: "Armas Entrada",
-  },
-  {
-    to: "historial-movimientos",
-    icon: <FaBuildingFlag />,
-    text: "Historial Movimientos",
-  },
-  {
-    to: "registro-armas",
-    icon: <FaBuildingFlag />,
-    text: "Registro Armas",
-  },
-  {
-    to: "registro-personal",
-    icon: <FaBuildingFlag />,
-    text: "Registro Personal",
+    text: "Gestión de Armas",
+    options: [
+      {
+        to: "/armas-salida",
+        icon: <FaBuildingFlag />,
+        text: "Armas Salida",
+      },
+      {
+        to: "/armas-entrada",
+        icon: <FaBuildingFlag />,
+        text: "Armas Entrada",
+      },
+      {
+        to: "/historial-movimientos",
+        icon: <FaBuildingFlag />,
+        text: "Historial Movimientos",
+      },
+      {
+        to: "/registro-armas",
+        icon: <FaBuildingFlag />,
+        text: "Registro Armas",
+      },
+    ],
   },
 ];
 
