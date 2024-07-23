@@ -7,10 +7,10 @@ const headerMovimientos = {
 };
 const headersUsers = {
   ci: "Carnet de Identidad",
-  extention: "Extensión",
+  extension: "Extensión",
   nombre: "Nombre",
-  militaryRank: "Grado",
-  cm: "Carnet Militar",
+  grado: "Grado",
+  carnetMilitar: "Carnet Militar",
   correo: "Correo Electrónico",
   inSystemPermission: "Permiso en Sistema",
   rol: "Rol",

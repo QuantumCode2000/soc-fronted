@@ -186,10 +186,10 @@ const FormPersonalRegister = ({
         </div>
         <div>
           <Input
-            id="cm"
+            id="carnetMilitar"
             label="Carnet Militar"
             placeholder="Carnet Militar"
-            value={formData.cm}
+            value={formData.carnetMilitar}
             onChange={handleChange}
           />
         </div>

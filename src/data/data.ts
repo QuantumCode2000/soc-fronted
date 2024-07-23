@@ -1,9 +1,9 @@
 const users = [
   {
     ci: "12421511",
-    extention: "LP",
-    cm: "1234342",
-    militaryRank: "Cnl.",
+    extension: "LP",
+    carnetMilitar: "1234342",
+    grado: "Cnl.",
     nombre: "Juan Ivan Arias",
     correo: "jarias@gmail.com",
     inSystemPermission: "Si",
