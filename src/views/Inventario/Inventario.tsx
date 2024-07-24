@@ -3,6 +3,7 @@ import Button from "../../components/Button/Button";
 import Table from "../../components/Table/Table";
 import Modal from "../../components/Modal/Modal";
 import FormInventario from "./FormInventario";
+import FormUpdateInventario from "./FormUpdateInventario"; // Importamos el nuevo formulario
 import { useInventory } from "../../contexts/InventoryContext/InventoryContext";
 import Content from "../../components/Content/Content";
 
@@ -38,7 +39,7 @@ const renderCell = (item, key, handleEdit) => {
 
 const Inventario = () => {
   const [isModalOpen, setOpenModal] = useState(false);
-  const [isEdit, setIsEdit] = useState(false);
+  const [isEditModalOpen, setEditModalOpen] = useState(false); // Estado para el modal de edición
   const [formData, setFormData] = useState({
     nro: "",
     nombreUnidad: "",
@@ -57,7 +58,23 @@ const Inventario = () => {
 
   const closeModal = () => {
     setOpenModal(false);
-    setIsEdit(false);
+    setFormData({
+      nro: "",
+      nombreUnidad: "",
+      codigo: "",
+      raza: "",
+      color: "",
+      marcaCarimbo: "",
+      sexo: "",
+      categoria: "",
+      fechaNac: "",
+      edadActual: "",
+    });
+    setErrors({});
+  };
+
+  const closeEditModal = () => {
+    setEditModalOpen(false);
     setFormData({
       nro: "",
       nombreUnidad: "",
@@ -75,7 +92,6 @@ const Inventario = () => {
 
   const openModal = () => {
     setOpenModal(true);
-    setIsEdit(false);
     setFormData({
       nro: "",
       nombreUnidad: "",
@@ -91,12 +107,11 @@ const Inventario = () => {
     setErrors({});
   };
 
-  const handleEdit = (codigo) => {
+  const openEditModal = (codigo) => {
     const item = inventario.find((item) => item.codigo === codigo);
     if (item) {
       setFormData(item);
-      setIsEdit(true);
-      setOpenModal(true);
+      setEditModalOpen(true);
     }
   };
 
@@ -114,24 +129,25 @@ const Inventario = () => {
     if (!formData.nombreUnidad)
       newErrors.nombreUnidad = "Nombre de la Unidad es requerido";
     if (!formData.codigo) newErrors.codigo = "Código es requerido";
-    if (!formData.raza) newErrors.raza = "Raza es requerido";
+    if (!formData.raza) newErrors.raza = "Raza es requerida";
     if (!formData.color) newErrors.color = "Color es requerido";
     if (!formData.marcaCarimbo)
       newErrors.marcaCarimbo = "Marca y Carimbo es requerido";
     if (!formData.sexo) newErrors.sexo = "Sexo es requerido";
-    if (!formData.categoria) newErrors.categoria = "Categoría es requerido";
+    if (!formData.categoria) newErrors.categoria = "Categoría es requerida";
     if (!formData.fechaNac)
-      newErrors.fechaNac = "Fecha de Nacimiento es requerido";
-    if (!formData.edadActual) newErrors.edadActual = "Edad Actual es requerido";
+      newErrors.fechaNac = "Fecha de Nacimiento es requerida";
+    if (!formData.edadActual) newErrors.edadActual = "Edad Actual es requerida";
     setErrors(newErrors);
 
     if (Object.keys(newErrors).length === 0) {
-      if (isEdit) {
+      if (isEditModalOpen) {
         updateInventarioItem(formData);
+        closeEditModal();
       } else {
         addInventarioItem(formData);
+        closeModal();
       }
-      closeModal();
     }
   };
 
@@ -141,14 +157,14 @@ const Inventario = () => {
         <Table
           header={headersInventario}
           body={inventario}
-          renderCell={(item, key) => renderCell(item, key, handleEdit)}
+          renderCell={(item, key) => renderCell(item, key, openEditModal)}
         />
       </Content>
       <div className="flex justify-end mt-4">
         <Button text={"Agregar Item"} onClick={openModal} />
       </div>
       <Modal
-        title={isEdit ? "Editar Item" : "Agregar Item"}
+        title={"Agregar Item"}
         isOpen={isModalOpen}
         onClose={closeModal}
         onConfirm={handleSubmit}
@@ -158,7 +174,19 @@ const Inventario = () => {
           errors={errors}
           handleChange={handleChange}
           handleSubmit={handleSubmit}
-          isEdit={isEdit}
+        />
+      </Modal>
+      <Modal
+        title={"Editar Item"}
+        isOpen={isEditModalOpen}
+        onClose={closeEditModal}
+        onConfirm={handleSubmit}
+      >
+        <FormUpdateInventario
+          formData={formData}
+          errors={errors}
+          handleChange={handleChange}
+          handleSubmit={handleSubmit}
         />
       </Modal>
     </>
