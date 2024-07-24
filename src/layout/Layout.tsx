@@ -76,8 +76,8 @@ const Layout = () => {
         <main className="main flex flex-col flex-grow -ml-64 md:ml-0 transition-all duration-150 ease-in">
           <Navbar />
           <div className="main-content flex flex-col flex-grow p-6">
-            <h1 className="font-bold text-3xl text-gray-700 mb-6">
-              {selectedTitle}
+            <h1 className="font-bold text-3xl text-gray-700 mb-6 text-xs">
+              /{selectedTitle}
             </h1>
             <div className="flex flex-col flex-grow border border-gray-300 bg-white rounded-lg p-6 shadow-lg">
               <Outlet />

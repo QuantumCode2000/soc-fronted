@@ -1,12 +1,15 @@
-import { FaBuildingFlag } from "react-icons/fa6";
+import { CgNotes } from "react-icons/cg";
+import { MdOutlineInventory } from "react-icons/md";
+import { RiUserSettingsFill } from "react-icons/ri";
+import { RxUpdate } from "react-icons/rx";
 
 const options = [
   {
-    text: "Gestión de Personal",
+    text: " Personal",
     options: [
       {
         to: "/registro-personal",
-        icon: <FaBuildingFlag />,
+        icon: <RiUserSettingsFill />,
         text: "Registro Personal",
       },
     ],
@@ -15,18 +18,18 @@ const options = [
     text: "Gestión de Ganado",
     options: [
       {
-        to: "/registro-ganado",
-        icon: <FaBuildingFlag />,
-        text: "Registro Ganado",
+        to: "/inventario",
+        icon: <MdOutlineInventory />,
+        text: "Inventario",
       },
       {
         to: "/parte-inmediato",
-        icon: <FaBuildingFlag />,
+        icon: <CgNotes />,
         text: "Parte Inmediato",
       },
       {
         to: "parte-actualizado",
-        icon: <FaBuildingFlag />,
+        icon: <RxUpdate />,
         text: "Parte Actualizado",
       },
     ],

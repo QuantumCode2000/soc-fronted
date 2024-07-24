@@ -15,7 +15,7 @@ const router = createBrowserRouter([
         element: <PersonalRegister />,
       },
       {
-        path: "registro-ganado",
+        path: "inventario",
         element: <Inventario />,
       },
       {

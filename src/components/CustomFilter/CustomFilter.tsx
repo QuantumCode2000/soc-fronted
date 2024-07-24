@@ -1,64 +1,48 @@
-// const CustomFilter = ({
-//   columns,
-//   selectedColumn,
-//   filterText,
-//   onColumnChange,
-//   onFilterChange,
-// }) => {
-//   return (
-//     <div className="mb-4 flex items-center space-x-2">
-//       <label>Filtrar por</label>
-//       <select
-//         value={selectedColumn}
-//         onChange={(e) => onColumnChange(e.target.value)}
-//         className="px-2 py-1 border border-gray-300 rounded-lg"
-//       >
-//         {columns.map((column) => (
-//           <option key={column.key} value={column.key}>
-//             {column.label}
-//           </option>
-//         ))}
-//       </select>
-//       <input
-//         type="text"
-//         placeholder="Valor"
-//         value={filterText}
-//         onChange={(e) => onFilterChange(e.target.value)}
-//         className="px-4 py-2 border border-gray-300 rounded-lg"
-//       />
-//     </div>
-//   );
-// };
+import React from "react";
 
-// export default CustomFilter;
 const CustomFilter = ({
   columns,
   selectedColumn,
   filterText,
   onColumnChange,
   onFilterChange,
+  onSearch,
 }) => {
   return (
-    <div className="mb-4 flex items-center space-x-4">
-      <label className="text-gray-700">Filtrar por:</label>
-      <select
-        value={selectedColumn}
-        onChange={(e) => onColumnChange(e.target.value)}
-        className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-      >
+    <div className="mb-4 flex flex-col space-y-4">
+      <div className="flex flex-wrap items-center space-x-2">
+        <label className="text-gray-800 mr-2">Realizar busqueda:</label>
         {columns.map((column) => (
-          <option key={column.key} value={column.key}>
+          <button
+            key={column.key}
+            onClick={() => onColumnChange(column.key)}
+            className={`px-3 py-1 rounded-lg border ${
+              selectedColumn === column.key
+                ? "bg-blue-500 text-white border-blue-500"
+                : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
+            }`}
+          >
             {column.label}
-          </option>
+          </button>
         ))}
-      </select>
-      <input
-        type="text"
-        placeholder="Valor"
-        value={filterText}
-        onChange={(e) => onFilterChange(e.target.value)}
-        className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
+        <button
+          onClick={onSearch}
+          className="ml-auto px-3 py-1 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+        >
+          Buscar
+        </button>
+      </div>
+      {selectedColumn && (
+        <div className="mt-2">
+          <input
+            type="text"
+            placeholder="Valor"
+            value={filterText}
+            onChange={(e) => onFilterChange(e.target.value)}
+            className="w-full px-4 py-2 bg-white text-gray-800 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+      )}
     </div>
   );
 };
