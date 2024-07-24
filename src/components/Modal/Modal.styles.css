@@ -1,62 +1,16 @@
-/* 
 .main-modal {
   display: none;
 }
 
 .modal-container {
-  max-width: 90%;
-  max-height: 90%;
-  overflow: auto;
+  max-width: 80%;
+  border-radius: 12px;
 }
 
 .modal-content {
-  overflow: auto;
-}
-
-.animated {
-  animation-duration: 0.3s;
-  animation-fill-mode: both;
-}
-
-.fadeIn {
-  animation-name: fadeIn;
-}
-
-.fadeOut {
-  animation-name: fadeOut;
-}
-
-@keyframes fadeIn {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-
-@keyframes fadeOut {
-  0% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
-} */
-
-.main-modal {
-  display: none;
-}
-
-.modal-container {
-  max-width: 90%;
-  max-height: 90%;
-  overflow: auto;
-}
-
-.modal-content {
-  overflow: auto;
-  position: relative; /* Asegura que los elementos absolutos estén posicionados correctamente */
+  position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
 .animated {
@@ -90,11 +44,22 @@
   }
 }
 
-.modal-close {
-  position: absolute;
-  top: 0;
-  right: 0;
+.modal-header {
   padding: 1rem;
-  cursor: pointer;
-  z-index: 50; /* Asegura que la "X" esté por encima de otros contenidos */
+  border-bottom: 1px solid #e5e7eb;
+  background-color: white;
+  z-index: 50;
+}
+
+.modal-body {
+  overflow-y: auto;
+  max-height: 400px; /* or any desired height */
+  padding: 1rem;
+  background-color: white;
+}
+
+.modal-footer {
+  padding: 1rem;
+  border-top: 1px solid #e5e7eb;
+  background-color: white;
 }
