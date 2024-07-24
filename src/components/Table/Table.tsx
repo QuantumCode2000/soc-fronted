@@ -42,7 +42,7 @@
 //   }));
 
 //   return (
-//     <div className="font-mono h-fit justify-center w-[90%]">
+//     <div className="font-sans w-[90%] mx-auto my-8">
 //       <CustomFilter
 //         columns={columns}
 //         selectedColumn={selectedColumn}
@@ -51,8 +51,8 @@
 //         onFilterChange={handleFilterChange}
 //       />
 //       <div className="w-full mb-8 overflow-hidden rounded-lg shadow-lg">
-//         <div className="w-full overflow-auto" style={{ maxHeight: "500px" }}>
-//           <table className="min-w-full table-auto">
+//         <div className="w-full overflow-auto max-h-96">
+//           <table className="min-w-full table-auto border-collapse border border-gray-300">
 //             <thead>
 //               <RowHeader data={headerValues} />
 //             </thead>
@@ -101,11 +101,13 @@ const Table = ({ header, body, renderCell }) => {
     setCurrentPage(1);
   };
 
-  const filteredBody = body.filter((item) =>
-    item[selectedColumn]
-      .toString()
-      .toLowerCase()
-      .includes(filterText.toLowerCase()),
+  const filteredBody = body.filter(
+    (item) =>
+      item[selectedColumn] != null &&
+      item[selectedColumn]
+        .toString()
+        .toLowerCase()
+        .includes(filterText.toLowerCase()),
   );
 
   const totalPages = Math.ceil(filteredBody.length / itemsPerPage);
