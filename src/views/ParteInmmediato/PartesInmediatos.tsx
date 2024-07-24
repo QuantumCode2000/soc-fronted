@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import Button from "../../components/Button/Button";
 import Table from "../../components/Table/Table";
 import Modal from "../../components/Modal/Modal";
 import FormParteInmediato from "./FormParteInmediato";
-import { usePartesInmediatos } from "../../contexts/PartesInmediatos/PartesInmediatosContext";
+import { usePartesInmediatos } from "../../contexts/PartesInmediatosContext/PartesInmediatosContext";
 import { useInventory } from "../../contexts/InventoryContext/InventoryContext";
 import Content from "../../components/Content/Content";
 
@@ -29,7 +29,7 @@ const renderCell = (item, key, handleEdit) => {
       return (
         <button
           className="bg-blue-500 text-white px-2 py-1 rounded"
-          onClick={() => handleEdit(item.nroArete)}
+          onClick={() => handleEdit(item.nro)}
         >
           Editar
         </button>
@@ -98,8 +98,8 @@ const PartesInmediatos = () => {
     setErrors({});
   };
 
-  const handleEdit = (nroArete) => {
-    const item = partesInmediatos.find((item) => item.nroArete === nroArete);
+  const handleEdit = (nro) => {
+    const item = partesInmediatos.find((item) => item.nro === nro);
     if (item) {
       setFormData(item);
       setIsEdit(true);
