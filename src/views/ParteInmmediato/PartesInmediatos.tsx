@@ -3,7 +3,7 @@ import Button from "../../components/Button/Button";
 import Table from "../../components/Table/Table";
 import Modal from "../../components/Modal/Modal";
 import FormParteInmediato from "./FormParteInmediato";
-import { usePartesInmediatos } from "../../contexts/PartesInmediatosContext/PartesInmediatosContext";
+import { usePartesInmediatos } from "../../contexts/PartesInmediatos/PartesInmediatosContext";
 import { useInventory } from "../../contexts/InventoryContext/InventoryContext";
 import Content from "../../components/Content/Content";
 
