@@ -28,11 +28,15 @@
 //   "Almirante",
 // ];
 
+// const estados = ["Activo", "Inactivo"];
+// const roles = ["Administrador", "Encargado", "Personal"];
+
 // const FormPersonalRegister = ({
 //   formData,
 //   errors,
 //   handleChange,
 //   handleSubmit,
+//   isEdit,
 // }) => {
 //   return (
 //     <div className="container mx-auto p-6">
@@ -45,6 +49,7 @@
 //             value={formData.ci}
 //             onChange={handleChange}
 //             error={errors.ci}
+//             disabled={isEdit}
 //           />
 //         </div>
 //         <div>
@@ -94,14 +99,46 @@
 //             error={errors.correo}
 //           />
 //         </div>
+//         {isEdit && (
+//           <>
+//             <div>
+//               <Select
+//                 id="inSystemPermission"
+//                 label="Permiso en Sistema"
+//                 options={["Sí", "No"]}
+//                 value={formData.inSystemPermission}
+//                 onChange={handleChange}
+//                 disabled
+//               />
+//             </div>
+//             <div>
+//               <Select
+//                 id="rol"
+//                 label="Rol"
+//                 options={roles}
+//                 value={formData.rol}
+//                 onChange={handleChange}
+//                 disabled
+//               />
+//             </div>
+//             <div>
+//               <Select
+//                 id="estado"
+//                 label="Estado"
+//                 options={estados}
+//                 value={formData.estado}
+//                 onChange={handleChange}
+//                 disabled
+//               />
+//             </div>
+//           </>
+//         )}
 //       </form>
 //     </div>
 //   );
 // };
 
 // export default FormPersonalRegister;
-
-import React from "react";
 import Input from "../../components/Input/Input";
 import Select from "../../components/Select/Select";
 
@@ -191,6 +228,7 @@ const FormPersonalRegister = ({
             placeholder="Carnet Militar"
             value={formData.carnetMilitar}
             onChange={handleChange}
+            error={errors.carnetMilitar}
           />
         </div>
         <div>
@@ -203,40 +241,41 @@ const FormPersonalRegister = ({
             error={errors.correo}
           />
         </div>
-        {isEdit && (
-          <>
-            <div>
-              <Select
-                id="inSystemPermission"
-                label="Permiso en Sistema"
-                options={["Sí", "No"]}
-                value={formData.inSystemPermission}
-                onChange={handleChange}
-                disabled
-              />
-            </div>
-            <div>
-              <Select
-                id="rol"
-                label="Rol"
-                options={roles}
-                value={formData.rol}
-                onChange={handleChange}
-                disabled
-              />
-            </div>
-            <div>
-              <Select
-                id="estado"
-                label="Estado"
-                options={estados}
-                value={formData.estado}
-                onChange={handleChange}
-                disabled
-              />
-            </div>
-          </>
-        )}
+        <div>
+          <Select
+            id="inSystemPermission"
+            label="Permiso en Sistema"
+            options={["Sí", "No"]}
+            value={formData.inSystemPermission}
+            onChange={handleChange}
+          />
+        </div>
+        <div>
+          <Select
+            id="rol"
+            label="Rol"
+            options={roles}
+            value={formData.rol}
+            onChange={handleChange}
+          />
+        </div>
+        <div>
+          <Select
+            id="estado"
+            label="Estado"
+            options={estados}
+            value={formData.estado}
+            onChange={handleChange}
+          />
+        </div>
+        <div className="flex justify-end mt-4">
+          <button
+            type="submit"
+            className="bg-blue-500 text-white px-4 py-2 rounded"
+          >
+            {isEdit ? "Actualizar" : "Registrar"}
+          </button>
+        </div>
       </form>
     </div>
   );

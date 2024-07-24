@@ -1,39 +1,3 @@
-// import { FaBuildingFlag } from "react-icons/fa6";
-// const options = [
-//   {
-//     text: "Gestión de Personal",
-//   },
-//   {
-//     to: "/registro-personal",
-//     icon: <FaBuildingFlag />,
-//     text: "Registro Personal",
-//   },
-//   {
-//     text: "Gestión de Armas",
-//   },
-//   {
-//     to: "/armas-salida",
-//     icon: <FaBuildingFlag />,
-//     text: "Armas Salida",
-//   },
-//   {
-//     to: "/armas-entrada",
-//     icon: <FaBuildingFlag />,
-//     text: "Armas Entrada",
-//   },
-//   {
-//     to: "/historial-movimientos",
-//     icon: <FaBuildingFlag />,
-//     text: "Historial Movimientos",
-//   },
-//   {
-//     to: "/registro-armas",
-//     icon: <FaBuildingFlag />,
-//     text: "Registro Armas",
-//   },
-// ];
-
-// export { options };
 import { FaBuildingFlag } from "react-icons/fa6";
 
 const options = [
@@ -48,27 +12,22 @@ const options = [
     ],
   },
   {
-    text: "Gestión de Armas",
+    text: "Gestión de Ganado",
     options: [
       {
-        to: "/armas-salida",
+        to: "/registro-ganado",
         icon: <FaBuildingFlag />,
-        text: "Armas Salida",
+        text: "Registro Ganado",
       },
       {
-        to: "/armas-entrada",
+        to: "/parte-inmediato",
         icon: <FaBuildingFlag />,
-        text: "Armas Entrada",
+        text: "Parte Inmediato",
       },
       {
-        to: "/historial-movimientos",
+        to: "parte-actualizado",
         icon: <FaBuildingFlag />,
-        text: "Historial Movimientos",
-      },
-      {
-        to: "/registro-armas",
-        icon: <FaBuildingFlag />,
-        text: "Registro Armas",
+        text: "Parte Actualizado",
       },
     ],
   },

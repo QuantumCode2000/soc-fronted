@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
 import { users as importedUsers } from "../../data/data";
+
+// Definir la interfaz del usuario
 interface User {
   ci: string;
   extention: string;
@@ -8,6 +10,7 @@ interface User {
   nombre: string;
 }
 
+// Definir la interfaz para las props del contexto de usuarios
 interface UsersContextProps {
   users: User[];
   addUser: (user: User) => void;
@@ -15,25 +18,46 @@ interface UsersContextProps {
   updateUser: (user: User) => void;
 }
 
+// Crear el contexto de usuarios
 const UsersContext = createContext<UsersContextProps | undefined>(undefined);
 
+// Crear el proveedor del contexto de usuarios
 const UsersProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [users, setUsers] = useState<User[]>(importedUsers);
 
+  // Función para agregar un usuario
   const addUser = (user: User) => {
-    setUsers((prevUsers) => [...prevUsers, user]);
+    setUsers((prevUsers) => {
+      // Verificar si el usuario ya existe
+      if (prevUsers.some((u) => u.ci === user.ci)) {
+        throw new Error("User with the same CI already exists");
+      }
+      return [...prevUsers, user];
+    });
   };
 
+  // Función para remover un usuario
   const removeUser = (ci: string) => {
-    setUsers((prevUsers) => prevUsers.filter((user) => user.ci !== ci));
+    setUsers((prevUsers) => {
+      const userExists = prevUsers.some((user) => user.ci === ci);
+      if (!userExists) {
+        throw new Error("User not found");
+      }
+      return prevUsers.filter((user) => user.ci !== ci);
+    });
   };
 
+  // Función para actualizar un usuario
   const updateUser = (updatedUser: User) => {
-    setUsers((prevUsers) =>
-      prevUsers.map((user) =>
+    setUsers((prevUsers) => {
+      const userExists = prevUsers.some((user) => user.ci === updatedUser.ci);
+      if (!userExists) {
+        throw new Error("User not found");
+      }
+      return prevUsers.map((user) =>
         user.ci === updatedUser.ci ? updatedUser : user,
-      ),
-    );
+      );
+    });
   };
 
   return (
@@ -43,9 +67,10 @@ const UsersProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   );
 };
 
+// Hook personalizado para usar el contexto de usuarios
 const useUsers = (): UsersContextProps => {
   const context = useContext(UsersContext);
-  if (context === undefined) {
+  if (!context) {
     throw new Error("useUsers must be used within a UsersProvider");
   }
   return context;

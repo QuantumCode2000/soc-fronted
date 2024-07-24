@@ -1,30 +1,22 @@
-const headerMovimientos = {
-  fechaSalida: "Fecha de Salida",
-  fechaRegreso: "Fecha de Devolución",
-  codigo: "Código",
-  solicitante: "CI Solicitante",
-  motivo: "Motivo",
-};
 const headersUsers = {
   ci: "Carnet de Identidad",
-  extension: "Extensión",
-  nombre: "Nombre",
-  grado: "Grado",
+  extension: "Ex.",
   carnetMilitar: "Carnet Militar",
-  correo: "Correo Electrónico",
+  grado: "Grado",
+  nombre: "Nombre",
+  correo: "Correo",
   inSystemPermission: "Permiso en Sistema",
   rol: "Rol",
   estado: "Estado",
 };
 
-const headersWeapons = {
-  codigo: "Código",
-  nroarma: "Nro. de Arma",
+const headersCattle = {
+  raza: "Raza",
+  peso: "Peso",
+  fechaNacimiento: "Fecha de Nacimiento",
+  fechaIngreso: "Fecha de Ingreso",
   estado: "Estado",
-  observations: "Observaciones",
-  propietario: "Propietario",
-  armamento: "Armamento",
-  modelo: "Modelo",
-  acciones: "Acciones",
 };
-export { headerMovimientos, headersUsers, headersWeapons };
+
+
+export { headersUsers };
