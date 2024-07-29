@@ -1,7 +1,7 @@
 const RowHeader = ({ data }) => {
   return (
-    <tr className="text-sm font-semibold text-left bg-black text-white">
-      <th className="px-4 py-2">Nro</th>
+    <tr className="text-xs font-semibold w-1 text-left bg-black text-white">
+      <th className="px-4 py-2">N°</th>
       {data.map((item, index) => (
         <th key={index} className="px-4 py-2">
           {item}

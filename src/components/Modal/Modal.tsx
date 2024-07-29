@@ -1,6 +1,6 @@
 import "./Modal.styles.css";
 
-const Modal = ({ children, isOpen, onClose, onConfirm, title, viewButton }) => {
+const Modal = ({ children, isOpen, onClose, title }) => {
   return (
     <div
       className={`main-modal fixed w-full h-full inset-0 z-50 overflow-hidden flex justify-center items-center animated ${
@@ -32,22 +32,6 @@ const Modal = ({ children, isOpen, onClose, onConfirm, title, viewButton }) => {
             </div>
           </div>
           <div className="modal-body text-base text-gray-700">{children}</div>
-          {viewButton && (
-            <div className="modal-footer flex justify-end">
-              <button
-                className="focus:outline-none px-4 py-2 bg-gray-200 rounded-md text-gray-800 hover:bg-gray-300"
-                onClick={onClose}
-              >
-                Cancelar
-              </button>
-              <button
-                className="focus:outline-none px-4 py-2 bg-blue-500 text-white rounded-md ml-3 hover:bg-blue-600"
-                onClick={onConfirm}
-              >
-                Confirmar
-              </button>
-            </div>
-          )}
         </div>
       </div>
     </div>

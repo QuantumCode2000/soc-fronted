@@ -1,34 +1,27 @@
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
 import { users as importedUsers } from "../../data/data";
+import type { User, UsersContextProps } from "./interfaces";
 
-// Definir la interfaz del usuario
-interface User {
-  ci: string;
-  extention: string;
-  cm: string;
-  militaryRank: string;
-  nombre: string;
-}
-
-// Definir la interfaz para las props del contexto de usuarios
-interface UsersContextProps {
-  users: User[];
-  addUser: (user: User) => void;
-  removeUser: (ci: string) => void;
-  updateUser: (user: User) => void;
-}
-
-// Crear el contexto de usuarios
 const UsersContext = createContext<UsersContextProps | undefined>(undefined);
 
-// Crear el proveedor del contexto de usuarios
 const UsersProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [users, setUsers] = useState<User[]>(importedUsers);
+  const [users, setUsers] = useState<User[]>(() => {
+    const storedUsers = localStorage.getItem("users");
+    return storedUsers ? JSON.parse(storedUsers) : importedUsers;
+  });
 
-  // Función para agregar un usuario
+  useEffect(() => {
+    localStorage.setItem("users", JSON.stringify(users));
+  }, [users]);
+
   const addUser = (user: User) => {
     setUsers((prevUsers) => {
-      // Verificar si el usuario ya existe
       if (prevUsers.some((u) => u.ci === user.ci)) {
         throw new Error("User with the same CI already exists");
       }
@@ -36,7 +29,6 @@ const UsersProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     });
   };
 
-  // Función para remover un usuario
   const removeUser = (ci: string) => {
     setUsers((prevUsers) => {
       const userExists = prevUsers.some((user) => user.ci === ci);
@@ -47,7 +39,6 @@ const UsersProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     });
   };
 
-  // Función para actualizar un usuario
   const updateUser = (updatedUser: User) => {
     setUsers((prevUsers) => {
       const userExists = prevUsers.some((user) => user.ci === updatedUser.ci);
@@ -67,7 +58,6 @@ const UsersProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   );
 };
 
-// Hook personalizado para usar el contexto de usuarios
 const useUsers = (): UsersContextProps => {
   const context = useContext(UsersContext);
   if (!context) {
@@ -77,3 +67,5 @@ const useUsers = (): UsersContextProps => {
 };
 
 export { UsersProvider, useUsers };
+export type { User };
+
