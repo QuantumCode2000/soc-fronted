@@ -1,4 +1,4 @@
-const Navbar = () => {
+const Navbar = ({ rol, nombre }) => {
   return (
     <header className="header bg-gray-800 shadow-md py-4 px-6">
       <div className="header-content flex items-center">
@@ -11,10 +11,10 @@ const Navbar = () => {
             />
             <span className="flex flex-col ml-3">
               <span className="truncate w-20 h-4 font-semibold text-white leading-none">
-                Javier Choque
+                {nombre}
               </span>
               <span className="truncate w-20 h-4 text-gray-400 text-xs leading-none">
-                Administrador
+                {rol}
               </span>
             </span>
           </a>

@@ -12,15 +12,7 @@ import type { User } from "../../contexts/UsersContext/interfaces";
 import { LuClipboardEdit, LuFileText } from "react-icons/lu";
 import ButtonIcon from "../../components/ButtonIcon/ButtonIcon";
 
-interface FormData extends User {}
-
-interface Errors {
-  ci?: string;
-  nombre?: string;
-  correo?: string;
-}
-
-const firstState: FormData = {
+const firstState: User = {
   ci: "",
   extension: "",
   grado: "",
@@ -29,7 +21,9 @@ const firstState: FormData = {
   apellidoPaterno: "",
   apellidoMaterno: "",
   carnetMilitar: "",
-  correo: "",
+  email: "",
+  password: "",
+  unidad: "",
   inSystemPermission: "No",
   rol: "Personal",
   estado: "Activo",
@@ -39,16 +33,14 @@ const PersonalRegister: React.FC = () => {
   const [isModalOpen, setOpenModal] = useState<boolean>(false);
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [isViewMoreOpen, setViewMoreOpen] = useState<boolean>(false);
-  const [formData, setFormData] = useState<FormData>(firstState);
+  const [formData, setFormData] = useState<User>(firstState);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
-  const [errors, setErrors] = useState<Errors>({});
   const { users, addUser, updateUser } = useUsers();
 
   const closeModal = () => {
     setOpenModal(false);
     setIsEdit(false);
     setFormData(firstState);
-    setErrors({});
   };
 
   const closeViewMoreModal = () => {
@@ -60,7 +52,6 @@ const PersonalRegister: React.FC = () => {
     setOpenModal(true);
     setIsEdit(false);
     setFormData(firstState);
-    setErrors({});
   };
 
   const handleViewMore = (ci: string) => {
@@ -90,22 +81,13 @@ const PersonalRegister: React.FC = () => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const newErrors: Errors = {};
-    if (!formData.ci) newErrors.ci = "CI es requerido";
-    if (!formData.nombre) newErrors.nombre = "Nombre es requerido";
-    if (!formData.correo) newErrors.correo = "Correo Electrónico es requerido";
-    setErrors(newErrors);
-
-    if (Object.keys(newErrors).length === 0) {
-      if (isEdit) {
-        updateUser(formData);
-      } else {
-        addUser(formData);
-      }
-      closeModal();
+  const handleSubmit = () => {
+    if (isEdit) {
+      updateUser(formData);
+    } else {
+      addUser(formData);
     }
+    closeModal();
   };
 
   const renderCell = (item: User, key: keyof User) => {
@@ -195,14 +177,12 @@ const PersonalRegister: React.FC = () => {
         {isEdit ? (
           <FormPersonalEdit
             formData={formData}
-            errors={errors}
             handleChange={handleChange}
             handleSubmit={handleSubmit}
           />
         ) : (
           <FormPersonalRegister
             formData={formData}
-            errors={errors}
             handleChange={handleChange}
             handleSubmit={handleSubmit}
           />

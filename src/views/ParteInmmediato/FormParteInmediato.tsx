@@ -1,6 +1,21 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import {
+  FaCalendarAlt,
+  FaHashtag,
+  FaPaw,
+  FaPalette,
+  FaTags,
+  FaVenusMars,
+  FaListAlt,
+  FaBirthdayCake,
+  FaComment,
+  FaBuilding,
+  FaBarcode,
+} from "react-icons/fa";
 import Input from "../../components/Input/Input";
 import Select from "../../components/Select/Select";
+import Modal from "../../components/Modal/Modal";
+import { useInventory } from "../../contexts/InventoryContext/InventoryContext";
 
 const novedades = [
   "DECESO",
@@ -12,115 +27,262 @@ const novedades = [
   "GESTACION",
   "COMPRA",
 ];
-const sexos = ["MACHO", "HEMBRA"];
 
-const FormParteInmediato = ({
-  formData,
-  errors,
-  handleChange,
-  handleSubmit,
-  isEdit,
-}) => {
+const sexos = ["MACHO", "HEMBRA"];
+const unidades = [
+  "BBE I",
+  "BPE II",
+  "BPE III",
+  "BPE IV",
+  "HARAS DEL EJERCITO",
+  "BPE VI",
+  "BPE V",
+];
+
+const razas = ["NELORE", "ANGUS", "BRAHMAN", "HEREFORD", "CHAROLAIS"];
+
+const categorias = ["S/N"];
+
+const FormParteInmediato = ({ formData, handleChange, handleSubmit }) => {
+  const { inventario } = useInventory();
+  const [selectedAnimal, setSelectedAnimal] = useState(null);
+  const [localErrors, setLocalErrors] = useState({});
+  const [confirmModalOpen, setConfirmModalOpen] = useState(false);
+
+  const validateForm = () => {
+    const newErrors = {};
+    if (!formData.novedad) newErrors.novedad = "Novedad es requerida";
+    if (!formData.fechaSuceso)
+      newErrors.fechaSuceso = "Fecha Suceso es requerida";
+    if (
+      formData.novedad !== "NACIMIENTO" &&
+      formData.novedad !== "COMPRA" &&
+      !formData.nroArete
+    )
+      newErrors.nroArete = "Nº Arete es requerido";
+    if (
+      formData.novedad !== "NACIMIENTO" &&
+      formData.novedad !== "COMPRA" &&
+      !formData.motivo
+    )
+      newErrors.motivo = "Motivo es requerido";
+    return newErrors;
+  };
+
+  const handleConfirm = (e) => {
+    e.preventDefault();
+    const errors = validateForm();
+    if (Object.keys(errors).length === 0) {
+      setConfirmModalOpen(true);
+    } else {
+      setLocalErrors(errors);
+    }
+  };
+
+  const handleConfirmSubmit = () => {
+    setConfirmModalOpen(false);
+    handleSubmit();
+  };
+
+  const handleCloseModal = () => {
+    setConfirmModalOpen(false);
+  };
+
+  useEffect(() => {
+    if (
+      formData.nroArete &&
+      formData.novedad !== "NACIMIENTO" &&
+      formData.novedad !== "COMPRA"
+    ) {
+      const item = inventario.find(
+        (inv) => inv.nroArete?.toString() === formData.nroArete?.toString(),
+      );
+      if (item) {
+        setSelectedAnimal(item);
+        handleChange({ target: { id: "codigo", value: item.codigo } });
+        handleChange({ target: { id: "raza", value: item.raza } });
+        handleChange({ target: { id: "color", value: item.color } });
+        handleChange({
+          target: { id: "marcaCarimbo", value: item.marcaCarimbo },
+        });
+        handleChange({ target: { id: "sexo", value: item.sexo } });
+        handleChange({ target: { id: "categoria", value: item.categoria } });
+        handleChange({ target: { id: "fechaNac", value: item.fechaNac } });
+        handleChange({ target: { id: "unidad", value: item.unidad } });
+      } else {
+        setSelectedAnimal(null);
+      }
+    }
+  }, [formData.nroArete, formData.novedad, handleChange, inventario]);
+
+  const renderInput = (
+    id,
+    label,
+    placeholder,
+    type = "text",
+    disabled = false,
+  ) => (
+    <div className="flex items-center">
+      {id === "fechaSuceso" && (
+        <FaCalendarAlt className="mr-2 text-green-500" />
+      )}
+      {id === "nroArete" && <FaHashtag className="mr-2 text-gray-500" />}
+      {id === "codigo" && <FaBarcode className="mr-2 text-gray-500" />}
+      {id === "raza" && <FaPaw className="mr-2 text-pink-500" />}
+      {id === "color" && <FaPalette className="mr-2 text-yellow-500" />}
+      {id === "marcaCarimbo" && <FaTags className="mr-2 text-red-500" />}
+      {id === "sexo" && <FaVenusMars className="mr-2 text-purple-500" />}
+      {id === "categoria" && <FaListAlt className="mr-2 text-teal-500" />}
+      {id === "fechaNac" && <FaBirthdayCake className="mr-2 text-orange-500" />}
+      {id === "motivo" && <FaComment className="mr-2 text-blue-400" />}
+      {id === "unidad" && <FaBuilding className="mr-2 text-green-600" />}
+      <Input
+        id={id}
+        label={label}
+        placeholder={placeholder}
+        type={type}
+        value={formData[id] || ""}
+        onChange={handleChange}
+        error={localErrors[id]}
+        disabled={disabled}
+      />
+    </div>
+  );
+
   return (
     <div className="container mx-auto p-6">
-      <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4">
-        <Select
-          id="novedad"
-          label="Novedad"
-          options={novedades}
-          value={formData.novedad}
-          onChange={handleChange}
-          error={errors.novedad}
-        />
-        <Input
-          id="fechaSuceso"
-          label="Fecha Suceso"
-          placeholder="Fecha Suceso"
-          value={formData.fechaSuceso}
-          onChange={handleChange}
-          error={errors.fechaSuceso}
-        />
-        <Input
-          id="nroArete"
-          label="Nº Arete"
-          placeholder="Nº Arete"
-          value={formData.nroArete}
-          onChange={handleChange}
-          error={errors.nroArete}
-        />
-        <Input
-          id="raza"
-          label="Raza"
-          placeholder="Raza"
-          value={formData.raza}
-          onChange={handleChange}
-          error={errors.raza}
-        />
-        <Input
-          id="color"
-          label="Color"
-          placeholder="Color"
-          value={formData.color}
-          onChange={handleChange}
-          error={errors.color}
-        />
-        <Input
-          id="marcaCarimbo"
-          label="Marca y Carimbo"
-          placeholder="Marca y Carimbo"
-          value={formData.marcaCarimbo}
-          onChange={handleChange}
-          error={errors.marcaCarimbo}
-        />
-        <Select
-          id="sexo"
-          label="Sexo"
-          options={sexos}
-          value={formData.sexo}
-          onChange={handleChange}
-          error={errors.sexo}
-        />
-        <Input
-          id="categoria"
-          label="Categoría"
-          placeholder="Categoría"
-          value={formData.categoria}
-          onChange={handleChange}
-          error={errors.categoria}
-        />
-        <Input
-          id="fechaNac"
-          label="Fecha Nacimiento"
-          placeholder="Fecha Nacimiento"
-          value={formData.fechaNac}
-          onChange={handleChange}
-          error={errors.fechaNac}
-        />
-        <Input
-          id="edadActual"
-          label="Edad Actual (años)"
-          placeholder="Edad Actual"
-          value={formData.edadActual}
-          onChange={handleChange}
-          error={errors.edadActual}
-        />
-        <Input
-          id="motivo"
-          label="Motivo"
-          placeholder="Motivo"
-          value={formData.motivo}
-          onChange={handleChange}
-          error={errors.motivo}
-        />
-        <div className="flex justify-end mt-4">
+      <form
+        onSubmit={handleConfirm}
+        className="grid grid-cols-1 md:grid-cols-2 gap-4"
+      >
+        <div className="flex items-center">
+          <FaListAlt className="mr-2 text-blue-500" />
+          <Select
+            id="novedad"
+            label="Novedad"
+            options={novedades}
+            value={formData.novedad}
+            onChange={handleChange}
+            error={localErrors.novedad}
+          />
+        </div>
+        {renderInput("fechaSuceso", "Fecha Suceso", "Fecha Suceso", "date")}
+        {formData.novedad === "NACIMIENTO" || formData.novedad === "COMPRA" ? (
+          <>
+            {renderInput("nroArete", "Nº Arete", "Nº Arete")}
+            {renderInput("codigo", "Código", "Código")}
+            <Select
+              id="raza"
+              label="Raza"
+              options={razas}
+              value={formData.raza}
+              onChange={handleChange}
+              error={localErrors.raza}
+            />
+            {renderInput("color", "Color", "Color")}
+            {renderInput("marcaCarimbo", "Marca y Carimbo", "Marca y Carimbo")}
+            <Select
+              id="sexo"
+              label="Sexo"
+              options={sexos}
+              value={formData.sexo}
+              onChange={handleChange}
+              error={localErrors.sexo}
+            />
+            <Select
+              id="categoria"
+              label="Categoría"
+              options={categorias}
+              value={formData.categoria}
+              onChange={handleChange}
+              error={localErrors.categoria}
+            />
+            {renderInput(
+              "fechaNac",
+              "Fecha Nacimiento",
+              "Fecha Nacimiento",
+              "date",
+            )}
+            <Select
+              id="unidad"
+              label="Unidad"
+              options={unidades}
+              value={formData.unidad}
+              onChange={handleChange}
+              error={localErrors.unidad}
+            />
+          </>
+        ) : (
+          <>
+            {renderInput("nroArete", "Nº Arete", "Nº Arete")}
+            {selectedAnimal && (
+              <div className="md:col-span-2 p-4 bg-gray-100 rounded-lg shadow">
+                <h3 className="text-xl font-bold mb-2">
+                  Información del Animal
+                </h3>
+                <p>
+                  <strong>Código:</strong> {selectedAnimal.codigo}
+                </p>
+                <p>
+                  <strong>Raza:</strong> {selectedAnimal.raza}
+                </p>
+                <p>
+                  <strong>Color:</strong> {selectedAnimal.color}
+                </p>
+                <p>
+                  <strong>Marca y Carimbo:</strong>{" "}
+                  {selectedAnimal.marcaCarimbo}
+                </p>
+                <p>
+                  <strong>Sexo:</strong> {selectedAnimal.sexo}
+                </p>
+                <p>
+                  <strong>Categoría:</strong> {selectedAnimal.categoria}
+                </p>
+                <p>
+                  <strong>Fecha Nacimiento:</strong> {selectedAnimal.fechaNac}
+                </p>
+                <p>
+                  <strong>Unidad:</strong> {selectedAnimal.unidad}
+                </p>
+              </div>
+            )}
+            {renderInput("motivo", "Motivo", "Motivo")}
+          </>
+        )}
+        <div className="flex justify-end col-span-1 md:col-span-2 mt-4">
           <button
             type="submit"
-            className="bg-blue-500 text-white px-4 py-2 rounded"
+            className="bg-blue-500 text-white px-4 py-2 rounded shadow-lg hover:bg-blue-400 transition duration-300"
           >
-            {isEdit ? "Actualizar" : "Registrar"}
+            Registrar
           </button>
         </div>
       </form>
+
+      {confirmModalOpen && (
+        <Modal
+          title="Confirmación"
+          isOpen={confirmModalOpen}
+          onClose={handleCloseModal}
+        >
+          <p>¿Está seguro de que desea registrar esta información?</p>
+          <div className="flex justify-end mt-4">
+            <button
+              className="bg-gray-300 text-black px-4 py-2 rounded mr-2"
+              onClick={handleCloseModal}
+            >
+              Cancelar
+            </button>
+            <button
+              className="bg-blue-500 text-white px-4 py-2 rounded"
+              onClick={handleConfirmSubmit}
+            >
+              Confirmar
+            </button>
+          </div>
+        </Modal>
+      )}
     </div>
   );
 };

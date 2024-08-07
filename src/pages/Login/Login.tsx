@@ -1,37 +1,104 @@
+import React, { useState } from "react";
+import { useAuthContext } from "../../contexts/AuthContext/AuthContext";
+import Fondo from "../../assets/images/FONDO_CUERPO.jpg";
+import Logo from "../../assets/images/logo_principal.png";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+
 const Login = () => {
+  const { login } = useAuthContext();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email || !password) {
+      setError("Todos los campos son obligatorios.");
+      return;
+    }
+    const success = login(email, password);
+    if (success) {
+      setSuccessMessage("Inicio de sesión exitoso.");
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 2000);
+    } else {
+      setError("Credenciales incorrectas. Inténtalo de nuevo.");
+    }
+  };
+
   return (
-    <div className="relative flex min-h-screen text-gray-800 antialiased flex-col justify-center overflow-hidden bg-gray-50 py-6 sm:py-12">
-      <div className="relative py-3 sm:w-96 mx-auto text-center">
-        <span className="text-2xl font-light">SISTEMA</span>
-        <div className="mt-4 bg-white shadow-md rounded-lg text-left">
-          <div className="h-2 bg-[#363a40] rounded-t-md"></div>
-          <div className="px-8 py-6">
+    <div
+      style={{ backgroundImage: `url(${Fondo})` }}
+      className="relative flex min-h-screen text-gray-800 antialiased flex-col justify-center items-center overflow-hidden py-6 sm:py-12 bg-cover bg-center"
+    >
+      <div className="absolute inset-0 bg-black opacity-50"></div>
+      <div className="relative py-3 sm:w-96 w-full mx-auto text-center bg-white bg-opacity-90 shadow-lg rounded-lg text-left transform transition-all duration-500 ease-in-out hover:scale-105">
+        <div className="flex justify-center mt-4">
+          <img src={Logo} alt="Logo" className="w-32 h-32 object-contain" />
+        </div>
+        <div className="mt-4 px-8 py-6">
+          <span className="text-2xl font-light block text-center mb-4">
+            SISTEMA DE INVENTARIO AGRICOLA DEL EJERCITO
+          </span>
+          {error && (
+            <div className="bg-red-100 text-red-700 p-2 rounded mb-4">
+              {error}
+            </div>
+          )}
+          {successMessage && (
+            <div className="bg-green-100 text-green-700 p-2 rounded mb-4">
+              {successMessage}
+            </div>
+          )}
+          <form onSubmit={handleLogin} autoComplete="off">
             <label className="block font-semibold">Correo</label>
             <input
-              type="text"
+              type="email"
+              value={email}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                setError("");
+              }}
               placeholder="Correo"
-              className="border w-full h-5 px-3 py-5 mt-2 hover:outline-none focus:outline-none focus:ring-[#363a40] focus:ring-1 rounded-md"
+              className="border w-full h-12 px-3 py-2 mt-2 hover:outline-none focus:outline-none focus:ring-[#363a40] focus:ring-1 rounded-md"
+              autoComplete="off"
             />
             <label className="block mt-3 font-semibold">Contraseña</label>
-            <input
-              type="password"
-              placeholder="Contraseña
-              "
-              className="border w-full h-5 px-3 py-5 mt-2 hover:outline-none focus:outline-none focus:ring-[#363a40] focus:ring-1 rounded-md"
-            />
-            <div className="flex justify-between items-baseline">
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  setError("");
+                }}
+                placeholder="Contraseña"
+                className="border w-full h-12 px-3 py-2 mt-2 hover:outline-none focus:outline-none focus:ring-[#363a40] focus:ring-1 rounded-md"
+                autoComplete="off"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute inset-y-0 right-0 px-3 py-2 mt-2 text-gray-600 focus:outline-none"
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </button>
+            </div>
+            <div className="flex justify-between items-baseline mt-4">
               <button
                 type="submit"
-                className="mt-4 bg-[#363a40] text-white py-2 px-6 rounded-md hover:py-3 hover:px-7 transition-all duration-300 ease-in-out
-                "
+                className="bg-[#363a40] text-white py-2 px-6 rounded-md hover:bg-opacity-90 transition-all duration-300 ease-in-out"
               >
                 Ingresar
               </button>
               <a href="#" className="text-sm hover:underline">
-                Olvidaste la contraseña?
+                ¿Olvidaste la contraseña?
               </a>
             </div>
-          </div>
+          </form>
         </div>
       </div>
     </div>

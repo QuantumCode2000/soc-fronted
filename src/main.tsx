@@ -5,14 +5,17 @@ import "./index.css";
 import { UsersProvider } from "./contexts/UsersContext/UsersContext.tsx";
 import { InventoryProvider } from "./contexts/InventoryContext/InventoryContext.tsx";
 import { PartesInmediatosProvider } from "./contexts/PartesInmediatos/PartesInmediatosContext.tsx";
+import { AuthProvider } from "./contexts/AuthContext/AuthContext.tsx";
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <UsersProvider>
-    <InventoryProvider>
-      <PartesInmediatosProvider>
-        <React.StrictMode>
-          <App />
-        </React.StrictMode>
-      </PartesInmediatosProvider>
-    </InventoryProvider>
+    <AuthProvider>
+      <InventoryProvider>
+        <PartesInmediatosProvider>
+          <React.StrictMode>
+            <App />
+          </React.StrictMode>
+        </PartesInmediatosProvider>
+      </InventoryProvider>
+    </AuthProvider>
   </UsersProvider>,
 );

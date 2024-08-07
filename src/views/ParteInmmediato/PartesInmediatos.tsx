@@ -4,7 +4,6 @@ import Table from "../../components/Table/Table";
 import Modal from "../../components/Modal/Modal";
 import FormParteInmediato from "./FormParteInmediato";
 import { usePartesInmediatos } from "../../contexts/PartesInmediatos/PartesInmediatosContext";
-import { useInventory } from "../../contexts/InventoryContext/InventoryContext";
 import Content from "../../components/Content/Content";
 
 const headersPartesInmediatos = {
@@ -12,6 +11,7 @@ const headersPartesInmediatos = {
   novedad: "Novedad",
   fechaSuceso: "Fecha Suceso",
   nroArete: "Nº Arete",
+  codigo: "Código",
   raza: "Raza",
   color: "Color",
   marcaCarimbo: "Marca y Carimbo",
@@ -20,7 +20,15 @@ const headersPartesInmediatos = {
   fechaNac: "Fecha Nacimiento",
   edadActual: "Edad Actual (años)",
   motivo: "Motivo",
+  unidad: "Unidad",
   acciones: "Acciones",
+};
+
+const calculateAge = (birthdate) => {
+  const birthDate = new Date(birthdate);
+  const ageDifMs = Date.now() - birthDate.getTime();
+  const ageDate = new Date(ageDifMs);
+  return Math.abs(ageDate.getUTCFullYear() - 1970);
 };
 
 const renderCell = (item, key, handleEdit) => {
@@ -34,68 +42,51 @@ const renderCell = (item, key, handleEdit) => {
           Editar
         </button>
       );
+    case "edadActual":
+      return calculateAge(item.fechaNac);
     default:
       return item[key];
   }
 };
 
+const firstState = {
+  novedad: "",
+  fechaSuceso: "",
+  nroArete: "",
+  codigo: "",
+  raza: "",
+  color: "",
+  marcaCarimbo: "",
+  sexo: "",
+  categoria: "",
+  fechaNac: "",
+  motivo: "",
+  unidad: "",
+};
+
 const PartesInmediatos = () => {
   const [isModalOpen, setOpenModal] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
-  const [formData, setFormData] = useState({
-    novedad: "",
-    fechaSuceso: "",
-    nroArete: "",
-    raza: "",
-    color: "",
-    marcaCarimbo: "",
-    sexo: "",
-    categoria: "",
-    fechaNac: "",
-    edadActual: "",
-    motivo: "",
-  });
-  const [errors, setErrors] = useState({});
+  const [formData, setFormData] = useState(firstState);
   const { partesInmediatos, addParteInmediatoItem, updateParteInmediatoItem } =
     usePartesInmediatos();
-  const { inventario } = useInventory();
 
   const closeModal = () => {
     setOpenModal(false);
     setIsEdit(false);
-    setFormData({
-      novedad: "",
-      fechaSuceso: "",
-      nroArete: "",
-      raza: "",
-      color: "",
-      marcaCarimbo: "",
-      sexo: "",
-      categoria: "",
-      fechaNac: "",
-      edadActual: "",
-      motivo: "",
-    });
-    setErrors({});
+    setFormData(firstState);
   };
 
   const openModal = () => {
     setOpenModal(true);
     setIsEdit(false);
     setFormData({
-      novedad: "",
-      fechaSuceso: "",
-      nroArete: "",
-      raza: "",
-      color: "",
-      marcaCarimbo: "",
-      sexo: "",
-      categoria: "",
-      fechaNac: "",
-      edadActual: "",
-      motivo: "",
+      ...firstState,
+      nro: partesInmediatos.length + 1,
+      enInventario: "Si",
+      nombreUnidad: "BBE II",
+      tipoGanado: "Vacuno",
     });
-    setErrors({});
   };
 
   const handleEdit = (nro) => {
@@ -115,33 +106,16 @@ const PartesInmediatos = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const newErrors = {};
-    if (!formData.novedad) newErrors.novedad = "Novedad es requerida";
-    if (!formData.fechaSuceso)
-      newErrors.fechaSuceso = "Fecha Suceso es requerida";
-    if (!formData.nroArete) newErrors.nroArete = "Nº Arete es requerido";
-    if (!formData.raza) newErrors.raza = "Raza es requerida";
-    if (!formData.color) newErrors.color = "Color es requerido";
-    if (!formData.marcaCarimbo)
-      newErrors.marcaCarimbo = "Marca y Carimbo es requerido";
-    if (!formData.sexo) newErrors.sexo = "Sexo es requerido";
-    if (!formData.categoria) newErrors.categoria = "Categoría es requerida";
-    if (!formData.fechaNac)
-      newErrors.fechaNac = "Fecha de Nacimiento es requerida";
-    if (!formData.edadActual) newErrors.edadActual = "Edad Actual es requerida";
-    if (!formData.motivo) newErrors.motivo = "Motivo es requerido";
-    setErrors(newErrors);
-
-    if (Object.keys(newErrors).length === 0) {
-      if (isEdit) {
-        updateParteInmediatoItem(formData);
-      } else {
-        addParteInmediatoItem(formData);
+  const handleSubmit = () => {
+    if (isEdit) {
+      updateParteInmediatoItem(formData);
+    } else {
+      if (formData.novedad === "NACIMIENTO" || formData.novedad === "COMPRA") {
+        formData.motivo = formData.novedad;
       }
-      closeModal();
+      addParteInmediatoItem(formData);
     }
+    closeModal();
   };
 
   return (
@@ -160,14 +134,11 @@ const PartesInmediatos = () => {
         title={isEdit ? "Editar Parte Inmediato" : "Registrar Parte Inmediato"}
         isOpen={isModalOpen}
         onClose={closeModal}
-        onConfirm={handleSubmit}
       >
         <FormParteInmediato
           formData={formData}
-          errors={errors}
           handleChange={handleChange}
           handleSubmit={handleSubmit}
-          isEdit={isEdit}
         />
       </Modal>
     </>

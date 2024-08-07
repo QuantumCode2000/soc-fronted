@@ -1,19 +1,46 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
 import { inventario as initialInventario } from "../../data/inventario";
-import { partesInmediatos as initialParteInmediato } from "../../data/parteinmediato";
-import { parteActualizado as initialParteActualizado } from "../../data/parteactualizado";
 
-const InventoryContext = createContext();
+// Definición de la interfaz para el inventario
+interface InventarioItem {
+  nro: number;
+  nombreUnidad: string;
+  codigo: string;
+  raza: string;
+  color: string;
+  marcaCarimbo: string;
+  sexo: string;
+  categoria: string;
+  fechaNac: string;
+  tipoGanado: string;
+  enInventario: string;
+  unidad: string;
+  nroArete: string;
+}
 
-const InventoryProvider = ({ children }) => {
-  const [inventario, setInventario] = useState(initialInventario);
-  const [parteInmediato, setParteInmediato] = useState(initialParteInmediato);
-  const [parteActualizado, setParteActualizado] = useState(
-    initialParteActualizado,
-  );
+interface InventoryContextProps {
+  inventario: InventarioItem[];
+  addInventarioItem: (item: InventarioItem) => void;
+  updateInventarioItem: (item: InventarioItem) => void;
+}
 
-  const addInventarioItem = (item) => setInventario([...inventario, item]);
-  const updateInventarioItem = (updatedItem) => {
+// Creación del contexto de inventario
+const InventoryContext = createContext<InventoryContextProps | undefined>(
+  undefined,
+);
+
+// Proveedor del contexto de inventario
+const InventoryProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const [inventario, setInventario] =
+    useState<InventarioItem[]>(initialInventario);
+
+  // Función para agregar un elemento al inventario
+  const addInventarioItem = (newItem: InventarioItem) => {
+    setInventario([...inventario, newItem]);
+  };
+
+  // Función para actualizar un elemento del inventario
+  const updateInventarioItem = (updatedItem: InventarioItem) => {
     setInventario(
       inventario.map((item) =>
         item.codigo === updatedItem.codigo ? updatedItem : item,
@@ -21,46 +48,18 @@ const InventoryProvider = ({ children }) => {
     );
   };
 
-  const addParteInmediatoItem = (item) =>
-    setParteInmediato([...parteInmediato, item]);
-  const updateParteInmediatoItem = (updatedItem) => {
-    setParteInmediato(
-      parteInmediato.map((item) =>
-        item.nroArete === updatedItem.nroArete ? updatedItem : item,
-      ),
-    );
-  };
-
-  const addParteActualizadoItem = (item) =>
-    setParteActualizado([...parteActualizado, item]);
-  const updateParteActualizadoItem = (updatedItem) => {
-    setParteActualizado(
-      parteActualizado.map((item) =>
-        item.detalle === updatedItem.detalle ? updatedItem : item,
-      ),
-    );
-  };
-
+  // Proveedor del contexto con el estado y funciones
   return (
     <InventoryContext.Provider
-      value={{
-        inventario,
-        parteInmediato,
-        parteActualizado,
-        addInventarioItem,
-        updateInventarioItem,
-        addParteInmediatoItem,
-        updateParteInmediatoItem,
-        addParteActualizadoItem,
-        updateParteActualizadoItem,
-      }}
+      value={{ inventario, addInventarioItem, updateInventarioItem }}
     >
       {children}
     </InventoryContext.Provider>
   );
 };
 
-const useInventory = () => {
+// Hook para usar el contexto de inventario
+const useInventory = (): InventoryContextProps => {
   const context = useContext(InventoryContext);
   if (!context) {
     throw new Error("useInventory must be used within an InventoryProvider");
@@ -69,3 +68,4 @@ const useInventory = () => {
 };
 
 export { InventoryProvider, useInventory };
+export type { InventarioItem };

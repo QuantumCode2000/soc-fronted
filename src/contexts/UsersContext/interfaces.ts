@@ -7,10 +7,12 @@ interface User {
   apellidoPaterno: string;
   apellidoMaterno: string;
   carnetMilitar: string;
-  correo: string;
+  email: string;
   inSystemPermission: string;
   rol: string;
   estado: string;
+  password: string;
+  unidad: string;
 }
 
 interface UsersContextProps {

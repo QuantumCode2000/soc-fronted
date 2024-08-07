@@ -1,3 +1,4 @@
+
 const users = [
   {
     ci: "12421511",
@@ -8,10 +9,12 @@ const users = [
     nombre: "Juan Ivan",
     apellidoPaterno: "Arias",
     apellidoMaterno: "Choque",
-    correo: "jarias@gmail.com",
+    email: "jarias@gmail.com",
     inSystemPermission: "Sí",
     rol: "Administrador",
     estado: "Activo",
+    unidad: "BBE II",
+    password: "12421511",
   },
 ];
 
