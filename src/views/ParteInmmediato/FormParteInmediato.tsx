@@ -9,8 +9,8 @@ import {
   FaListAlt,
   FaBirthdayCake,
   FaComment,
-  FaBuilding,
   FaBarcode,
+  FaBuilding,
 } from "react-icons/fa";
 import Input from "../../components/Input/Input";
 import Select from "../../components/Select/Select";
@@ -26,24 +26,25 @@ const novedades = [
   "PREGESTACION",
   "GESTACION",
   "COMPRA",
+  "VENTA",
 ];
 
 const sexos = ["MACHO", "HEMBRA"];
-const unidades = [
-  "BBE I",
-  "BPE II",
-  "BPE III",
-  "BPE IV",
-  "HARAS DEL EJERCITO",
-  "BPE VI",
-  "BPE V",
-];
 
-const razas = ["NELORE", "ANGUS", "BRAHMAN", "HEREFORD", "CHAROLAIS"];
+const razasBovinos = ["NELORE", "ANGUS", "BRAHMAN", "HEREFORD", "CHAROLAIS"];
+const razasCuyes = ["PERUANO", "AMERICANO", "ABISINIO", "PERUANO"];
+const razasEquinos = ["PERUANO DE PASO", "CUARTO DE MILLA", "PERCHERON"];
+const razasPorcinos = ["YORKSHIRE", "DUROC", "LANDRACE", "HAMPSHIRE"];
+const razasAvicolas = ["POLLO DE ENGORDE", "GALLINA PONEDORA", "PATO"];
 
 const categorias = ["S/N"];
 
-const FormParteInmediato = ({ formData, handleChange, handleSubmit }) => {
+const FormParteInmediato = ({
+  formData,
+  handleChange,
+  handleSubmit,
+  tipoGanado,
+}) => {
   const { inventario } = useInventory();
   const [selectedAnimal, setSelectedAnimal] = useState(null);
   const [localErrors, setLocalErrors] = useState({});
@@ -66,6 +67,15 @@ const FormParteInmediato = ({ formData, handleChange, handleSubmit }) => {
       !formData.motivo
     )
       newErrors.motivo = "Motivo es requerido";
+    if (!formData.codigo) newErrors.codigo = "Código es requerido";
+    if (!formData.raza) newErrors.raza = "Raza es requerida";
+    if (!formData.color) newErrors.color = "Color es requerido";
+    if (!formData.marcaCarimbo)
+      newErrors.marcaCarimbo = "Marca y Carimbo es requerido";
+    if (!formData.sexo) newErrors.sexo = "Sexo es requerido";
+    if (!formData.categoria) newErrors.categoria = "Categoría es requerida";
+    if (!formData.fechaNac)
+      newErrors.fechaNac = "Fecha de Nacimiento es requerida";
     return newErrors;
   };
 
@@ -108,7 +118,6 @@ const FormParteInmediato = ({ formData, handleChange, handleSubmit }) => {
         handleChange({ target: { id: "sexo", value: item.sexo } });
         handleChange({ target: { id: "categoria", value: item.categoria } });
         handleChange({ target: { id: "fechaNac", value: item.fechaNac } });
-        handleChange({ target: { id: "unidad", value: item.unidad } });
       } else {
         setSelectedAnimal(null);
       }
@@ -135,7 +144,6 @@ const FormParteInmediato = ({ formData, handleChange, handleSubmit }) => {
       {id === "categoria" && <FaListAlt className="mr-2 text-teal-500" />}
       {id === "fechaNac" && <FaBirthdayCake className="mr-2 text-orange-500" />}
       {id === "motivo" && <FaComment className="mr-2 text-blue-400" />}
-      {id === "unidad" && <FaBuilding className="mr-2 text-green-600" />}
       <Input
         id={id}
         label={label}
@@ -167,56 +175,55 @@ const FormParteInmediato = ({ formData, handleChange, handleSubmit }) => {
           />
         </div>
         {renderInput("fechaSuceso", "Fecha Suceso", "Fecha Suceso", "date")}
-        {formData.novedad === "NACIMIENTO" || formData.novedad === "COMPRA" ? (
-          <>
-            {renderInput("nroArete", "Nº Arete", "Nº Arete")}
-            {renderInput("codigo", "Código", "Código")}
-            <Select
-              id="raza"
-              label="Raza"
-              options={razas}
-              value={formData.raza}
-              onChange={handleChange}
-              error={localErrors.raza}
-            />
-            {renderInput("color", "Color", "Color")}
-            {renderInput("marcaCarimbo", "Marca y Carimbo", "Marca y Carimbo")}
-            <Select
-              id="sexo"
-              label="Sexo"
-              options={sexos}
-              value={formData.sexo}
-              onChange={handleChange}
-              error={localErrors.sexo}
-            />
-            <Select
-              id="categoria"
-              label="Categoría"
-              options={categorias}
-              value={formData.categoria}
-              onChange={handleChange}
-              error={localErrors.categoria}
-            />
-            {renderInput(
-              "fechaNac",
-              "Fecha Nacimiento",
-              "Fecha Nacimiento",
-              "date",
-            )}
-            <Select
-              id="unidad"
-              label="Unidad"
-              options={unidades}
-              value={formData.unidad}
-              onChange={handleChange}
-              error={localErrors.unidad}
-            />
-          </>
-        ) : (
-          <>
-            {renderInput("nroArete", "Nº Arete", "Nº Arete")}
+        {renderInput("nroArete", "Nº Arete", "Nº Arete")}
+        {renderInput("codigo", "Código", "Código")}
+        <Select
+          id="raza"
+          label="Raza"
+          options={
+            tipoGanado === "Cuyicola"
+              ? razasCuyes
+              : tipoGanado === "Porcino"
+              ? razasPorcinos
+              : tipoGanado === "Avicola"
+              ? razasAvicolas
+              : tipoGanado === "Equino"
+              ? razasEquinos
+              : razasBovinos
+          }
+          value={formData.raza}
+          onChange={handleChange}
+          error={localErrors.raza}
+        />
+        {renderInput("color", "Color", "Color")}
+        {renderInput("marcaCarimbo", "Marca y Carimbo", "Marca y Carimbo")}
+        <Select
+          id="sexo"
+          label="Sexo"
+          options={sexos}
+          value={formData.sexo}
+          onChange={handleChange}
+          error={localErrors.sexo}
+        />
+        <Select
+          id="categoria"
+          label="Categoría"
+          options={categorias}
+          value={formData.categoria}
+          onChange={handleChange}
+          error={localErrors.categoria}
+        />
+        {renderInput(
+          "fechaNac",
+          "Fecha Nacimiento",
+          "Fecha Nacimiento",
+          "date",
+        )}
+
+        {formData.novedad !== "NACIMIENTO" && formData.novedad !== "COMPRA" && (
+          <div className="md:col-span-2 p-4 bg-gray-100 rounded-lg shadow">
             {selectedAnimal && (
-              <div className="md:col-span-2 p-4 bg-gray-100 rounded-lg shadow">
+              <>
                 <h3 className="text-xl font-bold mb-2">
                   Información del Animal
                 </h3>
@@ -245,10 +252,10 @@ const FormParteInmediato = ({ formData, handleChange, handleSubmit }) => {
                 <p>
                   <strong>Unidad:</strong> {selectedAnimal.unidad}
                 </p>
-              </div>
+              </>
             )}
             {renderInput("motivo", "Motivo", "Motivo")}
-          </>
+          </div>
         )}
         <div className="flex justify-end col-span-1 md:col-span-2 mt-4">
           <button

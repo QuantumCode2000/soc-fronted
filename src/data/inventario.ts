@@ -12,7 +12,7 @@ export const inventario = [
     fechaNac: "2022-07-01",
     tipoGanado: "Bovino",
     enInventario: "No",
-    unidad: "BBE II",
+    unidad: "BEE I",
     nroArete: "20056"
   },
   // Otros datos de ejemplo

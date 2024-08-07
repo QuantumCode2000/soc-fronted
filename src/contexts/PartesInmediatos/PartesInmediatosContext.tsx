@@ -64,8 +64,8 @@ const PartesInmediatosProvider: React.FC<{ children: ReactNode }> = ({
   const addParteInmediatoItem = (newItem: ParteInmediatoItem) => {
     newItem.nro = calculateNextNro();
     newItem.enInventario = "Si";
-    newItem.nombreUnidad = "BBE II";
-    newItem.tipoGanado = "Vacuno";
+    // newItem.nombreUnidad = "BBE II";
+    // newItem.tipoGanado = "Vacuno";
     setPartesInmediatos((prevItems) => [...prevItems, newItem]);
   };
 

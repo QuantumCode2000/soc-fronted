@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "../../components/Button/Button";
 import Table from "../../components/Table/Table";
 import Modal from "../../components/Modal/Modal";
 import FormParteInmediato from "./FormParteInmediato";
 import { usePartesInmediatos } from "../../contexts/PartesInmediatos/PartesInmediatosContext";
+import { useInventory } from "../../contexts/InventoryContext/InventoryContext";
 import Content from "../../components/Content/Content";
+import { useUsers } from "../../contexts/UsersContext/UsersContext";
 
 const headersPartesInmediatos = {
   nro: "Nº",
@@ -50,6 +52,7 @@ const renderCell = (item, key, handleEdit) => {
 };
 
 const firstState = {
+  nro: 0,
   novedad: "",
   fechaSuceso: "",
   nroArete: "",
@@ -61,15 +64,19 @@ const firstState = {
   categoria: "",
   fechaNac: "",
   motivo: "",
+  enInventario: "",
   unidad: "",
+  tipoGanado: "",
 };
 
-const PartesInmediatos = () => {
+const PartesInmediatos = ({ tipoGanado, unidad }) => {
   const [isModalOpen, setOpenModal] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [formData, setFormData] = useState(firstState);
   const { partesInmediatos, addParteInmediatoItem, updateParteInmediatoItem } =
     usePartesInmediatos();
+  const { inventario, addInventarioItem, updateInventarioItem } =
+    useInventory();
 
   const closeModal = () => {
     setOpenModal(false);
@@ -84,8 +91,8 @@ const PartesInmediatos = () => {
       ...firstState,
       nro: partesInmediatos.length + 1,
       enInventario: "Si",
-      nombreUnidad: "BBE II",
-      tipoGanado: "Vacuno",
+      tipoGanado: tipoGanado,
+      unidad: unidad,
     });
   };
 
@@ -112,18 +119,36 @@ const PartesInmediatos = () => {
     } else {
       if (formData.novedad === "NACIMIENTO" || formData.novedad === "COMPRA") {
         formData.motivo = formData.novedad;
+        addInventarioItem({ ...formData, nro: inventario.length + 1 });
+      } else if (
+        formData.novedad === "DECESO" ||
+        formData.novedad === "DESCARTE" ||
+        formData.novedad === "FALTA" ||
+        formData.novedad === "VENTA"
+      ) {
+        const itemIndex = inventario.findIndex(
+          (item) => item.nroArete === formData.nroArete,
+        );
+        if (itemIndex !== -1) {
+          const updatedItem = { ...inventario[itemIndex], enInventario: "No" };
+          updateInventarioItem(updatedItem);
+        }
       }
       addParteInmediatoItem(formData);
     }
     closeModal();
   };
 
+  const partesInmediatosFiltered = partesInmediatos.filter(
+    (item) => item.tipoGanado === tipoGanado && item.unidad === unidad,
+  );
+
   return (
     <>
       <Content>
         <Table
           header={headersPartesInmediatos}
-          body={partesInmediatos}
+          body={partesInmediatosFiltered}
           renderCell={(item, key) => renderCell(item, key, handleEdit)}
         />
       </Content>
@@ -139,6 +164,7 @@ const PartesInmediatos = () => {
           formData={formData}
           handleChange={handleChange}
           handleSubmit={handleSubmit}
+          tipoGanado={tipoGanado}
         />
       </Modal>
     </>

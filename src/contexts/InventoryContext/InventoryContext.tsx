@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
 import { inventario as initialInventario } from "../../data/inventario";
 
 // Definición de la interfaz para el inventario
@@ -29,10 +35,15 @@ const InventoryContext = createContext<InventoryContextProps | undefined>(
   undefined,
 );
 
-// Proveedor del contexto de inventario
 const InventoryProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [inventario, setInventario] =
-    useState<InventarioItem[]>(initialInventario);
+  const [inventario, setInventario] = useState<InventarioItem[]>(() => {
+    const storedInventario = localStorage.getItem("inventario");
+    return storedInventario ? JSON.parse(storedInventario) : initialInventario;
+  });
+
+  useEffect(() => {
+    localStorage.setItem("inventario", JSON.stringify(inventario));
+  }, [inventario]);
 
   // Función para agregar un elemento al inventario
   const addInventarioItem = (newItem: InventarioItem) => {
@@ -43,12 +54,11 @@ const InventoryProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const updateInventarioItem = (updatedItem: InventarioItem) => {
     setInventario(
       inventario.map((item) =>
-        item.codigo === updatedItem.codigo ? updatedItem : item,
+        item.nroArete === updatedItem.nroArete ? updatedItem : item,
       ),
     );
   };
 
-  // Proveedor del contexto con el estado y funciones
   return (
     <InventoryContext.Provider
       value={{ inventario, addInventarioItem, updateInventarioItem }}
@@ -58,7 +68,6 @@ const InventoryProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   );
 };
 
-// Hook para usar el contexto de inventario
 const useInventory = (): InventoryContextProps => {
   const context = useContext(InventoryContext);
   if (!context) {

@@ -4,8 +4,7 @@ export const parteInmediato = [
     nro: 1,
     novedad: "DECESO",
     motivo: "Ataque de tigre",
-    fechaSuceso: "2024-01-01", // Añadido aquí
-    nombreUnidad: "BPE - II",
+    fechaSuceso: "2024-01-01", 
     codigo: "2-0001",
     raza: "NELORE",
     color: "BLANCO",
@@ -15,8 +14,7 @@ export const parteInmediato = [
     fechaNac: "2022-07-01",
     tipoGanado: "Bovino",
     enInventario: "No",
-    unidad: "BBE II",
+    unidad: "BEE I",
     nroArete: "20056"
   },
-  // Otros datos de ejemplo
 ];

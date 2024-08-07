@@ -1,8 +1,7 @@
 import logo_principal from "../../assets/images/logo_principal.png";
 import OptionSidebar from "./OptionSidebar";
-import { options } from "./options";
 
-const Sidebar = ({ selectedTitle }) => {
+const Sidebar = ({ selectedTitle, options }) => {
   return (
     <aside className="sidebar w-64 md:shadow-right transform -translate-x-full md:translate-x-0 transition-transform duration-150 ease-in bg-gray-900 text-white">
       <div className="sidebar-header flex items-center justify-center py-6 border-b border-gray-800">
