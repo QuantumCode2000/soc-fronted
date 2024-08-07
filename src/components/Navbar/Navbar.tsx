@@ -1,4 +1,14 @@
+import { useAuthContext } from "../../contexts/AuthContext/AuthContext";
+import { FiLogOut } from "react-icons/fi";
+
 const Navbar = ({ rol, nombre }) => {
+  const { logout } = useAuthContext();
+
+  const handleLogout = () => {
+    logout();
+    window.location.href = "/login"; // Redirigir al login después del logout
+  };
+
   return (
     <header className="header bg-gray-800 shadow-md py-4 px-6">
       <div className="header-content flex items-center">
@@ -18,6 +28,12 @@ const Navbar = ({ rol, nombre }) => {
               </span>
             </span>
           </a>
+          <button
+            onClick={handleLogout}
+            className="ml-4 bg-red-600 text-white py-1 px-3 rounded-md hover:bg-red-700 transition-all duration-300"
+          >
+            <FiLogOut />
+          </button>
         </div>
       </div>
     </header>

@@ -1,7 +1,6 @@
 import {
   createBrowserRouter,
   RouterProvider,
-  Navigate,
 } from "react-router-dom";
 import Login from "./pages/Login/Login";
 import PersonalRegister from "./views/PersonalRegister/PersonalRegister";
@@ -35,12 +34,10 @@ function App() {
   const router = createBrowserRouter([
     {
       path: "/",
-      element: currentUser ? (
+      element: (
         <PrivateRoute>
-          <Layout />
+          <Layout unidad={unidad}/>
         </PrivateRoute>
-      ) : (
-        <Navigate to="/login" replace />
       ),
       children: currentUser
         ? [

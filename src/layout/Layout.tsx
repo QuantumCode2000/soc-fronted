@@ -5,7 +5,7 @@ import { options, optionsAdmin } from "../components/Sidebar/options";
 import { useState, useEffect } from "react";
 import { useAuthContext } from "../contexts/AuthContext/AuthContext";
 
-const Layout = () => {
+const Layout = ({ unidad }) => {
   const location = useLocation();
   const { user } = useAuthContext();
   const [selectedTitle, setSelectedTitle] = useState("");
@@ -36,6 +36,7 @@ const Layout = () => {
       <Sidebar
         selectedTitle={selectedTitle}
         options={user?.role === "Administrador" ? optionsAdmin : options}
+        unidad={  unidad}
       />
       <main className="main flex flex-col flex-grow -ml-64 md:ml-0 transition-all duration-150 ease-in">
         {user && <Navbar rol={user.role} nombre={user.email} />}

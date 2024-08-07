@@ -149,4 +149,4 @@ const optionsAdmin = [
   },
 ];
 
-export { options,optionsAdmin };
+export { options, optionsAdmin };
