@@ -2,18 +2,9 @@ import { CgNotes } from "react-icons/cg";
 import { MdOutlineInventory } from "react-icons/md";
 import { RiUserSettingsFill } from "react-icons/ri";
 import { RxUpdate } from "react-icons/rx";
-
+// importar un icono de reacticons para Reportes
+import { BiSolidReport } from "react-icons/bi";
 const options = [
-  {
-    text: " Personal",
-    options: [
-      {
-        to: "/registro-personal",
-        icon: <RiUserSettingsFill />,
-        text: "Registro Personal",
-      },
-    ],
-  },
   {
     text: "Ganado Bovino",
     options: [
@@ -144,6 +135,31 @@ const optionsAdmin = [
         to: "/registro-personal",
         icon: <RiUserSettingsFill />,
         text: "Registro Personal",
+      },
+    ],
+  },
+  {
+    text: "Reportes",
+    options: [
+      {
+        to: "/reportes",
+        icon: <BiSolidReport />,
+        text: "Reportes",
+      },
+      {
+        to: "/reportes-novedades",
+        icon: <BiSolidReport />,
+        text: "Reportes Novedades",
+      },
+    ],
+  },
+  {
+    text: "Cuadro de Mando ",
+    options: [
+      {
+        to: "/cuadro-de-mando",
+        icon: <BiSolidReport />,
+        text: "Cuadro de Mando",
       },
     ],
   },

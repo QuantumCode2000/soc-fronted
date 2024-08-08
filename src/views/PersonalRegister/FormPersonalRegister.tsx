@@ -13,9 +13,10 @@ const unidades = [
   "BPE II",
   "BPE III",
   "BPE IV",
-  "HARAS DEL EJERCITO",
-  "BPE VI",
   "BPE V",
+  "BPE VI",
+  "BPE VII",
+  "HARAS DEL EJERCITO",
 ];
 
 const FormPersonalRegister = ({ formData, handleChange, handleSubmit }) => {

@@ -1,7 +1,4 @@
-import {
-  createBrowserRouter,
-  RouterProvider,
-} from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Login from "./pages/Login/Login";
 import PersonalRegister from "./views/PersonalRegister/PersonalRegister";
 import Inventario from "./views/Inventario/Inventario";
@@ -11,6 +8,9 @@ import PrivateRoute from "./routers/PrivateRoute/PrivateRoute";
 import PublicRoute from "./routers/PublicRoute/PublicRoute";
 import Layout from "./layout/Layout";
 import { useUsers } from "./contexts/UsersContext/UsersContext";
+import Reportes from "./views/Reportes/Reportes";
+import ReporteNovedades from "./views/Reportes/ReportesNovedades";
+import CuadroDeMandoContainer from "./views/CuadrodeMando/CuadroDeMandoContainer";
 
 function App() {
   const { users } = useUsers();
@@ -36,7 +36,7 @@ function App() {
       path: "/",
       element: (
         <PrivateRoute>
-          <Layout unidad={unidad}/>
+          <Layout unidad={unidad} />
         </PrivateRoute>
       ),
       children: currentUser
@@ -46,6 +46,30 @@ function App() {
               element: (
                 <PrivateRoute requiredRole="Administrador">
                   <PersonalRegister />
+                </PrivateRoute>
+              ),
+            },
+            {
+              path: "reportes",
+              element: (
+                <PrivateRoute requiredRole="Administrador">
+                  <Reportes />
+                </PrivateRoute>
+              ),
+            },
+            {
+              path: "cuadro-de-mando",
+              element: (
+                <PrivateRoute requiredRole="Administrador">
+                  <CuadroDeMandoContainer />
+                </PrivateRoute>
+              ),
+            },
+            {
+              path: "reportes-novedades",
+              element: (
+                <PrivateRoute requiredRole="Administrador">
+                  <ReporteNovedades />
                 </PrivateRoute>
               ),
             },
