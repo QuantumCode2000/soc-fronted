@@ -8,6 +8,7 @@ const headersUsers = {
     apellidoPaterno: "Apellido Paterno",
     apellidoMaterno: "Apellido Materno",
     // inSystemPermissions: "Permiso en Sistema",
+    email: "Correo",
     rol: "Rol",
     estado: "Estado",
     unidad: "Unidad",

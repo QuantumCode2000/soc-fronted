@@ -21,6 +21,7 @@ function App() {
       )
     : null;
   const unidad = currentUser?.unidad;
+  console.log("currentUser", unidad);
 
   const tiposGanado = [
     "Bovino",

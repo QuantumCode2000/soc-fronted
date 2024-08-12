@@ -6,10 +6,8 @@ import FormParteInmediato from "./FormParteInmediato";
 import { usePartesInmediatos } from "../../contexts/PartesInmediatos/PartesInmediatosContext";
 import { useInventory } from "../../contexts/InventoryContext/InventoryContext";
 import Content from "../../components/Content/Content";
-import { useUsers } from "../../contexts/UsersContext/UsersContext";
 
 const headersPartesInmediatos = {
-  nro: "Nº",
   novedad: "Novedad",
   fechaSuceso: "Fecha Suceso",
   nroArete: "Nº Arete",
@@ -52,7 +50,6 @@ const renderCell = (item, key, handleEdit) => {
 };
 
 const firstState = {
-  nro: 0,
   novedad: "",
   fechaSuceso: "",
   nroArete: "",
@@ -89,7 +86,6 @@ const PartesInmediatos = ({ tipoGanado, unidad }) => {
     setIsEdit(false);
     setFormData({
       ...firstState,
-      nro: partesInmediatos.length + 1,
       enInventario: "Si",
       tipoGanado: tipoGanado,
       unidad: unidad,
@@ -117,14 +113,15 @@ const PartesInmediatos = ({ tipoGanado, unidad }) => {
     if (isEdit) {
       updateParteInmediatoItem(formData);
     } else {
-      if (formData.novedad === "NACIMIENTO" || formData.novedad === "COMPRA") {
+      if (formData.novedad === "Nacimiento" || formData.novedad === "Compra") {
         formData.motivo = formData.novedad;
-        addInventarioItem({ ...formData, nro: inventario.length + 1 });
+        const { novedad, motivo, fechaSuceso, ...rest } = formData;
+        addInventarioItem(rest);
       } else if (
-        formData.novedad === "DECESO" ||
-        formData.novedad === "DESCARTE" ||
-        formData.novedad === "FALTA" ||
-        formData.novedad === "VENTA"
+        formData.novedad === "Deceso" ||
+        formData.novedad === "Descarte" ||
+        formData.novedad === "Falta" ||
+        formData.novedad === "Venta"
       ) {
         const itemIndex = inventario.findIndex(
           (item) => item.nroArete === formData.nroArete,

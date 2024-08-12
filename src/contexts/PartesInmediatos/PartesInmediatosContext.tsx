@@ -5,11 +5,11 @@ import React, {
   useEffect,
   ReactNode,
 } from "react";
-import { parteInmediato as initialParteInmediato } from "../../data/parteinmediato";
+import axios from "axios";
 
 // Definición de la interfaz para partes inmediatos
 interface ParteInmediatoItem {
-  nro: number;
+  id: number;
   novedad: string;
   motivo: string;
   nombreUnidad: string;
@@ -29,8 +29,9 @@ interface ParteInmediatoItem {
 
 interface PartesInmediatosContextProps {
   partesInmediatos: ParteInmediatoItem[];
-  addParteInmediatoItem: (item: ParteInmediatoItem) => void;
-  updateParteInmediatoItem: (item: ParteInmediatoItem) => void;
+  addParteInmediatoItem: (item: ParteInmediatoItem) => Promise<void>;
+  updateParteInmediatoItem: (item: Partial<ParteInmediatoItem>) => Promise<void>;
+  fetchPartesInmediatos: () => Promise<void>;
 }
 
 // Creación del contexto de partes inmediatos
@@ -42,40 +43,52 @@ const PartesInmediatosContext = createContext<
 const PartesInmediatosProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const [partesInmediatos, setPartesInmediatos] = useState<
-    ParteInmediatoItem[]
-  >(() => {
-    const storedData = localStorage.getItem("partesInmediatos");
-    return storedData ? JSON.parse(storedData) : initialParteInmediato;
-  });
+  const [partesInmediatos, setPartesInmediatos] = useState<ParteInmediatoItem[]>([]);
 
-  // Efecto para actualizar el localStorage cuando los partes inmediatos cambian
+  // Función para obtener todos los partes inmediatos del backend
+  const fetchPartesInmediatos = async () => {
+    try {
+      const response = await axios.get("http://localhost:3000/api/v1/partes");
+      setPartesInmediatos(response.data);
+    } catch (error) {
+      console.error("Error fetching partes inmediatos:", error);
+    }
+  };
+
+  // Cargar partes inmediatos al montar el componente
   useEffect(() => {
-    localStorage.setItem("partesInmediatos", JSON.stringify(partesInmediatos));
-  }, [partesInmediatos]);
+    fetchPartesInmediatos();
+  }, []);
 
-  // Función para calcular el próximo nro
-  const calculateNextNro = () => {
-    if (partesInmediatos.length === 0) return 1;
-    return Math.max(...partesInmediatos.map((item) => item.nro)) + 1;
+  // Función para agregar un nuevo parte inmediato
+  const addParteInmediatoItem = async (newItem: ParteInmediatoItem) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/api/v1/partes",
+        newItem,
+      );
+      setPartesInmediatos((prevItems) => [...prevItems, response.data]);
+    } catch (error) {
+      console.error("Error adding parte inmediato:", error);
+      throw new Error("Error adding parte inmediato");
+    }
   };
 
-  // Función para agregar un elemento a partes inmediatos
-  const addParteInmediatoItem = (newItem: ParteInmediatoItem) => {
-    newItem.nro = calculateNextNro();
-    newItem.enInventario = "Si";
-    // newItem.nombreUnidad = "BBE II";
-    // newItem.tipoGanado = "Vacuno";
-    setPartesInmediatos((prevItems) => [...prevItems, newItem]);
-  };
-
-  // Función para actualizar un elemento de partes inmediatos
-  const updateParteInmediatoItem = (updatedItem: ParteInmediatoItem) => {
-    setPartesInmediatos((prevItems) =>
-      prevItems.map((item) =>
-        item.nro === updatedItem.nro ? updatedItem : item,
-      ),
-    );
+  // Función para actualizar un parte inmediato existente
+  const updateParteInmediatoItem = async (updatedItem: Partial<ParteInmediatoItem>) => {
+    const { id, ...rest } = updatedItem;
+    try {
+      const response = await axios.patch(
+        `http://localhost:3000/api/v1/partes/${id}`,
+        rest,
+      );
+      setPartesInmediatos((prevItems) =>
+        prevItems.map((item) => (item.id === id ? response.data : item)),
+      );
+    } catch (error) {
+      console.error("Error updating parte inmediato:", error);
+      throw new Error("Error updating parte inmediato");
+    }
   };
 
   // Proveedor del contexto con el estado y funciones
@@ -85,6 +98,7 @@ const PartesInmediatosProvider: React.FC<{ children: ReactNode }> = ({
         partesInmediatos,
         addParteInmediatoItem,
         updateParteInmediatoItem,
+        fetchPartesInmediatos,
       }}
     >
       {children}

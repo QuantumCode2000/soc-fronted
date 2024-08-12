@@ -3,128 +3,131 @@ import { MdOutlineInventory } from "react-icons/md";
 import { RiUserSettingsFill } from "react-icons/ri";
 import { RxUpdate } from "react-icons/rx";
 import { BiSolidReport } from "react-icons/bi";
-const options = [
-  {
-    text: "Ganado Bovino",
-    options: [
-      {
-        to: "/inventario/bovino/bee i",
-        icon: <MdOutlineInventory />,
-        text: "Inventario",
-      },
-      {
-        to: "/parte-inmediato/bovino/bee i",
-        icon: <CgNotes />,
-        text: "Parte Inmediato",
-      },
-      {
-        to: "parte-actualizado/bovino/bee i",
-        icon: <RxUpdate />,
-        text: "Parte Actualizado",
-      },
-    ],
-  },
-  {
-    text: "Ganado Cuyicola",
-    options: [
-      {
-        to: "/inventario/cuyicola/bee i",
-        icon: <MdOutlineInventory />,
-        text: "Inventario",
-      },
-      {
-        to: "/parte-inmediato/cuyicola/bee i",
-        icon: <CgNotes />,
-        text: "Parte Inmediato",
-      },
-      {
-        to: "parte-actualizado/cuyicola/bee i",
-        icon: <RxUpdate />,
-        text: "Parte Actualizado",
-      },
-    ],
-  },
-  {
-    text: "Ganado Porcino",
-    options: [
-      {
-        to: "/inventario/porcino/bee i",
-        icon: <MdOutlineInventory />,
-        text: "Inventario",
-      },
-      {
-        to: "/parte-inmediato/porcino/bee i",
-        icon: <CgNotes />,
-        text: "Parte Inmediato",
-      },
-      {
-        to: "parte-actualizado/porcino/bee i",
-        icon: <RxUpdate />,
-        text: "Parte Actualizado",
-      },
-    ],
-  },
-  {
-    text: "Ganado Avicola",
-    options: [
-      {
-        to: "/inventario/avicola/bee i",
-        icon: <MdOutlineInventory />,
-        text: "Inventario",
-      },
-      {
-        to: "/parte-inmediato/avicola/bee i",
-        icon: <CgNotes />,
-        text: "Parte Inmediato",
-      },
-      {
-        to: "parte-actualizado/avicola/bee i",
-        icon: <RxUpdate />,
-        text: "Parte Actualizado",
-      },
-    ],
-  },
-  {
-    text: "Ganado Equino",
-    options: [
-      {
-        to: "/inventario/equino/bee i",
-        icon: <MdOutlineInventory />,
-        text: "Inventario",
-      },
-      {
-        to: "/parte-inmediato/equino/bee i",
-        icon: <CgNotes />,
-        text: "Parte Inmediato",
-      },
-      {
-        to: "parte-actualizado/equino/bee i",
-        icon: <RxUpdate />,
-        text: "Parte Actualizado",
-      },
-    ],
-  },
-  {
-    text: "Ganado Psicola",
-    options: [
-      {
-        to: "/inventario/psicola/bee i",
-        icon: <MdOutlineInventory />,
-        text: "Inventario",
-      },
-      {
-        to: "/parte-inmediato/psicola/bee i",
-        icon: <CgNotes />,
-        text: "Parte Inmediato",
-      },
-      {
-        to: "parte-actualizado/psicola/bee i",
-        icon: <RxUpdate />,
-        text: "Parte Actualizado",
-      },
-    ],
-  },
-];
+
+const optionsGeneration = (unidad: string) => {
+  return [
+    {
+      text: "Ganado Bovino",
+      options: [
+        {
+          to: `/inventario/bovino/${unidad}`,
+          icon: <MdOutlineInventory />,
+          text: "Inventario",
+        },
+        {
+          to: `/parte-inmediato/bovino/${unidad}`,
+          icon: <CgNotes />,
+          text: "Parte Inmediato",
+        },
+        {
+          to: `parte-actualizado/bovino/${unidad}`,
+          icon: <RxUpdate />,
+          text: "Parte Actualizado",
+        },
+      ],
+    },
+    {
+      text: "Ganado Cuyicola",
+      options: [
+        {
+          to: `/inventario/cuyicola/${unidad}`,
+          icon: <MdOutlineInventory />,
+          text: "Inventario",
+        },
+        {
+          to: `/parte-inmediato/cuyicola/${unidad}`,
+          icon: <CgNotes />,
+          text: "Parte Inmediato",
+        },
+        {
+          to: `parte-actualizado/cuyicola/${unidad}`,
+          icon: <RxUpdate />,
+          text: "Parte Actualizado",
+        },
+      ],
+    },
+    {
+      text: "Ganado Porcino",
+      options: [
+        {
+          to: `/inventario/porcino/${unidad}`,
+          icon: <MdOutlineInventory />,
+          text: "Inventario",
+        },
+        {
+          to: `/parte-inmediato/porcino/${unidad}`,
+          icon: <CgNotes />,
+          text: "Parte Inmediato",
+        },
+        {
+          to: `parte-actualizado/porcino/${unidad}`,
+          icon: <RxUpdate />,
+          text: "Parte Actualizado",
+        },
+      ],
+    },
+    {
+      text: "Ganado Avicola",
+      options: [
+        {
+          to: `/inventario/avicola/${unidad}`,
+          icon: <MdOutlineInventory />,
+          text: "Inventario",
+        },
+        {
+          to: `/parte-inmediato/avicola/${unidad}`,
+          icon: <CgNotes />,
+          text: "Parte Inmediato",
+        },
+        {
+          to: `parte-actualizado/avicola/${unidad}`,
+          icon: <RxUpdate />,
+          text: "Parte Actualizado",
+        },
+      ],
+    },
+    {
+      text: "Ganado Equino",
+      options: [
+        {
+          to: `/inventario/equino/${unidad}`,
+          icon: <MdOutlineInventory />,
+          text: "Inventario",
+        },
+        {
+          to: `/parte-inmediato/equino/${unidad}`,
+          icon: <CgNotes />,
+          text: "Parte Inmediato",
+        },
+        {
+          to: `parte-actualizado/equino/${unidad}`,
+          icon: <RxUpdate />,
+          text: "Parte Actualizado",
+        },
+      ],
+    },
+    {
+      text: "Ganado Psicola",
+      options: [
+        {
+          to: `/inventario/psicola/${unidad}`,
+          icon: <MdOutlineInventory />,
+          text: "Inventario",
+        },
+        {
+          to: `/parte-inmediato/psicola/${unidad}`,
+          icon: <CgNotes />,
+          text: "Parte Inmediato",
+        },
+        {
+          to: `parte-actualizado/psicola/${unidad}`,
+          icon: <RxUpdate />,
+          text: "Parte Actualizado",
+        },
+      ],
+    },
+  ];
+};
 
 const optionsAdmin = [
   {
@@ -164,4 +167,4 @@ const optionsAdmin = [
   },
 ];
 
-export { options, optionsAdmin };
+export { optionsAdmin, optionsGeneration };

@@ -1,3 +1,5 @@
+
+
 import React, { useEffect, useState } from "react";
 import {
   FaCalendarAlt,
@@ -10,63 +12,96 @@ import {
   FaBirthdayCake,
   FaComment,
   FaBarcode,
-  FaBuilding,
 } from "react-icons/fa";
 import Input from "../../components/Input/Input";
 import Select from "../../components/Select/Select";
 import Modal from "../../components/Modal/Modal";
 import { useInventory } from "../../contexts/InventoryContext/InventoryContext";
+import type { ParteInmediatoItem } from "../../contexts/PartesInmediatos/PartesInmediatosContext";
 
+// Definir los tipos para las props del formulario
+interface FormParteInmediatoProps {
+  formData: ParteInmediatoItem;
+  handleChange: (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => void;
+  handleSubmit: () => void;
+  tipoGanado: string;
+}
+
+// Definir la estructura del item de inventario
+interface InventarioItem {
+  id: number;
+  nombreUnidad: string;
+  codigo: string;
+  raza: string;
+  color: string;
+  marcaCarimbo: string;
+  sexo: string;
+  categoria: string;
+  fechaNac: string;
+  tipoGanado: string;
+  enInventario: string;
+  unidad: string;
+  nroArete: string;
+}
+
+// Definir las opciones fijas
 const novedades = [
-  "DECESO",
-  "NACIMIENTO",
-  "DESCARTE",
-  "FALTA",
-  "INSEMINACION",
-  "PREGESTACION",
-  "GESTACION",
-  "COMPRA",
-  "VENTA",
+  "Deceso",
+  "Nacimiento",
+  "Descarte",
+  "Falta",
+  "Inseminación",
+  "Pregestación",
+  "Gestación",
+  "Compra",
+  "Venta",
 ];
+const sexos = ["Macho", "Hembra"];
 
-const sexos = ["MACHO", "HEMBRA"];
-
-const razasBovinos = ["NELORE", "ANGUS", "BRAHMAN", "HEREFORD", "CHAROLAIS"];
-const razasCuyes = ["PERUANO", "AMERICANO", "ABISINIO", "PERUANO"];
-const razasEquinos = ["PERUANO DE PASO", "CUARTO DE MILLA", "PERCHERON"];
-const razasPorcinos = ["YORKSHIRE", "DUROC", "LANDRACE", "HAMPSHIRE"];
-const razasAvicolas = ["POLLO DE ENGORDE", "GALLINA PONEDORA", "PATO"];
-
+const razasBovinos = ["Nelore", "Angus", "Brahman", "Hereford", "Charolais"];
+const razasCuyes = ["Peruano", "Americano", "Abisinio", "Peruano"];
+const razasEquinos = ["Peruano de paso", "Cuarto de milla", "Percheron"];
+const razasPorcinos = ["Yorkshire", "Duroc", "Landrace", "Hampshire"];
+const razasAvicolas = ["Pollo de engorde", "Gallina ponedora", "Pato"];
 const categorias = ["S/N"];
 
-const FormParteInmediato = ({
+const FormParteInmediato: React.FC<FormParteInmediatoProps> = ({
   formData,
   handleChange,
   handleSubmit,
   tipoGanado,
 }) => {
   const { inventario } = useInventory();
-  const [selectedAnimal, setSelectedAnimal] = useState(null);
-  const [localErrors, setLocalErrors] = useState({});
+  const [selectedAnimal, setSelectedAnimal] = useState<InventarioItem | null>(
+    null,
+  );
+  const [localErrors, setLocalErrors] = useState<Partial<ParteInmediatoItem>>(
+    {},
+  );
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
 
+  // Validación del formulario
   const validateForm = () => {
-    const newErrors = {};
+    const newErrors: Partial<ParteInmediatoItem> = {};
     if (!formData.novedad) newErrors.novedad = "Novedad es requerida";
     if (!formData.fechaSuceso)
       newErrors.fechaSuceso = "Fecha Suceso es requerida";
     if (
-      formData.novedad !== "NACIMIENTO" &&
-      formData.novedad !== "COMPRA" &&
+      formData.novedad !== "Nacimiento" &&
+      formData.novedad !== "Compra" &&
       !formData.nroArete
-    )
+    ) {
       newErrors.nroArete = "Nº Arete es requerido";
+    }
     if (
-      formData.novedad !== "NACIMIENTO" &&
-      formData.novedad !== "COMPRA" &&
+      formData.novedad !== "Nacimiento" &&
+      formData.novedad !== "Compra" &&
       !formData.motivo
-    )
+    ) {
       newErrors.motivo = "Motivo es requerido";
+    }
     if (!formData.codigo) newErrors.codigo = "Código es requerido";
     if (!formData.raza) newErrors.raza = "Raza es requerida";
     if (!formData.color) newErrors.color = "Color es requerido";
@@ -79,7 +114,8 @@ const FormParteInmediato = ({
     return newErrors;
   };
 
-  const handleConfirm = (e) => {
+  // Manejo de confirmación del formulario
+  const handleConfirm = (e: React.FormEvent) => {
     e.preventDefault();
     const errors = validateForm();
     if (Object.keys(errors).length === 0) {
@@ -98,38 +134,52 @@ const FormParteInmediato = ({
     setConfirmModalOpen(false);
   };
 
+  // Efecto para cargar los datos del inventario en caso de que ya exista el nroArete
   useEffect(() => {
     if (
       formData.nroArete &&
-      formData.novedad !== "NACIMIENTO" &&
-      formData.novedad !== "COMPRA"
+      formData.novedad !== "Nacimiento" &&
+      formData.novedad !== "Compra"
     ) {
       const item = inventario.find(
         (inv) => inv.nroArete?.toString() === formData.nroArete?.toString(),
       );
       if (item) {
         setSelectedAnimal(item);
-        handleChange({ target: { id: "codigo", value: item.codigo } });
-        handleChange({ target: { id: "raza", value: item.raza } });
-        handleChange({ target: { id: "color", value: item.color } });
+        handleChange({
+          target: { id: "codigo", value: item.codigo },
+        } as React.ChangeEvent<HTMLInputElement>);
+        handleChange({
+          target: { id: "raza", value: item.raza },
+        } as React.ChangeEvent<HTMLInputElement>);
+        handleChange({
+          target: { id: "color", value: item.color },
+        } as React.ChangeEvent<HTMLInputElement>);
         handleChange({
           target: { id: "marcaCarimbo", value: item.marcaCarimbo },
-        });
-        handleChange({ target: { id: "sexo", value: item.sexo } });
-        handleChange({ target: { id: "categoria", value: item.categoria } });
-        handleChange({ target: { id: "fechaNac", value: item.fechaNac } });
+        } as React.ChangeEvent<HTMLInputElement>);
+        handleChange({
+          target: { id: "sexo", value: item.sexo },
+        } as React.ChangeEvent<HTMLInputElement>);
+        handleChange({
+          target: { id: "categoria", value: item.categoria },
+        } as React.ChangeEvent<HTMLInputElement>);
+        handleChange({
+          target: { id: "fechaNac", value: item.fechaNac },
+        } as React.ChangeEvent<HTMLInputElement>);
       } else {
         setSelectedAnimal(null);
       }
     }
   }, [formData.nroArete, formData.novedad, handleChange, inventario]);
 
+  // Renderizado de un input con ícono
   const renderInput = (
-    id,
-    label,
-    placeholder,
-    type = "text",
-    disabled = false,
+    id: keyof ParteInmediatoItem,
+    label: string,
+    placeholder: string,
+    type: string = "text",
+    disabled: boolean = false,
   ) => (
     <div className="flex items-center">
       {id === "fechaSuceso" && (
@@ -220,7 +270,7 @@ const FormParteInmediato = ({
           "date",
         )}
 
-        {formData.novedad !== "NACIMIENTO" && formData.novedad !== "COMPRA" && (
+        {formData.novedad !== "Nacimiento" && formData.novedad !== "Compra" && (
           <div className="md:col-span-2 p-4 bg-gray-100 rounded-lg shadow">
             {selectedAnimal && (
               <>

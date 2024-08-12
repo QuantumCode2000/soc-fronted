@@ -5,7 +5,6 @@ import { IoIosCheckmarkCircle } from "react-icons/io";
 import { FaCircleXmark } from "react-icons/fa6";
 
 const headersInventario = {
-  nro: "N°",
   unidad: "Nombre de la Unidad",
   codigo: "Código",
   raza: "Raza",
@@ -58,6 +57,7 @@ const renderCell = (item, key) => {
 };
 
 const Inventario = ({ tipoGanado, unidad }) => {
+  console.log(tipoGanado, unidad);
   const { inventario } = useInventory();
 
   const inventarioFilter = inventario.filter(

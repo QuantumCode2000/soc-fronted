@@ -5,7 +5,7 @@ import React, {
   useEffect,
   ReactNode,
 } from "react";
-import { inventario as initialInventario } from "../../data/inventario";
+import axios from "axios";
 
 // Definición de la interfaz para el inventario
 interface InventarioItem {
@@ -26,8 +26,9 @@ interface InventarioItem {
 
 interface InventoryContextProps {
   inventario: InventarioItem[];
-  addInventarioItem: (item: InventarioItem) => void;
-  updateInventarioItem: (item: InventarioItem) => void;
+  addInventarioItem: (item: InventarioItem) => Promise<void>;
+  updateInventarioItem: (item: Partial<InventarioItem>) => Promise<void>;
+  fetchInventario: () => Promise<void>;
 }
 
 // Creación del contexto de inventario
@@ -36,32 +37,64 @@ const InventoryContext = createContext<InventoryContextProps | undefined>(
 );
 
 const InventoryProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [inventario, setInventario] = useState<InventarioItem[]>(() => {
-    const storedInventario = localStorage.getItem("inventario");
-    return storedInventario ? JSON.parse(storedInventario) : initialInventario;
-  });
+  const [inventario, setInventario] = useState<InventarioItem[]>([]);
 
+  // Función para obtener todos los elementos del inventario del backend
+  const fetchInventario = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:3000/api/v1/inventarios",
+      );
+      setInventario(response.data);
+    } catch (error) {
+      console.error("Error fetching inventario:", error);
+    }
+  };
+
+  // Cargar inventario al montar el componente
   useEffect(() => {
-    localStorage.setItem("inventario", JSON.stringify(inventario));
-  }, [inventario]);
+    fetchInventario();
+  }, []);
 
   // Función para agregar un elemento al inventario
-  const addInventarioItem = (newItem: InventarioItem) => {
-    setInventario([...inventario, newItem]);
+  const addInventarioItem = async (newItem: InventarioItem) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/api/v1/inventarios",
+        newItem,
+      );
+      setInventario((prevItems) => [...prevItems, response.data]);
+    } catch (error) {
+      console.error("Error adding inventario item:", error);
+      throw new Error("Error adding inventario item");
+    }
   };
 
   // Función para actualizar un elemento del inventario
-  const updateInventarioItem = (updatedItem: InventarioItem) => {
-    setInventario(
-      inventario.map((item) =>
-        item.nroArete === updatedItem.nroArete ? updatedItem : item,
-      ),
-    );
+  const updateInventarioItem = async (updatedItem: Partial<InventarioItem>) => {
+    const { id, ...rest } = updatedItem;
+    try {
+      const response = await axios.patch(
+        `http://localhost:3000/api/v1/inventarios/${id}`,
+        rest,
+      );
+      setInventario((prevItems) =>
+        prevItems.map((item) => (item.id === id ? response.data : item)),
+      );
+    } catch (error) {
+      console.error("Error updating inventario item:", error);
+      throw new Error("Error updating inventario item");
+    }
   };
 
   return (
     <InventoryContext.Provider
-      value={{ inventario, addInventarioItem, updateInventarioItem }}
+      value={{
+        inventario,
+        addInventarioItem,
+        updateInventarioItem,
+        fetchInventario,
+      }}
     >
       {children}
     </InventoryContext.Provider>

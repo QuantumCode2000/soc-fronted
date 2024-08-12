@@ -1,7 +1,7 @@
 import Sidebar from "../components/Sidebar/Sidebar";
 import Navbar from "../components/Navbar/Navbar";
 import { Outlet, useLocation } from "react-router-dom";
-import { options, optionsAdmin } from "../components/Sidebar/options";
+import { optionsGeneration, optionsAdmin } from "../components/Sidebar/options";
 import { useState, useEffect } from "react";
 import { useAuthContext } from "../contexts/AuthContext/AuthContext";
 
@@ -25,7 +25,9 @@ const Layout = ({ unidad }) => {
 
     setSelectedTitle(
       findSelectedTitle(
-        user?.rol === "Administrador" ? optionsAdmin : options,
+        user?.rol === "Administrador"
+          ? optionsAdmin
+          : optionsGeneration(unidad),
         location.pathname,
       ),
     );
@@ -35,7 +37,11 @@ const Layout = ({ unidad }) => {
     <div className="flex flex-grow min-h-screen bg-gray-100 text-gray-800">
       <Sidebar
         selectedTitle={selectedTitle}
-        options={user?.rol === "Administrador" ? optionsAdmin : options}
+        options={
+          user?.rol === "Administrador"
+            ? optionsAdmin
+            : optionsGeneration(unidad)
+        }
         unidad={unidad}
       />
       <main className="main flex flex-col flex-grow -ml-64 md:ml-0 transition-all duration-150 ease-in">
