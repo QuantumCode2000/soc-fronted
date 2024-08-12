@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import Button from "../../components/Button/Button";
 import Table from "../../components/Table/Table";
 import { useUsers } from "../../contexts/UsersContext/UsersContext";
@@ -20,11 +20,10 @@ const firstState: User = {
   nombre: "",
   apellidoPaterno: "",
   apellidoMaterno: "",
-  carnetMilitar: "",
   email: "",
   password: "",
   unidad: "",
-  inSystemPermission: "No",
+  inSystemPermissions: "No",
   rol: "Personal",
   estado: "Activo",
 };
@@ -34,8 +33,11 @@ const PersonalRegister: React.FC = () => {
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [isViewMoreOpen, setViewMoreOpen] = useState<boolean>(false);
   const [formData, setFormData] = useState<User>(firstState);
+  const [formDataEdit, setFormDataEdit] = useState<User>(firstState);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [error, setError] = useState<string | null>(null); // Estado para manejar errores
   const { users, addUser, updateUser } = useUsers();
+  const [modifiedData, setModifiedData] = useState<Partial<User>>({});
 
   const closeModal = () => {
     setOpenModal(false);
@@ -62,10 +64,21 @@ const PersonalRegister: React.FC = () => {
     }
   };
 
+  const handleChangeEdit = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
+    const { id, value } = e.target;
+    setFormDataEdit((prevData) => ({
+      ...prevData,
+      [id]: value,
+    }));
+  };
+
   const handleEdit = (ci: string) => {
     const user = users.find((user) => user.ci === ci);
     if (user) {
       setFormData(user);
+      setFormDataEdit(user);
       setIsEdit(true);
       setOpenModal(true);
     }
@@ -81,18 +94,29 @@ const PersonalRegister: React.FC = () => {
     }));
   };
 
-  const handleSubmit = () => {
-    if (isEdit) {
-      updateUser(formData);
-    } else {
-      addUser(formData);
+  const handleSubmit = async () => {
+    try {
+      if (isEdit) {
+        await updateUser(modifiedData); // Aquí se incluye la nueva contraseña si se cambió
+      } else {
+        await addUser({
+          ...formData,
+          password: formData.ci, // Se puede inicializar la contraseña con el CI
+        });
+      }
+      closeModal();
+    } catch (error) {
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError("An unexpected error occurred");
+      }
     }
-    closeModal();
   };
 
   const renderCell = (item: User, key: keyof User) => {
     switch (key) {
-      case "inSystemPermission":
+      case "inSystemPermissions":
         return (
           <span
             className={
@@ -174,10 +198,13 @@ const PersonalRegister: React.FC = () => {
         isOpen={isModalOpen}
         onClose={closeModal}
       >
+        {error && <p className="text-red-500">{error}</p>} {/* Mostrar error */}
         {isEdit ? (
           <FormPersonalEdit
             formData={formData}
-            handleChange={handleChange}
+            formDataEdit={formDataEdit}
+            setModifiedData={setModifiedData}
+            handleChangeEdit={handleChangeEdit}
             handleSubmit={handleSubmit}
           />
         ) : (

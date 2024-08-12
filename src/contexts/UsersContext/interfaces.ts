@@ -1,4 +1,5 @@
 interface User {
+  id?: string;
   ci: string;
   extension: string;
   grado: string;
@@ -6,9 +7,8 @@ interface User {
   nombre: string;
   apellidoPaterno: string;
   apellidoMaterno: string;
-  carnetMilitar: string;
   email: string;
-  inSystemPermission: string;
+  inSystemPermissions: string;
   rol: string;
   estado: string;
   password: string;

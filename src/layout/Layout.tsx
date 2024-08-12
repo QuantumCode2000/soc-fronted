@@ -25,7 +25,7 @@ const Layout = ({ unidad }) => {
 
     setSelectedTitle(
       findSelectedTitle(
-        user?.role === "Administrador" ? optionsAdmin : options,
+        user?.rol === "Administrador" ? optionsAdmin : options,
         location.pathname,
       ),
     );
@@ -35,11 +35,11 @@ const Layout = ({ unidad }) => {
     <div className="flex flex-grow min-h-screen bg-gray-100 text-gray-800">
       <Sidebar
         selectedTitle={selectedTitle}
-        options={user?.role === "Administrador" ? optionsAdmin : options}
-        unidad={  unidad}
+        options={user?.rol === "Administrador" ? optionsAdmin : options}
+        unidad={unidad}
       />
       <main className="main flex flex-col flex-grow -ml-64 md:ml-0 transition-all duration-150 ease-in">
-        {user && <Navbar rol={user.role} nombre={user.email} />}
+        {user && <Navbar rol={user.rol} nombre={user.nombre} />}
         <div className="main-content flex flex-col flex-grow p-6">
           <h1 className="font-bold  text-gray-700 mb-6 text-xs">
             /{selectedTitle}

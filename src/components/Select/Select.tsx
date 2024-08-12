@@ -1,6 +1,21 @@
-import { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 
-const Select = ({
+// Definimos los tipos de las props para mayor claridad y seguridad de tipos
+interface SelectProps {
+  id: string;
+  label?: string;
+  options: string[];
+  value: string;
+  onChange: (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => void;
+  disabled?: boolean;
+  error?: boolean | string;
+  helperText?: string;
+  [key: string]: any;
+}
+
+const Select: React.FC<SelectProps> = ({
   id,
   label,
   options,
@@ -14,7 +29,7 @@ const Select = ({
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [filteredOptions, setFilteredOptions] = useState(options);
-  const selectRef = useRef();
+  const selectRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setFilteredOptions(
@@ -30,13 +45,18 @@ const Select = ({
     }
   };
 
-  const handleSelect = (option) => {
-    onChange({ target: { id, value: option } });
+  const handleSelect = (option: string) => {
+    onChange({
+      target: { id, value: option },
+    } as React.ChangeEvent<HTMLInputElement>);
     setIsOpen(false);
   };
 
-  const handleClickOutside = (event) => {
-    if (selectRef.current && !selectRef.current.contains(event.target)) {
+  const handleClickOutside = (event: MouseEvent) => {
+    if (
+      selectRef.current &&
+      !selectRef.current.contains(event.target as Node)
+    ) {
       setIsOpen(false);
     }
   };
@@ -47,6 +67,8 @@ const Select = ({
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  const hasError = !!error; // Convierte cualquier valor truthy en un booleano
 
   return (
     <div className="mb-4 relative" ref={selectRef}>
@@ -60,7 +82,7 @@ const Select = ({
       )}
       <div
         className={`bg-gray-50 border ${
-          error ? "border-red-500" : "border-gray-300"
+          hasError ? "border-red-500" : "border-gray-300"
         } text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-pointer`}
         onClick={toggleDropdown}
       >
@@ -97,7 +119,7 @@ const Select = ({
           {helperText}
         </p>
       )}
-      {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
+      {hasError && <p className="mt-1 text-sm text-red-500">{error}</p>}
     </div>
   );
 };

@@ -2,7 +2,6 @@ import { CgNotes } from "react-icons/cg";
 import { MdOutlineInventory } from "react-icons/md";
 import { RiUserSettingsFill } from "react-icons/ri";
 import { RxUpdate } from "react-icons/rx";
-// importar un icono de reacticons para Reportes
 import { BiSolidReport } from "react-icons/bi";
 const options = [
   {

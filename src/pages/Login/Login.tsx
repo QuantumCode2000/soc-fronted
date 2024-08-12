@@ -12,13 +12,13 @@ const Login = () => {
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) {
       setError("Todos los campos son obligatorios.");
       return;
     }
-    const success = login(email, password);
+    const success = await login(email, password);
     if (success) {
       setSuccessMessage("Inicio de sesión exitoso.");
       setTimeout(() => {
@@ -35,7 +35,7 @@ const Login = () => {
       className="relative flex min-h-screen text-gray-800 antialiased flex-col justify-center items-center overflow-hidden py-6 sm:py-12 bg-cover bg-center"
     >
       <div className="absolute inset-0 bg-black opacity-50"></div>
-      <div className="relative py-3 sm:w-96 w-full mx-auto text-center bg-white bg-opacity-90 shadow-lg rounded-lg text-left transform transition-all duration-500 ease-in-out hover:scale-105">
+      <div className="relative py-3 sm:w-96 w-full mx-auto bg-white bg-opacity-90 shadow-lg rounded-lg text-left transform transition-all duration-500 ease-in-out hover:scale-105">
         <div className="flex justify-center mt-4">
           <img src={Logo} alt="Logo" className="w-32 h-32 object-contain" />
         </div>

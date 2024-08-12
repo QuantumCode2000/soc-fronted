@@ -1,7 +1,8 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import Input from "../../components/Input/Input";
 import Select from "../../components/Select/Select";
 import Modal from "../../components/Modal/Modal";
+import { User } from "../../contexts/UsersContext/interfaces"; // Asegúrate de que esto está correctamente importado
 import {
   departamentos,
   grados,
@@ -19,17 +20,28 @@ const unidades = [
   "HARAS DEL EJERCITO",
 ];
 
-const FormPersonalRegister = ({ formData, handleChange, handleSubmit }) => {
+// Definir los tipos de los props
+interface FormPersonalRegisterProps {
+  formData: User;
+  handleChange: (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => void;
+  handleSubmit: () => void;
+}
+
+const FormPersonalRegister: React.FC<FormPersonalRegisterProps> = ({
+  formData,
+  handleChange,
+  handleSubmit,
+}) => {
   const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
-  const [localErrors, setLocalErrors] = useState({});
+  const [localErrors, setLocalErrors] = useState<Partial<User>>({});
 
   const validateForm = () => {
-    const newErrors = {};
+    const newErrors: Partial<User> = {};
     if (!formData.ci) newErrors.ci = "CI es requerido";
     if (!formData.extension) newErrors.extension = "Extensión es requerida";
-    if (!formData.carnetMilitar)
-      newErrors.carnetMilitar = "Carnet Militar es requerido";
-    if (!formData.correo) newErrors.correo = "Correo Electrónico es requerido";
+    if (!formData.email) newErrors.email = "Correo Electrónico es requerido"; // Cambié 'correo' a 'email' para coincidir con la interfaz
     if (!formData.grado) newErrors.grado = "Grado es requerido";
     if (!formData.especialidad)
       newErrors.especialidad = "Especialidad es requerida";
@@ -42,7 +54,7 @@ const FormPersonalRegister = ({ formData, handleChange, handleSubmit }) => {
     return newErrors;
   };
 
-  const handleConfirm = (e) => {
+  const handleConfirm = (e: React.FormEvent) => {
     e.preventDefault();
     const errors = validateForm();
     if (Object.keys(errors).length === 0) {
@@ -83,21 +95,14 @@ const FormPersonalRegister = ({ formData, handleChange, handleSubmit }) => {
           onChange={handleChange}
           error={localErrors.extension}
         />
+
         <Input
-          id="carnetMilitar"
-          label="Carnet Militar"
-          placeholder="Carnet Militar"
-          value={formData.carnetMilitar}
-          onChange={handleChange}
-          error={localErrors.carnetMilitar}
-        />
-        <Input
-          id="correo"
+          id="email"
           label="Correo Electrónico"
           placeholder="Correo Electrónico"
-          value={formData.correo}
+          value={formData.email}
           onChange={handleChange}
-          error={localErrors.correo}
+          error={localErrors.email}
         />
         <Select
           id="grado"
@@ -111,7 +116,11 @@ const FormPersonalRegister = ({ formData, handleChange, handleSubmit }) => {
           id="especialidad"
           label="Especialidad"
           options={especialidades}
-          value={formData.especialidad}
+          value={
+            formData.especialidad === "Sin Especialidad"
+              ? "-"
+              : formData.especialidad
+          }
           onChange={handleChange}
           error={localErrors.especialidad}
         />

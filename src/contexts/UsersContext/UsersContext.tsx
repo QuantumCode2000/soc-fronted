@@ -5,7 +5,7 @@ import React, {
   useEffect,
   ReactNode,
 } from "react";
-import { users as importedUsers } from "../../data/users";
+import axios from "axios";
 import type { User, UsersContextProps } from "./interfaces";
 
 // Creación del contexto de usuarios
@@ -13,49 +13,70 @@ const UsersContext = createContext<UsersContextProps | undefined>(undefined);
 
 // Proveedor del contexto de usuarios
 const UsersProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  // Estado para los usuarios, inicializado con datos del localStorage o datos importados
-  const [users, setUsers] = useState<User[]>(() => {
-    const storedUsers = localStorage.getItem("users");
-    return storedUsers ? JSON.parse(storedUsers) : importedUsers;
-  });
+  // Estado para los usuarios
+  const [users, setUsers] = useState<User[]>([]);
 
-  // Efecto para actualizar el localStorage cuando los usuarios cambian
+  // Función para obtener todos los usuarios del backend
+  const fetchUsers = async () => {
+    try {
+      const response = await axios.get("http://localhost:3000/api/v1/usuarios");
+      setUsers(response.data);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  };
+
+  // Cargar usuarios al montar el componente
   useEffect(() => {
-    localStorage.setItem("users", JSON.stringify(users));
-  }, [users]);
+    fetchUsers();
+  }, []);
 
   // Función para agregar un nuevo usuario
-  const addUser = (user: User) => {
-    setUsers((prevUsers) => {
-      if (prevUsers.some((u) => u.ci === user.ci)) {
-        throw new Error("User with the same CI already exists");
-      }
-      return [...prevUsers, { ...user, password: user.ci }];
-    });
+  const addUser = async (user: User) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/api/v1/usuarios",
+        user,
+      );
+      setUsers((prevUsers) => [...prevUsers, response.data]);
+    } catch (error) {
+      console.error("Error adding user:", error);
+      throw new Error("Error adding user");
+    }
   };
 
   // Función para eliminar un usuario por CI
-  const removeUser = (ci: string) => {
-    setUsers((prevUsers) => {
-      const userExists = prevUsers.some((user) => user.ci === ci);
-      if (!userExists) {
+  const removeUser = async (ci: string) => {
+    try {
+      const userToRemove = users.find((user) => user.ci === ci);
+      if (!userToRemove) {
         throw new Error("User not found");
       }
-      return prevUsers.filter((user) => user.ci !== ci);
-    });
+      await axios.delete(
+        `http://localhost:3000/api/v1/usuarios/${userToRemove.id}`,
+      );
+      setUsers((prevUsers) => prevUsers.filter((user) => user.ci !== ci));
+    } catch (error) {
+      console.error("Error removing user:", error);
+      throw new Error("Error removing user");
+    }
   };
 
   // Función para actualizar un usuario existente
-  const updateUser = (updatedUser: User) => {
-    setUsers((prevUsers) => {
-      const userExists = prevUsers.some((user) => user.ci === updatedUser.ci);
-      if (!userExists) {
-        throw new Error("User not found");
-      }
-      return prevUsers.map((user) =>
-        user.ci === updatedUser.ci ? updatedUser : user,
+  const updateUser = async (updatedUser: Partial<User>) => {
+    const { id, ...rest } = updatedUser;
+    try {
+      const response = await axios.patch(
+        `http://localhost:3000/api/v1/usuarios/${id}`,
+        rest,
       );
-    });
+      setUsers((prevUsers) =>
+        prevUsers.map((user) => (user.id === id ? response.data : user)),
+      );
+    } catch (error) {
+      console.error("Error updating user:", error);
+      throw new Error("Error updating user");
+    }
   };
 
   // Proveedor del contexto con el estado y funciones

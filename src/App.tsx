@@ -39,68 +39,66 @@ function App() {
           <Layout unidad={unidad} />
         </PrivateRoute>
       ),
-      children: currentUser
-        ? [
-            {
-              path: "registro-personal",
-              element: (
-                <PrivateRoute requiredRole="Administrador">
-                  <PersonalRegister />
-                </PrivateRoute>
-              ),
-            },
-            {
-              path: "reportes",
-              element: (
-                <PrivateRoute requiredRole="Administrador">
-                  <Reportes />
-                </PrivateRoute>
-              ),
-            },
-            {
-              path: "cuadro-de-mando",
-              element: (
-                <PrivateRoute requiredRole="Administrador">
-                  <CuadroDeMandoContainer />
-                </PrivateRoute>
-              ),
-            },
-            {
-              path: "reportes-novedades",
-              element: (
-                <PrivateRoute requiredRole="Administrador">
-                  <ReporteNovedades />
-                </PrivateRoute>
-              ),
-            },
-            ...tiposGanado.flatMap((tipoGanado) => [
-              {
-                path: `inventario/${tipoGanado.toLowerCase()}/${unidad}`,
-                element: (
-                  <PrivateRoute requiredRole="Personal">
-                    <Inventario unidad={unidad} tipoGanado={tipoGanado} />
-                  </PrivateRoute>
-                ),
-              },
-              {
-                path: `parte-inmediato/${tipoGanado.toLowerCase()}/${unidad}`,
-                element: (
-                  <PrivateRoute requiredRole="Personal">
-                    <PartesInmediatos unidad={unidad} tipoGanado={tipoGanado} />
-                  </PrivateRoute>
-                ),
-              },
-              {
-                path: `parte-actualizado/${tipoGanado.toLowerCase()}/${unidad}`,
-                element: (
-                  <PrivateRoute requiredRole="Personal">
-                    <ParteActualizado unidad={unidad} tipoGanado={tipoGanado} />
-                  </PrivateRoute>
-                ),
-              },
-            ]),
-          ]
-        : [],
+      children: [
+        {
+          path: "registro-personal",
+          element: (
+            <PrivateRoute requiredRole="Administrador">
+              <PersonalRegister />
+            </PrivateRoute>
+          ),
+        },
+        {
+          path: "reportes",
+          element: (
+            <PrivateRoute requiredRole="Administrador">
+              <Reportes />
+            </PrivateRoute>
+          ),
+        },
+        {
+          path: "cuadro-de-mando",
+          element: (
+            <PrivateRoute requiredRole="Administrador">
+              <CuadroDeMandoContainer />
+            </PrivateRoute>
+          ),
+        },
+        {
+          path: "reportes-novedades",
+          element: (
+            <PrivateRoute requiredRole="Administrador">
+              <ReporteNovedades />
+            </PrivateRoute>
+          ),
+        },
+        ...tiposGanado.flatMap((tipoGanado) => [
+          {
+            path: `inventario/${tipoGanado.toLowerCase()}/${unidad}`,
+            element: (
+              <PrivateRoute requiredRole="Personal">
+                <Inventario unidad={unidad} tipoGanado={tipoGanado} />
+              </PrivateRoute>
+            ),
+          },
+          {
+            path: `parte-inmediato/${tipoGanado.toLowerCase()}/${unidad}`,
+            element: (
+              <PrivateRoute requiredRole="Personal">
+                <PartesInmediatos unidad={unidad} tipoGanado={tipoGanado} />
+              </PrivateRoute>
+            ),
+          },
+          {
+            path: `parte-actualizado/${tipoGanado.toLowerCase()}/${unidad}`,
+            element: (
+              <PrivateRoute requiredRole="Personal">
+                <ParteActualizado unidad={unidad} tipoGanado={tipoGanado} />
+              </PrivateRoute>
+            ),
+          },
+        ]),
+      ],
     },
     {
       path: "login",
@@ -115,6 +113,10 @@ function App() {
     {
       path: "unauthorized",
       element: <div>No estás autorizado para ver esta página</div>,
+    },
+    {
+      path: "*",
+      element: <div>404 - Página no encontrada</div>, // Ruta para manejar 404
     },
   ]);
 

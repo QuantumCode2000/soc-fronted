@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import Input from "../../components/Input/Input";
 import Select from "../../components/Select/Select";
 import Modal from "../../components/Modal/Modal";
@@ -7,24 +7,41 @@ import {
   grados,
   especialidades,
 } from "../../data/selectOptions";
+import { User } from "../../contexts/UsersContext/interfaces";
 
 const roles = ["Administrador", "Encargado", "Personal"];
 const estados = ["Activo", "Inactivo"];
 const inSystemPermissions = ["Sí", "No"];
 
-const FormPersonalEdit = ({ formData, handleChange, handleSubmit }) => {
+interface FormPersonalEditProps {
+  formData: User;
+  handleChangeEdit: (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => void;
+  handleSubmit: () => void;
+  handlePasswordChange: (newPassword: string) => void;
+  formDataEdit: User;
+}
+
+const FormPersonalEdit: React.FC<FormPersonalEditProps> = ({
+  formData,
+  formDataEdit,
+  handleChangeEdit,
+  handleSubmit,
+  setModifiedData,
+}) => {
   const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
-  const [localErrors, setLocalErrors] = useState({});
+  const [localErrors, setLocalErrors] = useState<Partial<User>>({});
   const [showPasswordFields, setShowPasswordFields] = useState(false);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [noChangesError, setNoChangesError] = useState<string | null>(null); // Para manejar errores de no cambios
 
   const validateForm = () => {
-    const newErrors = {};
+    const newErrors: Partial<User> = {};
     if (!formData.ci) newErrors.ci = "CI es requerido";
     if (!formData.extension) newErrors.extension = "Extensión es requerida";
-    if (!formData.cm) newErrors.cm = "Carnet Militar es requerido";
-    if (!formData.correo) newErrors.correo = "Correo Electrónico es requerido";
+    if (!formData.email) newErrors.email = "Correo Electrónico es requerido";
     if (!formData.grado) newErrors.grado = "Grado es requerido";
     if (!formData.especialidad)
       newErrors.especialidad = "Especialidad es requerida";
@@ -45,21 +62,52 @@ const FormPersonalEdit = ({ formData, handleChange, handleSubmit }) => {
     return newErrors;
   };
 
-  const handleConfirm = (e) => {
+  const handleConfirm = (e: React.FormEvent) => {
     e.preventDefault();
     const errors = validateForm();
+    const modifiedFields = getModifiedFields(formData, formDataEdit);
+
     if (Object.keys(errors).length === 0) {
-      setConfirmModalOpen(true);
+      if (Object.keys(modifiedFields).length === 0 && !showPasswordFields) {
+        // Si no hay cambios y no se está modificando la contraseña
+        setNoChangesError("No se ha modificado ningún campo.");
+      } else {
+        setConfirmModalOpen(true);
+        setNoChangesError(null);
+        setModifiedData(
+          password !== ""
+            ? {
+                password,
+                ...modifiedFields,
+                id: formDataEdit.id,
+              }
+            : {
+                ...modifiedFields,
+                id: formDataEdit.id,
+              },
+        );
+      }
     } else {
       setLocalErrors(errors);
     }
   };
 
+  function getModifiedFields(obj1, obj2) {
+    const modifiedFields = {};
+
+    for (const key in obj2) {
+      if (obj2.hasOwnProperty(key)) {
+        if (obj2[key] !== obj1[key]) {
+          modifiedFields[key] = obj2[key];
+        }
+      }
+    }
+
+    return modifiedFields;
+  }
+
   const handleConfirmSubmit = () => {
     setConfirmModalOpen(false);
-    if (showPasswordFields) {
-      handleChange({ target: { id: "password", value: password } });
-    }
     handleSubmit();
   };
 
@@ -73,99 +121,105 @@ const FormPersonalEdit = ({ formData, handleChange, handleSubmit }) => {
         onSubmit={handleConfirm}
         className="grid grid-cols-1 md:grid-cols-2 gap-4"
       >
+        {/* Mostrar mensaje de error si no se realizaron cambios */}
+        {noChangesError && (
+          <div className="col-span-1 md:col-span-2 text-red-500 mb-4">
+            {noChangesError}
+          </div>
+        )}
+
+        {/* Los campos de información personal */}
         <Input
           id="ci"
           label="CI"
           placeholder="Cédula de Identidad"
-          value={formData.ci}
-          onChange={handleChange}
+          value={formDataEdit.ci}
+          onChange={handleChangeEdit}
           error={localErrors.ci}
         />
         <Select
           id="extension"
           label="Extensión"
           options={departamentos}
-          value={formData.extension}
-          onChange={handleChange}
+          value={formDataEdit.extension}
+          onChange={handleChangeEdit}
           error={localErrors.extension}
-        />
-        <Input
-          id="cm"
-          label="Carnet Militar"
-          placeholder="Carnet Militar"
-          value={formData.cm}
-          onChange={handleChange}
-          error={localErrors.cm}
         />
         <Input
           id="correo"
           label="Correo Electrónico"
           placeholder="Correo Electrónico"
-          value={formData.correo}
-          onChange={handleChange}
-          error={localErrors.correo}
+          value={formDataEdit.email}
+          onChange={handleChangeEdit}
+          error={localErrors.email}
         />
         <Select
           id="grado"
           label="Grado"
           options={grados}
-          value={formData.grado}
-          onChange={handleChange}
+          value={formDataEdit.grado}
+          onChange={handleChangeEdit}
           error={localErrors.grado}
         />
         <Select
           id="especialidad"
           label="Especialidad"
           options={especialidades}
-          value={formData.especialidad}
-          onChange={handleChange}
+          value={
+            formData.especialidad === "Sin Especialidad"
+              ? "-"
+              : formData.especialidad
+          }
+          onChange={handleChangeEdit}
           error={localErrors.especialidad}
         />
         <Input
           id="nombre"
           label="Nombre"
           placeholder="Nombre"
-          value={formData.nombre}
-          onChange={handleChange}
+          value={formDataEdit.nombre}
+          onChange={handleChangeEdit}
           error={localErrors.nombre}
         />
         <Input
           id="apellidoPaterno"
           label="Apellido Paterno"
           placeholder="Apellido Paterno"
-          value={formData.apellidoPaterno}
-          onChange={handleChange}
+          value={formDataEdit.apellidoPaterno}
+          onChange={handleChangeEdit}
           error={localErrors.apellidoPaterno}
         />
         <Input
           id="apellidoMaterno"
           label="Apellido Materno"
           placeholder="Apellido Materno"
-          value={formData.apellidoMaterno}
-          onChange={handleChange}
+          value={formDataEdit.apellidoMaterno}
+          onChange={handleChangeEdit}
           error={localErrors.apellidoMaterno}
         />
         <Select
-          id="inSystemPermission"
+          id="inSystemPermissions"
           label="Permiso en Sistema"
           options={inSystemPermissions}
-          value={formData.inSystemPermission}
-          onChange={handleChange}
+          value={formDataEdit.inSystemPermissions}
+          onChange={handleChangeEdit}
         />
         <Select
           id="rol"
           label="Rol"
           options={roles}
-          value={formData.rol}
-          onChange={handleChange}
+          value={formDataEdit.rol}
+          onChange={handleChangeEdit}
         />
         <Select
           id="estado"
           label="Estado"
           options={estados}
-          value={formData.estado}
-          onChange={handleChange}
+          value={formDataEdit.estado}
+          onChange={handleChangeEdit}
         />
+
+        {/* Botón para mostrar/ocultar los campos de contraseña */}
         <div className="flex justify-end col-span-1 md:col-span-2">
           <button
             type="button"
@@ -175,17 +229,16 @@ const FormPersonalEdit = ({ formData, handleChange, handleSubmit }) => {
             {showPasswordFields ? "Cancelar" : "Modificar Contraseña"}
           </button>
         </div>
+
+        {/* Campos para cambiar la contraseña */}
         {showPasswordFields && (
           <>
             <Input
               id="password"
               label="Nueva Contraseña"
               placeholder="Nueva Contraseña"
-              value={
-                formData.password ||
-                (formData.password === "" ? "" : formData.password)
-              }
-              onChange={handleChange}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               error={localErrors.password}
             />
             <Input
@@ -203,6 +256,8 @@ const FormPersonalEdit = ({ formData, handleChange, handleSubmit }) => {
             )}
           </>
         )}
+
+        {/* Botón para enviar el formulario */}
         <div className="flex justify-end mt-4 col-span-1 md:col-span-2">
           <button
             type="submit"
@@ -213,6 +268,7 @@ const FormPersonalEdit = ({ formData, handleChange, handleSubmit }) => {
         </div>
       </form>
 
+      {/* Modal de confirmación */}
       {isConfirmModalOpen && (
         <Modal
           title="Confirmación"

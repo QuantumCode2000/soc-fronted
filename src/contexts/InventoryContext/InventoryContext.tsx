@@ -9,7 +9,7 @@ import { inventario as initialInventario } from "../../data/inventario";
 
 // Definición de la interfaz para el inventario
 interface InventarioItem {
-  nro: number;
+  id: number;
   nombreUnidad: string;
   codigo: string;
   raza: string;

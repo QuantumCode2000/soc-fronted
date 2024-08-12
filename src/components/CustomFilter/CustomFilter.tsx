@@ -1,17 +1,31 @@
 import React from "react";
 
-const CustomFilter = ({
+// Define el tipo para cada columna
+interface Column {
+  key: string;
+  label: string;
+}
+
+// Define los tipos para las props del componente
+interface CustomFilterProps {
+  columns: Column[];
+  selectedColumn: string;
+  filterText: string;
+  onColumnChange: (columnKey: string) => void;
+  onFilterChange: (filterText: string) => void;
+}
+
+const CustomFilter: React.FC<CustomFilterProps> = ({
   columns,
   selectedColumn,
   filterText,
   onColumnChange,
   onFilterChange,
-  onSearch,
 }) => {
   return (
     <div className="mb-4 flex flex-col space-y-4">
       <div className="flex flex-wrap items-center space-x-2">
-        <label className="text-gray-800 mr-2">Realizar busqueda:</label>
+        <label className="text-gray-800 mr-2">Realizar búsqueda:</label>
         {columns.map((column) => (
           <button
             key={column.key}
@@ -25,12 +39,6 @@ const CustomFilter = ({
             {column.label}
           </button>
         ))}
-        <button
-          onClick={onSearch}
-          className="ml-auto px-3 py-1 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-        >
-          Buscar
-        </button>
       </div>
       {selectedColumn && (
         <div className="mt-2">
