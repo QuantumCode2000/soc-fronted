@@ -75,6 +75,8 @@ const PartesInmediatos = ({ tipoGanado, unidad }) => {
   const { inventario, addInventarioItem, updateInventarioItem } =
     useInventory();
 
+  console.log("partesInmediatos", inventario);
+
   const closeModal = () => {
     setOpenModal(false);
     setIsEdit(false);
@@ -123,11 +125,12 @@ const PartesInmediatos = ({ tipoGanado, unidad }) => {
         formData.novedad === "Falta" ||
         formData.novedad === "Venta"
       ) {
-        const itemIndex = inventario.findIndex(
-          (item) => item.nroArete === formData.nroArete,
+        const itemId = inventario.find(
+          (item) => item.codigo === formData.codigo,
         );
-        if (itemIndex !== -1) {
-          const updatedItem = { ...inventario[itemIndex], enInventario: "No" };
+        console.log("itemIndex", itemId);
+        if (itemId) {
+          const updatedItem = { id: itemId.id, enInventario: "No" };
           updateInventarioItem(updatedItem);
         }
       }

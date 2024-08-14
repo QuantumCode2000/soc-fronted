@@ -72,6 +72,7 @@ const InventoryProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
 
   // Función para actualizar un elemento del inventario
   const updateInventarioItem = async (updatedItem: Partial<InventarioItem>) => {
+    console.log("DATA UPDATE", updatedItem);
     const { id, ...rest } = updatedItem;
     try {
       const response = await axios.patch(
