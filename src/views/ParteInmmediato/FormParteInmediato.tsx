@@ -230,7 +230,8 @@ const FormParteInmediato: React.FC<FormParteInmediatoProps> = ({
         </div>
         {renderInput("fechaSuceso", "Fecha Suceso", "Fecha Suceso", "date")}
         {renderInput("codigo", "Código", "Código")}
-        {renderInput("nroArete", "Nº Arete", "Nº Arete", "text", true)}
+        {renderInput("nroArete", "Nº Arete", "Nº Arete", "text")}
+
         <Select
           id="raza"
           label="Raza"
