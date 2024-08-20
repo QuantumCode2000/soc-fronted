@@ -646,6 +646,7 @@ const ReportesKPI: React.FC = () => {
           <div className="grid grid-cols-12 grid-rows-3 gap-4 h-[400px] items-center justify-center p-5 bg-white rounded-lg shadow-lg">
             <div className="col-span-3 row-span-3">
               <Percent
+                isNacimiento={true}
                 cantidadActual={nacimientosRegistrados}
                 cantidadMaxima={parseInt(nacimientosPrevistos.toFixed(0), 10)}
                 setPercent={setPercent}

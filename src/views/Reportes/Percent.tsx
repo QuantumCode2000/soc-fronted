@@ -10,6 +10,7 @@ const Percent: React.FC<PercentProps> = ({
   cantidadActual,
   cantidadMaxima,
   setPercent,
+  isNacimiento,
 }) => {
   const percent = (cantidadActual / cantidadMaxima) * 100;
   setPercent(percent);
@@ -45,7 +46,10 @@ const Percent: React.FC<PercentProps> = ({
             percent,
           )}%`}</span>
           <div className="text-lg text-gray-700 mt-2">{`${cantidadActual} / ${cantidadMaxima} I.Z.`}</div>
-          <div className="text-lg text-gray-700 mt-2">{`${cantidadActual} / ${cantidadMaxima} IA.`}</div>
+          {isNacimiento && (
+            
+            <div className="text-lg text-gray-700 mt-2">{`${cantidadActual} / ${cantidadMaxima} IA.`}</div>
+          )}
         </div>
       </div>
     </div>
