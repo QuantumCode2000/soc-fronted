@@ -165,6 +165,16 @@ const optionsAdmin = [
       },
     ],
   },
+  {
+    text: "KPI Reportes",
+    options: [
+      {
+        to: "/reportes-kpi",
+        icon: <BiSolidReport />,
+        text: "KPI Reportes",
+      },
+    ],
+  },
 ];
 
 export { optionsAdmin, optionsGeneration };

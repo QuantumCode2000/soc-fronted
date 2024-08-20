@@ -11,7 +11,7 @@ import { useUsers } from "./contexts/UsersContext/UsersContext";
 import Reportes from "./views/Reportes/Reportes";
 import ReporteNovedades from "./views/Reportes/ReportesNovedades";
 import CuadroDeMandoContainer from "./views/CuadrodeMando/CuadroDeMandoContainer";
-
+import ReportesKPI from "./views/Reportes/ReportesKPI";
 function App() {
   const { users } = useUsers();
   const currentLocalStorageUser = localStorage.getItem("user");
@@ -41,6 +41,14 @@ function App() {
         </PrivateRoute>
       ),
       children: [
+        {
+          path: "Reportes-KPI",
+          element: (
+            <PrivateRoute requiredRole="Administrador">
+              <ReportesKPI />
+            </PrivateRoute>
+          ),
+        },
         {
           path: "registro-personal",
           element: (
