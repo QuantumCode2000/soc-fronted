@@ -365,11 +365,11 @@ const ParteActualizado = ({ unidad, tipoGanado }) => {
       const edad = calculateAge(item.fechaNac);
       if (tipoGanado === "Bovino") {
         if (edad <= 1) {
-          return item.sexo === "Macho" ? "Terneros" : "Terneras";
+          return item.sexo === "Macho" ? "TERNEROS" : "TERNERAS";
         } else if (edad <= 3) {
-          return item.sexo === "Macho" ? "Torillos" : "Vaquillas";
+          return item.sexo === "Macho" ? "TORILLOS" : "VAQUILLAS";
         } else if (edad <= 10) {
-          return item.sexo === "Macho" ? "Toros" : "Vacas";
+          return item.sexo === "Macho" ? "TOROS" : "VACAS";
         } else {
           return "BUEYES";
         }
@@ -377,9 +377,9 @@ const ParteActualizado = ({ unidad, tipoGanado }) => {
         if (edad <= 2 / 12) {
           return "GAZAPOS";
         } else if (edad <= 1) {
-          return item.sexo === "Macho" ? "RECRIA_Macho" : "RECRIA_HEMBRA";
+          return item.sexo === "MACHO" ? "RECRIA_MACHO" : "RECRIA_HEMBRA";
         } else {
-          return item.sexo === "Macho"
+          return item.sexo === "MACHO"
             ? "MACHO_REPRODUCTOR"
             : "HEMBRA_REPRODUCTOR";
         }
