@@ -365,11 +365,11 @@ const ParteActualizado = ({ unidad, tipoGanado }) => {
       const edad = calculateAge(item.fechaNac);
       if (tipoGanado === "Bovino") {
         if (edad <= 1) {
-          return item.sexo === "MACHO" ? "TERNEROS" : "TERNERAS";
+          return item.sexo === "Macho" ? "Terneros" : "Terneras";
         } else if (edad <= 3) {
-          return item.sexo === "MACHO" ? "TORILLOS" : "VAQUILLAS";
+          return item.sexo === "Macho" ? "Torillos" : "Vaquillas";
         } else if (edad <= 10) {
-          return item.sexo === "MACHO" ? "TOROS" : "VACAS";
+          return item.sexo === "Macho" ? "Toros" : "Vacas";
         } else {
           return "BUEYES";
         }
@@ -377,9 +377,9 @@ const ParteActualizado = ({ unidad, tipoGanado }) => {
         if (edad <= 2 / 12) {
           return "GAZAPOS";
         } else if (edad <= 1) {
-          return item.sexo === "MACHO" ? "RECRIA_MACHO" : "RECRIA_HEMBRA";
+          return item.sexo === "Macho" ? "RECRIA_Macho" : "RECRIA_HEMBRA";
         } else {
-          return item.sexo === "MACHO"
+          return item.sexo === "Macho"
             ? "MACHO_REPRODUCTOR"
             : "HEMBRA_REPRODUCTOR";
         }
@@ -520,9 +520,7 @@ const ParteActualizado = ({ unidad, tipoGanado }) => {
                 className={`border-b ${
                   rowIndex % 2 === 0 ? "bg-gray-100" : "bg-gray-200"
                 } ${
-                  row.detalle === "Ef. Total"
-                    ? "bg-yellow-200 font-bold"
-                    : ""
+                  row.detalle === "Ef. Total" ? "bg-yellow-200 font-bold" : ""
                 }`}
               >
                 {Object.keys(headersParteActualizado).map((key, colIndex) => (
