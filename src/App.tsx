@@ -12,6 +12,7 @@ import Reportes from "./views/Reportes/Reportes";
 import ReporteNovedades from "./views/Reportes/ReportesNovedades";
 import CuadroDeMandoContainer from "./views/CuadrodeMando/CuadroDeMandoContainer";
 import ReportesKPI from "./views/Reportes/ReportesKPI";
+import ParteGeneral from "./views/ParteGeneral/ParteGeneral";
 function App() {
   const { users } = useUsers();
   const currentLocalStorageUser = localStorage.getItem("user");
@@ -46,6 +47,14 @@ function App() {
           element: (
             <PrivateRoute requiredRole="Administrador">
               <ReportesKPI />
+            </PrivateRoute>
+          ),
+        },
+        {
+          path: "parte-general",
+          element: (
+            <PrivateRoute requiredRole="Administrador">
+              <ParteGeneral />
             </PrivateRoute>
           ),
         },

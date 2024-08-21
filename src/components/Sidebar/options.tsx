@@ -141,6 +141,16 @@ const optionsAdmin = [
     ],
   },
   {
+    text: "Parte General",
+    options: [
+      {
+        to: "/parte-general",
+        icon: <MdOutlineInventory />,
+        text: "Visualizar Parte",
+      },
+    ],
+  },
+  {
     text: "Reportes",
     options: [
       {
