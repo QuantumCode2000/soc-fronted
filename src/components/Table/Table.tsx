@@ -1,10 +1,16 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import Rows from "./Rows";
 import RowHeader from "./RowHeader";
 import CustomFilter from "../CustomFilter/CustomFilter";
 import Pagination from "./Pagination";
 
-const Table = ({ header, body, renderCell }) => {
+interface TableProps {
+  header: { [key: string]: string }; // header es un objeto con claves y etiquetas de columnas
+  body: Array<{ [key: string]: any }>; // body es un array de objetos que representan las filas
+  renderCell: (value: any, key: string, rowIndex: number) => JSX.Element; // Función para renderizar celdas
+}
+
+const Table: React.FC<TableProps> = ({ header, body, renderCell }) => {
   const [selectedColumn, setSelectedColumn] = useState(Object.keys(header)[0]);
   const [filterText, setFilterText] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -13,12 +19,12 @@ const Table = ({ header, body, renderCell }) => {
   const headerValues = Object.values(header);
   const headerKeys = Object.keys(header);
 
-  const handleFilterChange = (text) => {
+  const handleFilterChange = (text: string) => {
     setFilterText(text);
     setCurrentPage(1);
   };
 
-  const handleColumnChange = (column) => {
+  const handleColumnChange = (column: string) => {
     setSelectedColumn(column);
     setCurrentPage(1);
   };

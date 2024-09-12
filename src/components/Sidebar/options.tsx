@@ -26,66 +26,7 @@ const optionsGeneration = (unidad: string) => {
         },
       ],
     },
-    {
-      text: "Ganado Cuyicola",
-      options: [
-        {
-          to: `/inventario/cuyicola/${unidad}`,
-          icon: <MdOutlineInventory />,
-          text: "Inventario",
-        },
-        {
-          to: `/parte-inmediato/cuyicola/${unidad}`,
-          icon: <CgNotes />,
-          text: "Parte Inmediato",
-        },
-        {
-          to: `parte-actualizado/cuyicola/${unidad}`,
-          icon: <RxUpdate />,
-          text: "Parte Actualizado",
-        },
-      ],
-    },
-    {
-      text: "Ganado Porcino",
-      options: [
-        {
-          to: `/inventario/porcino/${unidad}`,
-          icon: <MdOutlineInventory />,
-          text: "Inventario",
-        },
-        {
-          to: `/parte-inmediato/porcino/${unidad}`,
-          icon: <CgNotes />,
-          text: "Parte Inmediato",
-        },
-        {
-          to: `parte-actualizado/porcino/${unidad}`,
-          icon: <RxUpdate />,
-          text: "Parte Actualizado",
-        },
-      ],
-    },
-    {
-      text: "Ganado Avicola",
-      options: [
-        {
-          to: `/inventario/avicola/${unidad}`,
-          icon: <MdOutlineInventory />,
-          text: "Inventario",
-        },
-        {
-          to: `/parte-inmediato/avicola/${unidad}`,
-          icon: <CgNotes />,
-          text: "Parte Inmediato",
-        },
-        {
-          to: `parte-actualizado/avicola/${unidad}`,
-          icon: <RxUpdate />,
-          text: "Parte Actualizado",
-        },
-      ],
-    },
+
     {
       text: "Ganado Equino",
       options: [
@@ -101,26 +42,6 @@ const optionsGeneration = (unidad: string) => {
         },
         {
           to: `parte-actualizado/equino/${unidad}`,
-          icon: <RxUpdate />,
-          text: "Parte Actualizado",
-        },
-      ],
-    },
-    {
-      text: "Ganado Psicola",
-      options: [
-        {
-          to: `/inventario/psicola/${unidad}`,
-          icon: <MdOutlineInventory />,
-          text: "Inventario",
-        },
-        {
-          to: `/parte-inmediato/psicola/${unidad}`,
-          icon: <CgNotes />,
-          text: "Parte Inmediato",
-        },
-        {
-          to: `parte-actualizado/psicola/${unidad}`,
           icon: <RxUpdate />,
           text: "Parte Actualizado",
         },

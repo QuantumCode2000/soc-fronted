@@ -53,8 +53,10 @@ const novedades = [
   "Compra",
   "Venta",
 ];
-const sexos = ["Macho", "Hembra"];
 
+const motivos = ["Motivo 1", "Motivo 2", "Motivo 3", "Motivo 4"];
+
+const sexos = ["Macho", "Hembra"];
 const razasBovinos = ["Nelore", "Angus", "Brahman", "Hereford", "Charolais"];
 const razasCuyes = ["Peruano", "Americano", "Abisinio", "Peruano"];
 const razasEquinos = ["Peruano de paso", "Cuarto de milla", "Percheron"];
@@ -77,22 +79,47 @@ const FormParteInmediato: React.FC<FormParteInmediatoProps> = ({
   );
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
 
-  const validateForm = () => {
+  const validateForm = (): Partial<ParteInmediatoItem> => {
     const newErrors: Partial<ParteInmediatoItem> = {};
+
+    // Validación de duplicados para Compra y Nacimiento
+    if (
+      (formData.novedad === "Compra" || formData.novedad === "Nacimiento") &&
+      inventario.some((item) => item.codigo === formData.codigo)
+    ) {
+      newErrors.codigo = "El código ya existe en el inventario";
+    }
+
+    if (
+      (formData.novedad === "Compra" || formData.novedad === "Nacimiento") &&
+      inventario.some((item) => item.nroArete === formData.nroArete)
+    ) {
+      newErrors.nroArete = "El número de arete ya existe en el inventario";
+    }
+
+    // Validación de Fecha Suceso vs Fecha Nacimiento para Deceso
+    if (
+      formData.novedad === "Deceso" &&
+      new Date(formData.fechaSuceso) < new Date(formData.fechaNac)
+    ) {
+      newErrors.fechaSuceso =
+        "La fecha de suceso no puede ser antes de la fecha de nacimiento";
+    }
+
     if (!formData.novedad) newErrors.novedad = "Novedad es requerida";
     if (!formData.fechaSuceso)
       newErrors.fechaSuceso = "Fecha Suceso es requerida";
     if (
+      !formData.codigo &&
       formData.novedad !== "Nacimiento" &&
-      formData.novedad !== "Compra" &&
-      !formData.codigo
+      formData.novedad !== "Compra"
     ) {
       newErrors.codigo = "Código es requerido";
     }
     if (
+      !formData.motivo &&
       formData.novedad !== "Nacimiento" &&
-      formData.novedad !== "Compra" &&
-      !formData.motivo
+      formData.novedad !== "Compra"
     ) {
       newErrors.motivo = "Motivo es requerido";
     }
@@ -122,10 +149,6 @@ const FormParteInmediato: React.FC<FormParteInmediatoProps> = ({
     handleSubmit();
   };
 
-  const handleCloseModal = () => {
-    setConfirmModalOpen(false);
-  };
-
   useEffect(() => {
     if (
       formData.codigo &&
@@ -137,41 +160,22 @@ const FormParteInmediato: React.FC<FormParteInmediatoProps> = ({
       );
       if (item) {
         setSelectedAnimal(item);
-        if (formData.nroArete !== item.nroArete) {
-          handleChange({
-            target: { id: "nroArete", value: item.nroArete },
-          } as React.ChangeEvent<HTMLInputElement>);
-        }
-        if (formData.raza !== item.raza) {
-          handleChange({
-            target: { id: "raza", value: item.raza },
-          } as React.ChangeEvent<HTMLInputElement>);
-        }
-        if (formData.color !== item.color) {
-          handleChange({
-            target: { id: "color", value: item.color },
-          } as React.ChangeEvent<HTMLInputElement>);
-        }
-        if (formData.marcaCarimbo !== item.marcaCarimbo) {
-          handleChange({
-            target: { id: "marcaCarimbo", value: item.marcaCarimbo },
-          } as React.ChangeEvent<HTMLInputElement>);
-        }
-        if (formData.sexo !== item.sexo) {
-          handleChange({
-            target: { id: "sexo", value: item.sexo },
-          } as React.ChangeEvent<HTMLInputElement>);
-        }
-        if (formData.categoria !== item.categoria) {
-          handleChange({
-            target: { id: "categoria", value: item.categoria },
-          } as React.ChangeEvent<HTMLInputElement>);
-        }
-        if (formData.fechaNac !== item.fechaNac) {
-          handleChange({
-            target: { id: "fechaNac", value: item.fechaNac },
-          } as React.ChangeEvent<HTMLInputElement>);
-        }
+        const formUpdates = [
+          "nroArete",
+          "raza",
+          "color",
+          "marcaCarimbo",
+          "sexo",
+          "categoria",
+          "fechaNac",
+        ] as const;
+        formUpdates.forEach((field) => {
+          if (formData[field] !== item[field]) {
+            handleChange({
+              target: { id: field, value: item[field] },
+            } as React.ChangeEvent<HTMLInputElement>);
+          }
+        });
       } else {
         setSelectedAnimal(null);
       }
@@ -184,32 +188,36 @@ const FormParteInmediato: React.FC<FormParteInmediatoProps> = ({
     placeholder: string,
     type: string = "text",
     disabled: boolean = false,
-  ) => (
-    <div className="flex items-center">
-      {id === "fechaSuceso" && (
-        <FaCalendarAlt className="mr-2 text-green-500" />
-      )}
-      {id === "nroArete" && <FaHashtag className="mr-2 text-gray-500" />}
-      {id === "codigo" && <FaBarcode className="mr-2 text-gray-500" />}
-      {id === "raza" && <FaPaw className="mr-2 text-pink-500" />}
-      {id === "color" && <FaPalette className="mr-2 text-yellow-500" />}
-      {id === "marcaCarimbo" && <FaTags className="mr-2 text-red-500" />}
-      {id === "sexo" && <FaVenusMars className="mr-2 text-purple-500" />}
-      {id === "categoria" && <FaListAlt className="mr-2 text-teal-500" />}
-      {id === "fechaNac" && <FaBirthdayCake className="mr-2 text-orange-500" />}
-      {id === "motivo" && <FaComment className="mr-2 text-blue-400" />}
-      <Input
-        id={id}
-        label={label}
-        placeholder={placeholder}
-        type={type}
-        value={formData[id] || ""}
-        onChange={handleChange}
-        error={localErrors[id]}
-        disabled={disabled}
-      />
-    </div>
-  );
+  ) => {
+    const iconMap: { [key in keyof ParteInmediatoItem]?: React.ReactNode } = {
+      fechaSuceso: <FaCalendarAlt className="mr-2 text-green-500" />,
+      nroArete: <FaHashtag className="mr-2 text-gray-500" />,
+      codigo: <FaBarcode className="mr-2 text-gray-500" />,
+      raza: <FaPaw className="mr-2 text-pink-500" />,
+      color: <FaPalette className="mr-2 text-yellow-500" />,
+      marcaCarimbo: <FaTags className="mr-2 text-red-500" />,
+      sexo: <FaVenusMars className="mr-2 text-purple-500" />,
+      categoria: <FaListAlt className="mr-2 text-teal-500" />,
+      fechaNac: <FaBirthdayCake className="mr-2 text-orange-500" />,
+      motivo: <FaComment className="mr-2 text-blue-400" />,
+    };
+
+    return (
+      <div className="flex items-center">
+        {iconMap[id]}
+        <Input
+          id={id}
+          label={label}
+          placeholder={placeholder}
+          type={type}
+          value={String(formData[id] || "")} // Convertir siempre el value a string
+          onChange={handleChange}
+          error={localErrors[id] ? String(localErrors[id]) : undefined} // Asegurar que el error sea string o undefined
+          disabled={disabled}
+        />
+      </div>
+    );
+  };
 
   return (
     <div className="container mx-auto p-6">
@@ -228,6 +236,7 @@ const FormParteInmediato: React.FC<FormParteInmediatoProps> = ({
             error={localErrors.novedad}
           />
         </div>
+
         {renderInput("fechaSuceso", "Fecha Suceso", "Fecha Suceso", "date")}
         {renderInput("codigo", "Código", "Código")}
         {renderInput("nroArete", "Nº Arete", "Nº Arete", "text")}
@@ -252,6 +261,7 @@ const FormParteInmediato: React.FC<FormParteInmediatoProps> = ({
         />
         {renderInput("color", "Color", "Color")}
         {renderInput("marcaCarimbo", "Marca y Carimbo", "Marca y Carimbo")}
+
         <Select
           id="sexo"
           label="Sexo"
@@ -309,7 +319,14 @@ const FormParteInmediato: React.FC<FormParteInmediatoProps> = ({
                 </p>
               </>
             )}
-            {renderInput("motivo", "Motivo", "Motivo")}
+            <Select
+              id="motivo"
+              label="Motivo"
+              options={motivos}
+              value={formData.motivo}
+              onChange={handleChange}
+              error={localErrors.motivo}
+            />
           </div>
         )}
         <div className="flex justify-end col-span-1 md:col-span-2 mt-4">
@@ -326,13 +343,13 @@ const FormParteInmediato: React.FC<FormParteInmediatoProps> = ({
         <Modal
           title="Confirmación"
           isOpen={confirmModalOpen}
-          onClose={handleCloseModal}
+          onClose={() => setConfirmModalOpen(false)}
         >
           <p>¿Está seguro de que desea registrar esta información?</p>
           <div className="flex justify-end mt-4">
             <button
               className="bg-gray-300 text-black px-4 py-2 rounded mr-2"
-              onClick={handleCloseModal}
+              onClick={() => setConfirmModalOpen(false)}
             >
               Cancelar
             </button>

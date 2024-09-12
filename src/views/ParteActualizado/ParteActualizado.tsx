@@ -1,6 +1,21 @@
+import React from "react";
 import { useInventory } from "../../contexts/InventoryContext/InventoryContext";
 import { usePartesInmediatos } from "../../contexts/PartesInmediatos/PartesInmediatosContext";
 import Content from "../../components/Content/Content";
+
+interface Categoria {
+  rango: string;
+  efectivoInventario: number;
+  deceso: number;
+  descarte: number;
+  nacimiento: number;
+  compra: number;
+  falta: number;
+  venta: number;
+  efectivoActual: number;
+  efectivoVerificado: number; // Nuevo campo para Ef. Verificado
+  observaciones: string;
+}
 
 const headersParteActualizado = {
   detalle: "Detalle",
@@ -8,22 +23,54 @@ const headersParteActualizado = {
   efectivoInventario: "Ef. Inventario",
   deceso: "Deceso",
   descarte: "Descarte",
-  nacimiento: "Nacimiento",
   compra: "Compra",
   falta: "Falta",
-  venta: "Venta",
   efectivoActual: "Efectivo Actual",
-  observaciones: "Obs.",
+  efectivoVerificado: "Ef. Verificado",
 };
 
-const calculateAge = (birthdate) => {
+const headersNacimientos = {
+  detalle: "Detalle",
+  rango: "Rango",
+  nacimiento: "Nacimiento",
+};
+
+const headersHembras = {
+  detalle: "Detalle",
+  efectivo: "Efectivo",
+  subtotalGc: "SUBTOTAL GC",
+  total: "Total",
+  nacimientoFecha: "NACIM. A LA FECHA",
+  ejecucion: "% EJEC.",
+  meta2024: "META 2024",
+};
+
+const calculateAge = (birthdate: string): number => {
   const birthDate = new Date(birthdate);
-  const ageDifMs = Date.now() - birthDate.getTime();
-  const ageDate = new Date(ageDifMs);
-  return Math.abs(ageDate.getUTCFullYear() - 1970);
+  const currentDate = new Date();
+  const yearDifference = currentDate.getFullYear() - birthDate.getFullYear();
+  const monthDifference = currentDate.getMonth() - birthDate.getMonth();
+  const dayDifference = currentDate.getDate() - birthDate.getDate();
+  let age = yearDifference;
+  if (monthDifference < 0 || (monthDifference === 0 && dayDifference < 0)) {
+    age -= 1;
+  }
+  const months = monthDifference < 0 ? 12 + monthDifference : monthDifference;
+  const daysInMonth = new Date(
+    currentDate.getFullYear(),
+    currentDate.getMonth() + 1,
+    0,
+  ).getDate();
+  const days = dayDifference < 0 ? daysInMonth + dayDifference : dayDifference;
+
+  const ageInDecimals = age + months / 12 + days / (12 * daysInMonth);
+
+  return parseFloat(ageInDecimals.toFixed(2));
 };
 
-const getCategorias = (tipoGanado) => {
+const getCategorias = (
+  tipoGanado: string,
+): { [key: string]: Categoria } | undefined => {
   if (tipoGanado === "Bovino") {
     return {
       TERNEROS: {
@@ -36,6 +83,7 @@ const getCategorias = (tipoGanado) => {
         falta: 0,
         venta: 0,
         efectivoActual: 0,
+        efectivoVerificado: 0,
         observaciones: "",
       },
       TERNERAS: {
@@ -48,6 +96,7 @@ const getCategorias = (tipoGanado) => {
         falta: 0,
         venta: 0,
         efectivoActual: 0,
+        efectivoVerificado: 0,
         observaciones: "",
       },
       TORILLOS: {
@@ -60,6 +109,7 @@ const getCategorias = (tipoGanado) => {
         falta: 0,
         venta: 0,
         efectivoActual: 0,
+        efectivoVerificado: 0,
         observaciones: "",
       },
       VAQUILLAS: {
@@ -72,6 +122,7 @@ const getCategorias = (tipoGanado) => {
         falta: 0,
         venta: 0,
         efectivoActual: 0,
+        efectivoVerificado: 0,
         observaciones: "",
       },
       TOROS: {
@@ -84,6 +135,7 @@ const getCategorias = (tipoGanado) => {
         falta: 0,
         venta: 0,
         efectivoActual: 0,
+        efectivoVerificado: 0,
         observaciones: "",
       },
       VACAS: {
@@ -96,6 +148,7 @@ const getCategorias = (tipoGanado) => {
         falta: 0,
         venta: 0,
         efectivoActual: 0,
+        efectivoVerificado: 0,
         observaciones: "",
       },
       BUEYES: {
@@ -108,260 +161,37 @@ const getCategorias = (tipoGanado) => {
         falta: 0,
         venta: 0,
         efectivoActual: 0,
+        efectivoVerificado: 0,
         observaciones: "",
       },
-    };
-  } else if (tipoGanado === "Cuyicola") {
-    return {
-      HEMBRA_REPRODUCTOR: {
-        rango: "12 SEM - 2 AÑOS",
-        efectivoInventario: 0,
-        deceso: 0,
-        descarte: 0,
-        nacimiento: 0,
-        compra: 0,
-        falta: 0,
-        venta: 0,
-        efectivoActual: 0,
-        observaciones: "",
-      },
-      MACHO_REPRODUCTOR: {
-        rango: "12 SEM - 2 AÑOS",
-        efectivoInventario: 0,
-        deceso: 0,
-        descarte: 0,
-        nacimiento: 0,
-        compra: 0,
-        falta: 0,
-        venta: 0,
-        efectivoActual: 0,
-        observaciones: "",
-      },
-      RECRIA_HEMBRA: {
-        rango: "2 - 12 SEM",
-        efectivoInventario: 0,
-        deceso: 0,
-        descarte: 0,
-        nacimiento: 0,
-        compra: 0,
-        falta: 0,
-        venta: 0,
-        efectivoActual: 0,
-        observaciones: "",
-      },
-      RECRIA_MACHO: {
-        rango: "2 - 12 SEM",
-        efectivoInventario: 0,
-        deceso: 0,
-        descarte: 0,
-        nacimiento: 0,
-        compra: 0,
-        falta: 0,
-        venta: 0,
-        efectivoActual: 0,
-        observaciones: "",
-      },
-      GAZAPOS: {
-        rango: "0 - 2 SEM",
-        efectivoInventario: 0,
-        deceso: 0,
-        descarte: 0,
-        nacimiento: 0,
-        compra: 0,
-        falta: 0,
-        venta: 0,
-        efectivoActual: 0,
-        observaciones: "",
-      },
-    };
-  } else if (tipoGanado === "Equino") {
-    return {
-      MACHOS: {
-        rango: "1 > AÑOS",
-        efectivoInventario: 0,
-        deceso: 0,
-        descarte: 0,
-        nacimiento: 0,
-        compra: 0,
-        falta: 0,
-        venta: 0,
-        efectivoActual: 0,
-        observaciones: "",
-      },
-      HEMBRAS: {
-        rango: "1 > AÑOS",
-        efectivoInventario: 0,
-        deceso: 0,
-        descarte: 0,
-        nacimiento: 0,
-        compra: 0,
-        falta: 0,
-        venta: 0,
-        efectivoActual: 0,
-        observaciones: "",
-      },
-      CRIAS_MACHOS: {
-        rango: "0 - 1 AÑO",
-        efectivoInventario: 0,
-        deceso: 0,
-        descarte: 0,
-        nacimiento: 0,
-        compra: 0,
-        falta: 0,
-        venta: 0,
-        efectivoActual: 0,
-        observaciones: "",
-      },
-      CRIAS_HEMBRAS: {
-        rango: "0 - 1 AÑO",
-        efectivoInventario: 0,
-        deceso: 0,
-        descarte: 0,
-        nacimiento: 0,
-        compra: 0,
-        falta: 0,
-        venta: 0,
-        efectivoActual: 0,
-        observaciones: "",
-      },
-    };
-  } else if (tipoGanado === "Porcino") {
-    return {
-      LECHONES_HEMBRAS: {
-        rango: "0 - 90 DIAS",
-        efectivoInventario: 0,
-        deceso: 0,
-        descarte: 0,
-        nacimiento: 0,
-        compra: 0,
-        falta: 0,
-        venta: 0,
-        efectivoActual: 0,
-        observaciones: "",
-      },
-      LECHONES_MACHOS: {
-        rango: "0 - 90 DIAS",
-        efectivoInventario: 0,
-        deceso: 0,
-        descarte: 0,
-        nacimiento: 0,
-        compra: 0,
-        falta: 0,
-        venta: 0,
-        efectivoActual: 0,
-        observaciones: "",
-      },
-      HEMBRAS_DE_ENGORDE: {
-        rango: "90 - 150 DIAS",
-        efectivoInventario: 0,
-        deceso: 0,
-        descarte: 0,
-        nacimiento: 0,
-        compra: 0,
-        falta: 0,
-        venta: 0,
-        efectivoActual: 0,
-        observaciones: "",
-      },
-      MACHOS_DE_ENGORDE: {
-        rango: "90 - 150 DIAS",
-        efectivoInventario: 0,
-        deceso: 0,
-        descarte: 0,
-        nacimiento: 0,
-        compra: 0,
-        falta: 0,
-        venta: 0,
-        efectivoActual: 0,
-        observaciones: "",
-      },
-      REEMPLAZO_REPROD_HEMBRAS: {
-        rango: "150 - 730 DIAS (2 AÑOS)",
-        efectivoInventario: 0,
-        deceso: 0,
-        descarte: 0,
-        nacimiento: 0,
-        compra: 0,
-        falta: 0,
-        venta: 0,
-        efectivoActual: 0,
-        observaciones: "",
-      },
-      REEMPLAZO_REPROD_MACHOS: {
-        rango: "150 - 730 DIAS (2 AÑOS)",
-        efectivoInventario: 0,
-        deceso: 0,
-        descarte: 0,
-        nacimiento: 0,
-        compra: 0,
-        falta: 0,
-        venta: 0,
-        efectivoActual: 0,
-        observaciones: "",
-      },
-      HEMBRAS_REPRODUCTORAS: {
-        rango: "2 - 10 AÑOS",
-        efectivoInventario: 0,
-        deceso: 0,
-        descarte: 0,
-        nacimiento: 0,
-        compra: 0,
-        falta: 0,
-        venta: 0,
-        efectivoActual: 0,
-        observaciones: "",
-      },
-      MACHOS_REPRODUCTORES: {
-        rango: "2 - 10 AÑOS",
-        efectivoInventario: 0,
-        deceso: 0,
-        descarte: 0,
-        nacimiento: 0,
-        compra: 0,
-        falta: 0,
-        venta: 0,
-        efectivoActual: 0,
-        observaciones: "",
-      },
-      CERDOS_MAYORES: {
-        rango: "10 AÑOS >",
-        efectivoInventario: 0,
-        deceso: 0,
-        descarte: 0,
-        nacimiento: 0,
-        compra: 0,
-        falta: 0,
-        venta: 0,
-        efectivoActual: 0,
-        observaciones: "",
-      },
-    };
-  } else if (tipoGanado === "Avicola") {
-    return {
-      // Agrega las categorías y rangos de edad para aves aquí
-    };
-  } else if (tipoGanado === "Piscicola") {
-    return {
-      // Agrega las categorías y rangos de edad para peces aquí
     };
   }
+  return undefined;
 };
 
-const ParteActualizado = ({ unidad, tipoGanado }) => {
+interface ParteActualizadoProps {
+  unidad: string;
+  tipoGanado: string;
+}
+
+const ParteActualizado: React.FC<ParteActualizadoProps> = ({
+  unidad,
+  tipoGanado,
+}) => {
   const { inventario } = useInventory();
   const { partesInmediatos } = usePartesInmediatos();
 
   const inventarioFiltrado = inventario.filter(
-    (item) => item.unidad === unidad && item.tipoGanado === tipoGanado,
+    (item: any) => item.unidad === unidad && item.tipoGanado === tipoGanado,
   );
   const partesInmediatosFiltrados = partesInmediatos.filter(
-    (item) => item.unidad === unidad && item.tipoGanado === tipoGanado,
+    (item: any) => item.unidad === unidad && item.tipoGanado === tipoGanado,
   );
 
   const calcularDatosTabla = () => {
     const categorias = getCategorias(tipoGanado);
 
-    const asignarCategoria = (item) => {
+    const asignarCategoria = (item: any): string | undefined => {
       const edad = calculateAge(item.fechaNac);
       if (tipoGanado === "Bovino") {
         if (edad <= 1) {
@@ -373,63 +203,40 @@ const ParteActualizado = ({ unidad, tipoGanado }) => {
         } else {
           return "BUEYES";
         }
-      } else if (tipoGanado === "Cuyicola") {
-        if (edad <= 2 / 12) {
-          return "GAZAPOS";
-        } else if (edad <= 1) {
-          return item.sexo === "MACHO" ? "RECRIA_MACHO" : "RECRIA_HEMBRA";
-        } else {
-          return item.sexo === "MACHO"
-            ? "MACHO_REPRODUCTOR"
-            : "HEMBRA_REPRODUCTOR";
-        }
-      } else if (tipoGanado === "Equino") {
-        if (edad <= 1) {
-          return item.sexo === "MACHO" ? "CRIAS_MACHOS" : "CRIAS_HEMBRAS";
-        } else {
-          return item.sexo === "MACHO" ? "MACHOS" : "HEMBRAS";
-        }
-      } else if (tipoGanado === "Porcino") {
-        if (edad <= 90 / 365) {
-          return item.sexo === "MACHO" ? "LECHONES_MACHOS" : "LECHONES_HEMBRAS";
-        } else if (edad <= 150 / 365) {
-          return item.sexo === "MACHO"
-            ? "MACHOS_DE_ENGORDE"
-            : "HEMBRAS_DE_ENGORDE";
-        } else if (edad <= 730 / 365) {
-          return item.sexo === "MACHO"
-            ? "REEMPLAZO_REPROD_MACHOS"
-            : "REEMPLAZO_REPROD_HEMBRAS";
-        } else if (edad <= 10) {
-          return item.sexo === "MACHO"
-            ? "MACHOS_REPRODUCTORES"
-            : "HEMBRAS_REPRODUCTORAS";
-        } else {
-          return "CERDOS_MAYORES";
-        }
       }
-      // Agrega más condiciones para otros tipos de ganado según sea necesario
+      return undefined;
     };
 
-    inventarioFiltrado.forEach((item) => {
-      const categoria = categorias[asignarCategoria(item)];
-      if (categoria) {
+    inventarioFiltrado.forEach((item: any) => {
+      const categoriaKey = asignarCategoria(item);
+      if (categoriaKey && categorias) {
+        const categoria = categorias[categoriaKey];
         categoria.efectivoInventario += 1;
         categoria.efectivoActual += 1;
+        if (calculateAge(item.fechaNac) >= 1) {
+          categoria.efectivoVerificado += 1;
+        }
       }
     });
 
-    partesInmediatosFiltrados.forEach((item) => {
-      const categoria = categorias[asignarCategoria(item)];
-      if (categoria) {
+    partesInmediatosFiltrados.forEach((item: any) => {
+      const categoriaKey = asignarCategoria(item);
+      if (categoriaKey && categorias) {
+        const categoria = categorias[categoriaKey];
         switch (item.novedad) {
           case "Deceso":
             categoria.deceso += 1;
             categoria.efectivoActual -= 1;
+            if (calculateAge(item.fechaNac) >= 1) {
+              categoria.efectivoVerificado -= 1;
+            }
             break;
           case "Descarte":
             categoria.descarte += 1;
             categoria.efectivoActual -= 1;
+            if (calculateAge(item.fechaNac) >= 1) {
+              categoria.efectivoVerificado -= 1;
+            }
             break;
           case "Nacimiento":
             categoria.nacimiento += 1;
@@ -440,10 +247,16 @@ const ParteActualizado = ({ unidad, tipoGanado }) => {
           case "Falta":
             categoria.falta += 1;
             categoria.efectivoActual -= 1;
+            if (calculateAge(item.fechaNac) >= 1) {
+              categoria.efectivoVerificado -= 1;
+            }
             break;
           case "Venta":
             categoria.venta += 1;
             categoria.efectivoActual -= 1;
+            if (calculateAge(item.fechaNac) >= 1) {
+              categoria.efectivoVerificado -= 1;
+            }
             break;
           default:
             break;
@@ -455,6 +268,7 @@ const ParteActualizado = ({ unidad, tipoGanado }) => {
       detalle: "Ef. Total",
       rango: "",
       efectivoInventario: 0,
+      efectivoVerificado: 0,
       deceso: 0,
       descarte: 0,
       nacimiento: 0,
@@ -465,80 +279,258 @@ const ParteActualizado = ({ unidad, tipoGanado }) => {
       observaciones: "",
     };
 
-    const datosTabla = Object.keys(categorias).map((key) => {
-      const categoria = categorias[key];
-      total.efectivoInventario += categoria.efectivoInventario;
-      total.deceso += categoria.deceso;
-      total.descarte += categoria.descarte;
-      total.nacimiento += categoria.nacimiento;
-      total.compra += categoria.compra;
-      total.falta += categoria.falta;
-      total.venta += categoria.venta;
-      total.efectivoActual += categoria.efectivoActual;
-      return {
-        detalle: key,
-        rango: categoria.rango,
-        efectivoInventario: categoria.efectivoInventario,
-        deceso: categoria.deceso,
-        descarte: categoria.descarte,
-        nacimiento: categoria.nacimiento,
-        compra: categoria.compra,
-        falta: categoria.falta,
-        venta: categoria.venta,
-        efectivoActual: categoria.efectivoActual,
-        observaciones: categoria.observaciones,
-      };
-    });
+    const datosTabla = categorias
+      ? Object.keys(categorias).map((key) => {
+          const categoria = categorias[key];
+          total.efectivoInventario += categoria.efectivoInventario;
+          total.efectivoVerificado += categoria.efectivoVerificado;
+          total.deceso += categoria.deceso;
+          total.descarte += categoria.descarte;
+          total.nacimiento += categoria.nacimiento;
+          total.compra += categoria.compra;
+          total.falta += categoria.falta;
+          total.venta += categoria.venta;
+          total.efectivoActual += categoria.efectivoActual;
+          return {
+            detalle: key,
+            rango: categoria.rango,
+            efectivoInventario: categoria.efectivoInventario,
+            efectivoVerificado: categoria.efectivoVerificado,
+            deceso: categoria.deceso,
+            descarte: categoria.descarte,
+            nacimiento: categoria.nacimiento,
+            compra: categoria.compra,
+            falta: categoria.falta,
+            venta: categoria.venta,
+            efectivoActual: categoria.efectivoActual,
+            observaciones: categoria.observaciones,
+          };
+        })
+      : [];
 
     datosTabla.push(total);
 
     return datosTabla;
   };
 
+  const calcularDatosNacimientos = () => {
+    const categorias = getCategorias(tipoGanado);
+
+    return [
+      {
+        detalle: "TERNEROS",
+        rango: categorias?.TERNEROS?.rango || "",
+        nacimiento: categorias?.TERNEROS?.nacimiento || 0,
+      },
+      {
+        detalle: "TERNERAS",
+        rango: categorias?.TERNERAS?.rango || "",
+        nacimiento: categorias?.TERNERAS?.nacimiento || 0,
+      },
+    ];
+  };
+
+  const calcularDatosHembras = () => {
+    return [
+      {
+        detalle: "VACIAS P/MONTA",
+        efectivo: 41,
+        subtotalGc: 55,
+        total: 121,
+        nacimientoFecha: 0,
+        ejecucion: "0%",
+        meta2024: 44,
+      },
+      {
+        detalle: "VACIAS POR LACTANCIA",
+        efectivo: 13,
+        subtotalGc: 0,
+        total: 0,
+        nacimientoFecha: 0,
+        ejecucion: "0%",
+        meta2024: 0,
+      },
+      {
+        detalle: "PRE GESTACIÓN MONTA",
+        efectivo: 0,
+        subtotalGc: 0,
+        total: 0,
+        nacimientoFecha: 0,
+        ejecucion: "0%",
+        meta2024: 0,
+      },
+      {
+        detalle: "PRE GESTACIÓN INSEMIN",
+        efectivo: 0,
+        subtotalGc: 0,
+        total: 0,
+        nacimientoFecha: 1,
+        ejecucion: "2%",
+        meta2024: 44,
+      },
+      {
+        detalle: "GESTACION CONFIRMADA MONTA",
+        efectivo: 33,
+        subtotalGc: 56,
+        total: 56,
+        nacimientoFecha: 0,
+        ejecucion: "0%",
+        meta2024: 0,
+      },
+      {
+        detalle: "GESTACION CONFIRMADA INSEMIN",
+        efectivo: 23,
+        subtotalGc: 0,
+        total: 0,
+        nacimientoFecha: 0,
+        ejecucion: "0%",
+        meta2024: 0,
+      },
+      {
+        detalle: "NO APTAS",
+        efectivo: 10,
+        subtotalGc: 10,
+        total: 10,
+        nacimientoFecha: 0,
+        ejecucion: "0%",
+        meta2024: 0,
+      },
+    ];
+  };
+
   const datosTabla = calcularDatosTabla();
+  const datosNacimientos = calcularDatosNacimientos();
+  const datosHembras = calcularDatosHembras();
 
   return (
     <Content>
-      <div className="overflow-x-auto">
-        <table className="min-w-full bg-white">
-          <thead>
-            <tr>
-              {Object.values(headersParteActualizado).map((title, index) => (
-                <th
-                  key={index}
-                  className="py-2 px-4 bg-gray-800 text-white border-b border-gray-200 text-left text-sm uppercase font-semibold"
-                >
-                  {title}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {datosTabla.map((row, rowIndex) => (
-              <tr
-                key={rowIndex}
-                className={`border-b ${
-                  rowIndex % 2 === 0 ? "bg-gray-100" : "bg-gray-200"
-                } ${
-                  row.detalle === "Ef. Total" ? "bg-yellow-200 font-bold" : ""
-                }`}
-              >
-                {Object.keys(headersParteActualizado).map((key, colIndex) => (
-                  <td
-                    key={colIndex}
-                    className={`py-2 px-4 text-sm ${
-                      key === "efectivoInventario" || key === "efectivoActual"
-                        ? "bg-green-100 font-semibold"
-                        : "text-gray-800"
-                    }`}
+      <div className=" h-full w-full">
+        <div className="overflow-x-auto">
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">
+            Parte del Ganado
+          </h3>
+          <table className="min-w-full bg-white">
+            <thead>
+              <tr>
+                {Object.values(headersParteActualizado).map((title, index) => (
+                  <th
+                    key={index}
+                    className="py-2 px-4 bg-gray-800 text-white border-b border-gray-200 text-left text-sm uppercase font-semibold"
                   >
-                    {row[key]}
-                  </td>
+                    {title}
+                  </th>
                 ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {datosTabla.map((row, rowIndex) => (
+                <tr
+                  key={rowIndex}
+                  className={`border-b ${
+                    rowIndex % 2 === 0 ? "bg-gray-100" : "bg-gray-200"
+                  } ${
+                    row.detalle === "Ef. Total" ? "bg-yellow-200 font-bold" : ""
+                  }`}
+                >
+                  {Object.keys(headersParteActualizado).map((key, colIndex) => (
+                    <td
+                      key={colIndex}
+                      className={`py-2 px-4 text-sm ${
+                        key === "efectivoInventario" ||
+                        key === "efectivoVerificado" ||
+                        key === "efectivoActual"
+                          ? "bg-green-100 font-semibold"
+                          : "text-gray-800"
+                      }`}
+                    >
+                      {row[key as keyof typeof headersParteActualizado]}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Parte Nacimientos */}
+        <div className="overflow-x-auto">
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">
+            Parte Nacimientos
+          </h3>
+          <table className="min-w-full bg-white">
+            <thead>
+              <tr>
+                {Object.values(headersNacimientos).map((title, index) => (
+                  <th
+                    key={index}
+                    className="py-2 px-4 bg-gray-800 text-white border-b border-gray-200 text-left text-sm uppercase font-semibold"
+                  >
+                    {title}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {datosNacimientos.map((row, rowIndex) => (
+                <tr
+                  key={rowIndex}
+                  className={`border-b ${
+                    rowIndex % 2 === 0 ? "bg-gray-100" : "bg-gray-200"
+                  }`}
+                >
+                  {Object.keys(headersNacimientos).map((key, colIndex) => (
+                    <td
+                      key={colIndex}
+                      className="py-2 px-4 text-sm text-gray-800"
+                    >
+                      {row[key as keyof typeof headersNacimientos]}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Parte Hembras */}
+        <div className="overflow-x-auto">
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">
+            Parte Hembras
+          </h3>
+          <table className="min-w-full bg-white">
+            <thead>
+              <tr>
+                {Object.values(headersHembras).map((title, index) => (
+                  <th
+                    key={index}
+                    className="py-2 px-4 bg-gray-800 text-white border-b border-gray-200 text-left text-sm uppercase font-semibold"
+                  >
+                    {title}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {datosHembras.map((row, rowIndex) => (
+                <tr
+                  key={rowIndex}
+                  className={`border-b ${
+                    rowIndex % 2 === 0 ? "bg-gray-100" : "bg-gray-200"
+                  }`}
+                >
+                  {Object.keys(headersHembras).map((key, colIndex) => (
+                    <td
+                      key={colIndex}
+                      className="py-2 px-4 text-sm text-gray-800"
+                    >
+                      {row[key as keyof typeof headersHembras]}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </Content>
   );

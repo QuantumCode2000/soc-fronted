@@ -1,80 +1,18 @@
-// const Pagination = ({ currentPage, totalPages, totalItems, onPageChange }) => {
-//   const handlePreviousPage = () => {
-//     if (currentPage > 1) {
-//       onPageChange(currentPage - 1);
-//     }
-//   };
+import React from "react";
 
-//   const handleNextPage = () => {
-//     if (currentPage < totalPages) {
-//       onPageChange(currentPage + 1);
-//     }
-//   };
+interface PaginationProps {
+  currentPage: number;
+  totalPages: number;
+  totalItems: number;
+  onPageChange: (page: number) => void;
+}
 
-//   const startItem = (currentPage - 1) * 10 + 1;
-//   const endItem = Math.min(currentPage * 10, totalItems);
-
-//   return (
-//     <div className="flex justify-between items-center mt-4">
-//       <p className="text-sm leading-5 text-blue-700">
-//         Viendo
-//         <span className="font-medium mx-1">{startItem}</span>a
-//         <span className="font-medium mx-1">{endItem}</span>
-//         de
-//         <span className="font-medium mx-1">{totalItems}</span>
-//         resultados
-//       </p>
-//       <nav className="relative z-0 inline-flex shadow-sm">
-//         <div>
-//           <button
-//             onClick={handlePreviousPage}
-//             className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm leading-5 font-medium text-gray-500 hover:text-gray-400 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-500 transition ease-in-out duration-150"
-//             aria-label="Previous"
-//             disabled={currentPage === 1}
-//           >
-//             <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-//               <path
-//                 fillRule="evenodd"
-//                 d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-//                 clipRule="evenodd"
-//               />
-//             </svg>
-//           </button>
-//         </div>
-//         {[...Array(totalPages)].map((_, index) => (
-//           <button
-//             key={index}
-//             onClick={() => onPageChange(index + 1)}
-//             className={`-ml-px relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm leading-5 font-medium ${
-//               currentPage === index + 1 ? "text-blue-700" : "text-blue-600"
-//             } focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-tertiary active:text-gray-700 transition ease-in-out duration-150 hover:bg-tertiary`}
-//           >
-//             {index + 1}
-//           </button>
-//         ))}
-//         <div>
-//           <button
-//             onClick={handleNextPage}
-//             className="-ml-px relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm leading-5 font-medium text-gray-500 hover:text-gray-400 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-500 transition ease-in-out duration-150"
-//             aria-label="Next"
-//             disabled={currentPage === totalPages}
-//           >
-//             <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-//               <path
-//                 fillRule="evenodd"
-//                 d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-//                 clipRule="evenodd"
-//               />
-//             </svg>
-//           </button>
-//         </div>
-//       </nav>
-//     </div>
-//   );
-// };
-
-// export default Pagination;
-const Pagination = ({ currentPage, totalPages, totalItems, onPageChange }) => {
+const Pagination: React.FC<PaginationProps> = ({
+  currentPage,
+  totalPages,
+  totalItems,
+  onPageChange,
+}) => {
   const handlePreviousPage = () => {
     if (currentPage > 1) {
       onPageChange(currentPage - 1);
@@ -89,6 +27,85 @@ const Pagination = ({ currentPage, totalPages, totalItems, onPageChange }) => {
 
   const startItem = (currentPage - 1) * 10 + 1;
   const endItem = Math.min(currentPage * 10, totalItems);
+
+  const renderPaginationButtons = (): JSX.Element[] => {
+    const pageButtons: JSX.Element[] = [];
+
+    if (totalPages <= 5) {
+      for (let i = 1; i <= totalPages; i++) {
+        pageButtons.push(
+          <button
+            key={i}
+            onClick={() => onPageChange(i)}
+            className={`px-4 py-2 border-t border-b border-gray-300 bg-white text-gray-600 hover:bg-gray-100 ${
+              currentPage === i ? "font-semibold text-blue-600" : ""
+            }`}
+          >
+            {i}
+          </button>,
+        );
+      }
+    } else {
+      pageButtons.push(
+        <button
+          key={1}
+          onClick={() => onPageChange(1)}
+          className={`px-4 py-2 border-t border-b border-gray-300 bg-white text-gray-600 hover:bg-gray-100 ${
+            currentPage === 1 ? "font-semibold text-blue-600" : ""
+          }`}
+        >
+          1
+        </button>,
+      );
+
+      if (currentPage > 3) {
+        pageButtons.push(
+          <span key="start-ellipsis" className="px-3 py-2">
+            ...
+          </span>,
+        );
+      }
+
+      const startPage = Math.max(2, currentPage - 1);
+      const endPage = Math.min(totalPages - 1, currentPage + 1);
+
+      for (let i = startPage; i <= endPage; i++) {
+        pageButtons.push(
+          <button
+            key={i}
+            onClick={() => onPageChange(i)}
+            className={`px-4 py-2 border-t border-b border-gray-300 bg-white text-gray-600 hover:bg-gray-100 ${
+              currentPage === i ? "font-semibold text-blue-600" : ""
+            }`}
+          >
+            {i}
+          </button>,
+        );
+      }
+
+      if (currentPage < totalPages - 2) {
+        pageButtons.push(
+          <span key="end-ellipsis" className="px-3 py-2">
+            ...
+          </span>,
+        );
+      }
+
+      pageButtons.push(
+        <button
+          key={totalPages}
+          onClick={() => onPageChange(totalPages)}
+          className={`px-4 py-2 border-t border-b border-gray-300 bg-white text-gray-600 hover:bg-gray-100 ${
+            currentPage === totalPages ? "font-semibold text-blue-600" : ""
+          }`}
+        >
+          {totalPages}
+        </button>,
+      );
+    }
+
+    return pageButtons;
+  };
 
   return (
     <div className="flex justify-between items-center mt-4">
@@ -105,17 +122,7 @@ const Pagination = ({ currentPage, totalPages, totalItems, onPageChange }) => {
         >
           Anterior
         </button>
-        {[...Array(totalPages)].map((_, index) => (
-          <button
-            key={index}
-            onClick={() => onPageChange(index + 1)}
-            className={`px-4 py-2 border-t border-b border-gray-300 bg-white text-gray-600 hover:bg-gray-100 ${
-              currentPage === index + 1 ? "font-semibold text-blue-600" : ""
-            }`}
-          >
-            {index + 1}
-          </button>
-        ))}
+        {renderPaginationButtons()}
         <button
           onClick={handleNextPage}
           className="px-3 py-2 rounded-r-md border border-gray-300 bg-white text-gray-600 hover:bg-gray-100"

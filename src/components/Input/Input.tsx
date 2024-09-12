@@ -1,5 +1,5 @@
 interface InputProps {
-  id: string | number;
+  id: string | number; // Permite tanto string como número
   label?: string;
   type?: string;
   placeholder?: string;
@@ -24,12 +24,13 @@ const Input: React.FC<InputProps> = ({
   ...props
 }) => {
   const hasError = !!error; // Convierte cualquier valor truthy en un booleano
+  const stringId = String(id); // Convertir `id` a string para evitar el error
 
   return (
     <div className="mb-4">
       {label && (
         <label
-          htmlFor={id}
+          htmlFor={stringId} // Asegurar que `htmlFor` siempre reciba un string
           className="block mb-2 text-sm font-medium text-gray-900"
         >
           {label}
@@ -37,8 +38,8 @@ const Input: React.FC<InputProps> = ({
       )}
       <input
         type={type}
-        id={id}
-        aria-describedby={`${id}-helper-text`}
+        id={stringId} // Asegurar que `id` siempre reciba un string
+        aria-describedby={`${stringId}-helper-text`}
         className={`bg-gray-50 border ${
           hasError ? "border-red-500" : "border-gray-300"
         } text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5`}
@@ -49,7 +50,10 @@ const Input: React.FC<InputProps> = ({
         {...props}
       />
       {helperText && (
-        <p id={`${id}-helper-text`} className="mt-1 text-sm text-gray-500">
+        <p
+          id={`${stringId}-helper-text`}
+          className="mt-1 text-sm text-gray-500"
+        >
           {helperText}
         </p>
       )}
