@@ -13,6 +13,11 @@ import ReporteNovedades from "./views/Reportes/ReportesNovedades";
 import CuadroDeMandoContainer from "./views/CuadrodeMando/CuadroDeMandoContainer";
 import ReportesKPI from "./views/Reportes/ReportesKPI";
 import ParteGeneral from "./views/ParteGeneral/ParteGeneral";
+
+import InventarioRegister from "./views/InventatioRegister/InventarioRegister";
+import FormInventarioRegister from "./views/InventatioRegister/FormInventarioRegister";
+import FormInventarioEdit from "./views/InventatioRegister/FormInventarioEdit";
+
 function App() {
   const { users } = useUsers();
   const currentLocalStorageUser = localStorage.getItem("user");
@@ -90,6 +95,33 @@ function App() {
             </PrivateRoute>
           ),
         },
+
+        // Rutas de inventario 
+        {
+          path: "inventario",
+          element: (
+            <PrivateRoute requiredRole="Administrador">
+              <InventarioRegister/>  
+            </PrivateRoute>
+          ),
+        },
+        {
+          path: "inventario/create",
+          element: (
+            <PrivateRoute requiredRole="Administrador">
+              <FormInventarioRegister />
+            </PrivateRoute>
+          ),
+        },
+        {
+          path: "inventario/edit/:id",
+          element: (
+            <PrivateRoute requiredRole="Administrador">
+              <FormInventarioEdit />
+            </PrivateRoute>
+          ),
+        },
+        //-------------------------------
         ...tiposGanado.flatMap((tipoGanado) => [
           {
             path: `inventario/${tipoGanado.toLowerCase()}/${unidad}`,

@@ -93,7 +93,7 @@ const PersonalRegister: React.FC = () => {
       [id]: value,
     }));
   };
-
+  
   const handleSubmit = async () => {
     try {
       if (isEdit) {
