@@ -1,4 +1,4 @@
-import logo_principal from "../../assets/images/logo_principal.png";
+import logo_principal from "../../assets/images/logo_principal2.png";
 import OptionSidebar from "./OptionSidebar";
 
 const Sidebar = ({ selectedTitle, options, unidad }) => {

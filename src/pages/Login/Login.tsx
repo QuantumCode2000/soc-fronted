@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useAuthContext } from "../../contexts/AuthContext/AuthContext";
-import Fondo from "../../assets/images/FONDO_CUERPO.jpg";
-import Logo from "../../assets/images/logo_principal.png";
+import Fondo from "../../assets/images/fondo_login.svg";
+import Logo from "../../assets/images/logo_principal.svg";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const Login = () => {
@@ -35,14 +35,22 @@ const Login = () => {
       className="relative flex min-h-screen text-gray-800 antialiased flex-col justify-center items-center overflow-hidden py-6 sm:py-12 bg-cover bg-center"
     >
       <div className="absolute inset-0 bg-black opacity-50"></div>
-      <div className="relative py-3 sm:w-96 w-full mx-auto bg-white bg-opacity-90 shadow-lg rounded-lg text-left transform transition-all duration-500 ease-in-out hover:scale-105">
+      <div className="relative py-3 sm:w-96 w-full mx-auto bg-opacity-90 bg-[#A1A4A6] shadow-lg rounded-lg text-left transform transition-all duration-500 ease-in-out hover:scale-105">
         <div className="flex justify-center mt-4">
-          <img src={Logo} alt="Logo" className="w-32 h-32 object-contain" />
+          <img
+            src={Logo}
+            alt="Logo"
+            className="w-48 h-48  object-contain fill-[#212937]"
+          />
         </div>
-        <div className="mt-4 px-8 py-6">
-          <span className="text-2xl font-light block text-center mb-4">
-            SISTEMA DE INVENTARIO AGRICOLA DEL EJERCITO
+        <div className="mt-4 px-8 ">
+          <span className="text-2xl  block text-center mb-4 font-bold tracking-wide ">
+            SOC by{" "}
+            <span className="italic underline decoration-dotted">
+              TryCatch Solutions
+            </span>
           </span>
+
           {error && (
             <div className="bg-red-100 text-red-700 p-2 rounded mb-4">
               {error}
