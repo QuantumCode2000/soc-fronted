@@ -2,8 +2,6 @@ interface User {
   id?: string;
   ci: string;
   extension: string;
-  grado: string;
-  especialidad: string;
   nombre: string;
   apellidoPaterno: string;
   apellidoMaterno: string;
@@ -12,7 +10,6 @@ interface User {
   rol: string;
   estado: string;
   password: string;
-  unidad: string;
 }
 
 interface UsersContextProps {

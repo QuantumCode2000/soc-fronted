@@ -2,25 +2,9 @@ import React, { useState } from "react";
 import Input from "../../components/Input/Input";
 import Select from "../../components/Select/Select";
 import Modal from "../../components/Modal/Modal";
-import { User } from "../../contexts/UsersContext/interfaces"; // Asegúrate de que esto está correctamente importado
-import {
-  departamentos,
-  grados,
-  especialidades,
-} from "../../data/selectOptions";
+import { User } from "../../contexts/UsersContext/interfaces";
+import { departamentos } from "../../data/selectOptions";
 
-const unidades = [
-  "BBE I",
-  "BPE II",
-  "BPE III",
-  "BPE IV",
-  "BPE V",
-  "BPE VI",
-  "BPE VII",
-  "HARAS DEL EJERCITO",
-];
-
-// Definir los tipos de los props
 interface FormPersonalRegisterProps {
   formData: User;
   handleChange: (
@@ -41,16 +25,12 @@ const FormPersonalRegister: React.FC<FormPersonalRegisterProps> = ({
     const newErrors: Partial<User> = {};
     if (!formData.ci) newErrors.ci = "CI es requerido";
     if (!formData.extension) newErrors.extension = "Extensión es requerida";
-    if (!formData.email) newErrors.email = "Correo Electrónico es requerido"; // Cambié 'correo' a 'email' para coincidir con la interfaz
-    if (!formData.grado) newErrors.grado = "Grado es requerido";
-    if (!formData.especialidad)
-      newErrors.especialidad = "Especialidad es requerida";
+    if (!formData.email) newErrors.email = "Correo Electrónico es requerido";
     if (!formData.nombre) newErrors.nombre = "Nombre es requerido";
     if (!formData.apellidoPaterno)
       newErrors.apellidoPaterno = "Apellido Paterno es requerido";
     if (!formData.apellidoMaterno)
       newErrors.apellidoMaterno = "Apellido Materno es requerido";
-    if (!formData.unidad) newErrors.unidad = "Unidad es requerida";
     return newErrors;
   };
 
@@ -104,34 +84,7 @@ const FormPersonalRegister: React.FC<FormPersonalRegisterProps> = ({
           onChange={handleChange}
           error={localErrors.email}
         />
-        <Select
-          id="grado"
-          label="Grado"
-          options={grados}
-          value={formData.grado}
-          onChange={handleChange}
-          error={localErrors.grado}
-        />
-        <Select
-          id="especialidad"
-          label="Especialidad"
-          options={especialidades}
-          value={
-            formData.especialidad === "Sin Especialidad"
-              ? "-"
-              : formData.especialidad
-          }
-          onChange={handleChange}
-          error={localErrors.especialidad}
-        />
-        <Select
-          id="unidad"
-          label="Unidad"
-          options={unidades}
-          value={formData.unidad}
-          onChange={handleChange}
-          error={localErrors.unidad}
-        />
+
         <Input
           id="nombre"
           label="Nombre"

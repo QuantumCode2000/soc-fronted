@@ -62,47 +62,12 @@ const optionsAdmin = [
     ],
   },
   {
-    text: "Parte General",
+    text: "Inventario",
     options: [
       {
-        to: "/parte-general",
+        to: "/Inventario",
         icon: <MdOutlineInventory />,
-        text: "Visualizar Parte",
-      },
-    ],
-  },
-  {
-    text: "Reportes",
-    options: [
-      {
-        to: "/reportes",
-        icon: <BiSolidReport />,
-        text: "Reportes",
-      },
-      {
-        to: "/reportes-novedades",
-        icon: <BiSolidReport />,
-        text: "Reportes Novedades",
-      },
-    ],
-  },
-  {
-    text: "Cuadro de Mando ",
-    options: [
-      {
-        to: "/cuadro-de-mando",
-        icon: <BiSolidReport />,
-        text: "Cuadro de Mando",
-      },
-    ],
-  },
-  {
-    text: "KPI Reportes",
-    options: [
-      {
-        to: "/reportes-kpi",
-        icon: <BiSolidReport />,
-        text: "KPI Reportes",
+        text: "Inventario",
       },
     ],
   },

@@ -15,14 +15,11 @@ import ButtonIcon from "../../components/ButtonIcon/ButtonIcon";
 const firstState: User = {
   ci: "",
   extension: "",
-  grado: "",
-  especialidad: "",
   nombre: "",
   apellidoPaterno: "",
   apellidoMaterno: "",
   email: "",
   password: "",
-  unidad: "",
   inSystemPermissions: "No",
   rol: "Personal",
   estado: "Activo",
@@ -93,7 +90,7 @@ const PersonalRegister: React.FC = () => {
       [id]: value,
     }));
   };
-  
+
   const handleSubmit = async () => {
     try {
       if (isEdit) {

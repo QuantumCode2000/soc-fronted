@@ -26,8 +26,6 @@ function App() {
         (user) => user.email === JSON.parse(currentLocalStorageUser).email,
       )
     : null;
-  const unidad = currentUser?.unidad;
-  console.log("currentUser", unidad);
 
   const tiposGanado = [
     "Bovino",
@@ -43,7 +41,7 @@ function App() {
       path: "/",
       element: (
         <PrivateRoute>
-          <Layout unidad={unidad} />
+          <Layout unidad={"dsds"} />
         </PrivateRoute>
       ),
       children: [
@@ -96,58 +94,14 @@ function App() {
           ),
         },
 
-        // Rutas de inventario 
         {
           path: "inventario",
           element: (
             <PrivateRoute requiredRole="Administrador">
-              <InventarioRegister/>  
+              <InventarioRegister />
             </PrivateRoute>
           ),
         },
-        {
-          path: "inventario/create",
-          element: (
-            <PrivateRoute requiredRole="Administrador">
-              <FormInventarioRegister />
-            </PrivateRoute>
-          ),
-        },
-        {
-          path: "inventario/edit/:id",
-          element: (
-            <PrivateRoute requiredRole="Administrador">
-              <FormInventarioEdit />
-            </PrivateRoute>
-          ),
-        },
-        //-------------------------------
-        ...tiposGanado.flatMap((tipoGanado) => [
-          {
-            path: `inventario/${tipoGanado.toLowerCase()}/${unidad}`,
-            element: (
-              <PrivateRoute requiredRole="Personal">
-                <Inventario unidad={unidad} tipoGanado={tipoGanado} />
-              </PrivateRoute>
-            ),
-          },
-          {
-            path: `parte-inmediato/${tipoGanado.toLowerCase()}/${unidad}`,
-            element: (
-              <PrivateRoute requiredRole="Personal">
-                <PartesInmediatos unidad={unidad} tipoGanado={tipoGanado} />
-              </PrivateRoute>
-            ),
-          },
-          {
-            path: `parte-actualizado/${tipoGanado.toLowerCase()}/${unidad}`,
-            element: (
-              <PrivateRoute requiredRole="Personal">
-                <ParteActualizado unidad={unidad} tipoGanado={tipoGanado} />
-              </PrivateRoute>
-            ),
-          },
-        ]),
       ],
     },
     {
@@ -166,7 +120,7 @@ function App() {
     },
     {
       path: "*",
-      element: <div>404 - Página no encontrada</div>, // Ruta para manejar 404
+      element: <div>404 - Página no encontrada</div>,
     },
   ]);
 
