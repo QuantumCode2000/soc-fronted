@@ -1,7 +1,13 @@
 import logo_principal from "../../assets/images/logo_principal2.png";
 import OptionSidebar from "./OptionSidebar";
 
-const Sidebar = ({ selectedTitle, options, unidad }) => {
+interface SidebarProps {
+  selectedTitle: string;
+  //omitir error de typescript de tipos de options
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  options: any[];
+}
+const Sidebar: React.FC<SidebarProps> = ({ selectedTitle, options}) => {
   return (
     <aside className="sidebar w-64 md:shadow-right transform -translate-x-full md:translate-x-0 transition-transform duration-150 ease-in bg-gray-900 text-white">
       <div className="sidebar-header flex items-center justify-center flex-col py-6 border-b border-gray-800">
@@ -11,7 +17,7 @@ const Sidebar = ({ selectedTitle, options, unidad }) => {
           </a>
         </div>
         <div className="text-center">
-          <p className="text-lg font-semibold">{unidad}</p>
+          <p className="text-lg font-semibold">Quantum Dev</p>
         </div>
       </div>
       <div className="sidebar-content px-6 py-4">

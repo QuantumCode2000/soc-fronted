@@ -1,23 +1,14 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Login from "./pages/Login/Login";
 import PersonalRegister from "./views/PersonalRegister/PersonalRegister";
-import Inventario from "./views/Inventario/Inventario";
-import PartesInmediatos from "./views/ParteInmmediato/PartesInmediatos";
-import ParteActualizado from "./views/ParteActualizado/ParteActualizado";
 import PrivateRoute from "./routers/PrivateRoute/PrivateRoute";
 import PublicRoute from "./routers/PublicRoute/PublicRoute";
 import Layout from "./layout/Layout";
 import { useUsers } from "./contexts/UsersContext/UsersContext";
-import Reportes from "./views/Reportes/Reportes";
-import ReporteNovedades from "./views/Reportes/ReportesNovedades";
-import CuadroDeMandoContainer from "./views/CuadrodeMando/CuadroDeMandoContainer";
-import ReportesKPI from "./views/Reportes/ReportesKPI";
-import ParteGeneral from "./views/ParteGeneral/ParteGeneral";
 
 import InventarioRegister from "./views/InventatioRegister/InventarioRegister";
-import FormInventarioRegister from "./views/InventatioRegister/FormInventarioRegister";
-import FormInventarioEdit from "./views/InventatioRegister/FormInventarioEdit";
-
+import PedidosRegister from "./views/Pedidos/PedidosRegister";
+import Pedidos from "./views/Pedidos/Pedidos";
 function App() {
   const { users } = useUsers();
   const currentLocalStorageUser = localStorage.getItem("user");
@@ -26,15 +17,6 @@ function App() {
         (user) => user.email === JSON.parse(currentLocalStorageUser).email,
       )
     : null;
-
-  const tiposGanado = [
-    "Bovino",
-    "Cuyicola",
-    "Porcino",
-    "Avicola",
-    "Equino",
-    "Psicola",
-  ];
 
   const router = createBrowserRouter([
     {
@@ -49,7 +31,7 @@ function App() {
           path: "Reportes-KPI",
           element: (
             <PrivateRoute requiredRole="Administrador">
-              <ReportesKPI />
+              <p>q</p>
             </PrivateRoute>
           ),
         },
@@ -57,7 +39,7 @@ function App() {
           path: "parte-general",
           element: (
             <PrivateRoute requiredRole="Administrador">
-              <ParteGeneral />
+              <p>q</p>
             </PrivateRoute>
           ),
         },
@@ -73,7 +55,7 @@ function App() {
           path: "reportes",
           element: (
             <PrivateRoute requiredRole="Administrador">
-              <Reportes />
+              <p>q</p>
             </PrivateRoute>
           ),
         },
@@ -81,7 +63,7 @@ function App() {
           path: "cuadro-de-mando",
           element: (
             <PrivateRoute requiredRole="Administrador">
-              <CuadroDeMandoContainer />
+              <p>q</p>
             </PrivateRoute>
           ),
         },
@@ -89,11 +71,11 @@ function App() {
           path: "reportes-novedades",
           element: (
             <PrivateRoute requiredRole="Administrador">
-              <ReporteNovedades />
+              <p>q</p>
             </PrivateRoute>
           ),
         },
-
+        
         {
           path: "inventario",
           element: (
@@ -102,6 +84,23 @@ function App() {
             </PrivateRoute>
           ),
         },
+        {
+          path: "Registrar-pedidos",
+          element: (
+            <PrivateRoute requiredRole="Administrador">
+              <PedidosRegister />
+            </PrivateRoute>
+          ),
+        },
+        {
+          path: "pedidos",
+          element: (
+            <PrivateRoute requiredRole="Administrador">
+              <Pedidos />
+            </PrivateRoute>
+          ),
+        },
+        
       ],
     },
     {

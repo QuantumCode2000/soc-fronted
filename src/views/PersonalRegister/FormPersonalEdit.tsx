@@ -4,8 +4,6 @@ import Select from "../../components/Select/Select";
 import Modal from "../../components/Modal/Modal";
 import {
   departamentos,
-  grados,
-  especialidades,
 } from "../../data/selectOptions";
 import { User } from "../../contexts/UsersContext/interfaces";
 
@@ -42,9 +40,6 @@ const FormPersonalEdit: React.FC<FormPersonalEditProps> = ({
     if (!formData.ci) newErrors.ci = "CI es requerido";
     if (!formData.extension) newErrors.extension = "Extensión es requerida";
     if (!formData.email) newErrors.email = "Correo Electrónico es requerido";
-    if (!formData.grado) newErrors.grado = "Grado es requerido";
-    if (!formData.especialidad)
-      newErrors.especialidad = "Especialidad es requerida";
     if (!formData.nombre) newErrors.nombre = "Nombre es requerido";
     if (!formData.apellidoPaterno)
       newErrors.apellidoPaterno = "Apellido Paterno es requerido";
@@ -153,26 +148,8 @@ const FormPersonalEdit: React.FC<FormPersonalEditProps> = ({
           onChange={handleChangeEdit}
           error={localErrors.email}
         />
-        <Select
-          id="grado"
-          label="Grado"
-          options={grados}
-          value={formDataEdit.grado}
-          onChange={handleChangeEdit}
-          error={localErrors.grado}
-        />
-        <Select
-          id="especialidad"
-          label="Especialidad"
-          options={especialidades}
-          value={
-            formData.especialidad === "Sin Especialidad"
-              ? "-"
-              : formData.especialidad
-          }
-          onChange={handleChangeEdit}
-          error={localErrors.especialidad}
-        />
+
+       
         <Input
           id="nombre"
           label="Nombre"

@@ -1,14 +1,24 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
 
-const OptionSidebar = ({
+// Definimos los tipos de las props para mayor claridad y seguridad de tipos
+interface OptionSidebarProps {
+  text: string;
+  icon?: React.ReactNode;
+  to?: string;
+  isSelected?: boolean;
+  options?: {icon: React.ReactNode; text: string; to: string }[];
+  selectedTitle?: string;
+}
+
+const OptionSidebar: React.FC<OptionSidebarProps> = ({
   text,
   icon,
   to,
   isSelected,
   options,
   selectedTitle,
-}) => {
+})  => {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleOptions = () => {
@@ -20,7 +30,13 @@ const OptionSidebar = ({
       {icon ? (
         <li className="my-px py-2">
           <Link
-            to={to}
+            to={
+              to
+                ? to
+                : options && options.length > 0
+                ? options[0].to
+                : ""
+            }
             className={
               isSelected
                 ? "flex flex-row items-center h-10 px-4 py-2 rounded-lg bg-blue-700 text-white"

@@ -7,6 +7,7 @@ import Pagination from "./Pagination";
 interface TableProps {
   header: { [key: string]: string }; // header es un objeto con claves y etiquetas de columnas
   body: Array<{ [key: string]: any }>; // body es un array de objetos que representan las filas
+  data: { [key: string]: string }[];  
   renderCell: (value: any, key: string, rowIndex: number) => JSX.Element; // Función para renderizar celdas
 }
 

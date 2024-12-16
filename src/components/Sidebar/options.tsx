@@ -71,6 +71,21 @@ const optionsAdmin = [
       },
     ],
   },
+  {
+    text: "Pedidos",
+    options: [
+      {
+        to: "/Registrar-Pedidos",
+        icon: <BiSolidReport />,
+        text: "Registrar Pedidos",
+      },
+      {
+        to: "/Pedidos",
+        icon: <BiSolidReport />,
+        text: "Pedidos",
+      },
+    ],
+  },
 ];
 
 export { optionsAdmin, optionsGeneration };

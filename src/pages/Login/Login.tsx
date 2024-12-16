@@ -45,9 +45,9 @@ const Login = () => {
         </div>
         <div className="mt-4 px-8 ">
           <span className="text-2xl  block text-center mb-4 font-bold tracking-wide ">
-            SOC by{" "}
+            SOC {" "}
             <span className="italic underline decoration-dotted">
-              TryCatch Solutions
+              Sistema Optimizador de cortes
             </span>
           </span>
 
