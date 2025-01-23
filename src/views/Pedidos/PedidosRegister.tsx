@@ -1,43 +1,57 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { usePedidos } from '../../contexts/PedidoContext/PedidoContext';
-import { useInventario } from '../../contexts/InventarioContext/InventarioContext';
-import { Pedido, Corte } from '../../contexts/PedidoContext/interfacePedido';
-import { InventarioItem } from '../../contexts/InventarioContext/interfaceInventario';
-import Input from '../../components/Input/Input';
-import SelectPedido from '../../components/Select/SelectPedido';
-import Button from '../../components/Button/Button';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { usePedidos } from "../../contexts/PedidoContext/PedidoContext";
+import { Pedido, Corte } from "../../contexts/PedidoContext/interfacePedido";
+import Input from "../../components/Input/Input";
+import Button from "../../components/Button/Button";
 
-interface FormPedidosRegisterProps {
-  formData: Pedido;
-  handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
-  handleSubmit: () => void;
-}
-
-const PedidosRegister: React.FC<FormPedidosRegisterProps> = () => {
+const PedidosRegister: React.FC = () => {
   const navigate = useNavigate();
   const { addPedido } = usePedidos();
-  const { Items } = useInventario();
 
   const [formData, setFormData] = useState<Pedido>({
-    clienteNombre: '',
-    descripcion: '',
-    inventarioId: '',
-    cortes: [{ longitud: '', ancho: '', cantidad: 1 }],
+    clienteNombre: "",
+    descripcion: "",
+    cortes: [{ longitud: "", ancho: "", cantidad: 1 }],
   });
 
   const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
   const [localErrors, setLocalErrors] = useState<Partial<Pedido>>({});
 
+  // --- Log inicial para ver formData por defecto ---
+  console.log("[PedidosRegister] Initial formData:", formData);
+
   const validateForm = () => {
     const newErrors: Partial<Pedido> = {};
-    if (!formData.clienteNombre) newErrors.clienteNombre = "Nombre del cliente es requerido";
-    if (!formData.descripcion) newErrors.descripcion = "Descripción es requerida";
-    if (!formData.inventarioId) newErrors.inventarioId = "Lámina de inventario es requerida";
+    if (!formData.clienteNombre)
+      newErrors.clienteNombre = "Nombre del cliente es requerido";
+    if (!formData.descripcion)
+      newErrors.descripcion = "Descripción es requerida";
+
+    // Validar cortes
+    const cortesErrors = formData.cortes.map((corte) => {
+      const errors: Partial<Corte> = {};
+      if (!corte.longitud || Number(corte.longitud) <= 0)
+        errors.longitud = "Longitud debe ser un número positivo";
+      if (!corte.ancho || Number(corte.ancho) <= 0)
+        errors.ancho = "Ancho debe ser un número positivo";
+      if (!corte.cantidad || Number(corte.cantidad) <= 0)
+        errors.cantidad = "Cantidad debe ser mayor a 0";
+      return errors;
+    });
+
+    if (cortesErrors.some((c) => Object.keys(c).length > 0)) {
+      // Sólo para debug
+      console.log("Debug cortesErrors:", cortesErrors);
+      newErrors.cortes = cortesErrors as unknown as string;
+    }
+
     return newErrors;
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
@@ -46,18 +60,25 @@ const PedidosRegister: React.FC<FormPedidosRegisterProps> = () => {
   };
 
   const handleAddCorte = () => {
+    console.log("[PedidosRegister] handleAddCorte");
     setFormData({
       ...formData,
-      cortes: [...formData.cortes, { longitud: '', ancho: '', cantidad: 1 }],
+      cortes: [...formData.cortes, { longitud: "", ancho: "", cantidad: 1 }],
     });
   };
 
   const handleRemoveCorte = (index: number) => {
+    console.log("[PedidosRegister] handleRemoveCorte index:", index);
     const newCortes = formData.cortes.filter((_, i) => i !== index);
     setFormData({ ...formData, cortes: newCortes });
   };
 
   const handleCorteChange = (index: number, field: string, value: string) => {
+    console.log("[PedidosRegister] handleCorteChange:", {
+      index,
+      field,
+      value,
+    });
     const newCortes = [...formData.cortes];
     newCortes[index] = { ...newCortes[index], [field]: value };
     setFormData({ ...formData, cortes: newCortes });
@@ -65,52 +86,62 @@ const PedidosRegister: React.FC<FormPedidosRegisterProps> = () => {
 
   const handleConfirm = (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("[PedidosRegister] handleConfirm llamado.");
     const errors = validateForm();
     if (Object.keys(errors).length === 0) {
       setConfirmModalOpen(true);
     } else {
+      console.log("Debug: Errores en form:", errors);
       setLocalErrors(errors);
     }
   };
 
-  const handleConfirmSubmit = () => {
-    setConfirmModalOpen(false);
-    handleSubmit();
-  };
-
-  const handleCloseModal = () => {
-    setConfirmModalOpen(false);
-  };
-
   const handleSubmit = async () => {
+    console.log("[PedidosRegister] handleSubmit llamado.");
     const errors = validateForm();
     if (Object.keys(errors).length === 0) {
-      // Enviar los datos del pedido al backend
       const pedidoData = {
         ...formData,
         cortes: formData.cortes.map((corte) => ({
-          longitud: (corte.longitud),  // Asegurarse de que los valores sean numéricos
-          ancho: (corte.ancho),        // Asegurarse de que los valores sean numéricos
-          cantidad: parseInt(corte.cantidad.toString(), 10), // Convertir a número entero
+          longitud: Number(corte.longitud),
+          ancho: Number(corte.ancho),
+          cantidad: Number(corte.cantidad),
         })),
       };
 
-      await addPedido(pedidoData); // Llamar a la función que guarda el pedido
-      setFormData({
-        clienteNombre: '',
-        descripcion: '',
-        inventarioId: '',
-        cortes: [{ longitud: '', ancho: '', cantidad: 1 }],
-      });
-      navigate('/pedidos'); // Redirigir a la página de pedidos
+      console.log(
+        "[PedidosRegister] Enviando pedidoData a addPedido:",
+        pedidoData,
+      );
+
+      try {
+        await addPedido(pedidoData);
+        console.log(
+          "[PedidosRegister] Pedido registrado con éxito:",
+          pedidoData,
+        );
+
+        setFormData({
+          clienteNombre: "",
+          descripcion: "",
+          cortes: [{ longitud: "", ancho: "", cantidad: 1 }],
+        });
+        setConfirmModalOpen(false);
+        navigate("/pedidos");
+      } catch (error) {
+        console.log("[PedidosRegister] Error al registrar el pedido:", error);
+      }
     } else {
+      console.log("Debug: Errores finales en form:", errors);
       setLocalErrors(errors);
     }
   };
 
   return (
     <div className="pedido-register-container p-6 bg-white shadow-md rounded-md">
-      <h2 className="text-2xl font-bold mb-4">Registro Pedido de Corte de Lámina de Vidrio</h2>
+      <h2 className="text-2xl font-bold mb-4">
+        Registro Pedido de Corte de Lámina de Vidrio
+      </h2>
       <form onSubmit={handleConfirm} className="space-y-4">
         <Input
           id="clienteNombre"
@@ -120,7 +151,9 @@ const PedidosRegister: React.FC<FormPedidosRegisterProps> = () => {
           onChange={handleChange}
           required
         />
-        {localErrors.clienteNombre && <div className="text-red-500">{localErrors.clienteNombre}</div>}
+        {localErrors.clienteNombre && (
+          <div className="text-red-500">{localErrors.clienteNombre}</div>
+        )}
 
         <Input
           id="descripcion"
@@ -131,37 +164,28 @@ const PedidosRegister: React.FC<FormPedidosRegisterProps> = () => {
           onChange={handleChange}
           required
         />
-        {localErrors.descripcion && <div className="text-red-500">{localErrors.descripcion}</div>}
-
-        <SelectPedido
-          id="inventarioId"
-          label="Seleccionar Lámina de Inventario"
-          //name="inventarioId"
-          value={formData.inventarioId}
-          onChange={(e) => setFormData({ ...formData, inventarioId: e.target.value })}
-          options={[
-            { label: 'Seleccione una lámina', value: '' },
-            ...Items.map((item: InventarioItem) => ({
-              label: `${item.tipoLamina} - ${item.dimensionesLamina}`,
-              value: item.iDLamina,
-            })),
-          ]}
-          required
-        />
-        {localErrors.inventarioId && <div className="text-red-500">{localErrors.inventarioId}</div>}
+        {localErrors.descripcion && (
+          <div className="text-red-500">{localErrors.descripcion}</div>
+        )}
 
         <div>
           <h3 className="text-xl font-semibold mb-2">Cortes</h3>
           {formData.cortes.map((corte, index) => (
-            <div key={index} className="corte-item p-4 mb-4 border rounded-md flex items-center gap-4">
+            <div
+              key={index}
+              className="corte-item p-4 mb-4 border rounded-md flex items-center gap-4"
+            >
               <Input
                 id={`longitud-${index}`}
                 label="Longitud"
                 name="longitud"
                 type="number"
                 value={corte.longitud}
-                onChange={(e) => handleCorteChange(index, 'longitud', e.target.value)}
+                onChange={(e) =>
+                  handleCorteChange(index, "longitud", e.target.value)
+                }
                 required
+                min="1"
               />
               <Input
                 id={`ancho-${index}`}
@@ -169,8 +193,11 @@ const PedidosRegister: React.FC<FormPedidosRegisterProps> = () => {
                 name="ancho"
                 type="number"
                 value={corte.ancho.toString()}
-                onChange={(e) => handleCorteChange(index, 'ancho', e.target.value)}
+                onChange={(e) =>
+                  handleCorteChange(index, "ancho", e.target.value)
+                }
                 required
+                min="1"
               />
               <Input
                 id={`cantidad-${index}`}
@@ -178,7 +205,9 @@ const PedidosRegister: React.FC<FormPedidosRegisterProps> = () => {
                 name="cantidad"
                 type="number"
                 value={corte.cantidad.toString()}
-                onChange={(e) => handleCorteChange(index, 'cantidad', e.target.value)}
+                onChange={(e) =>
+                  handleCorteChange(index, "cantidad", e.target.value)
+                }
                 required
                 min="1"
               />
@@ -208,8 +237,16 @@ const PedidosRegister: React.FC<FormPedidosRegisterProps> = () => {
           <div className="modal-content">
             <h3>Confirmar Pedido</h3>
             <p>¿Estás seguro de que deseas registrar este pedido?</p>
-            <Button onClick={handleConfirmSubmit} text="Confirmar" textStyle="bg-green-600 hover:bg-green-700" />
-            <Button onClick={handleCloseModal} text="Cancelar" textStyle="bg-gray-600 hover:bg-gray-700" />
+            <Button
+              onClick={handleSubmit}
+              text="Confirmar"
+              textStyle="bg-green-600 hover:bg-green-700"
+            />
+            <Button
+              onClick={() => setConfirmModalOpen(false)}
+              text="Cancelar"
+              textStyle="bg-gray-600 hover:bg-gray-700"
+            />
           </div>
         </div>
       )}

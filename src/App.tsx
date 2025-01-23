@@ -9,6 +9,7 @@ import { useUsers } from "./contexts/UsersContext/UsersContext";
 import InventarioRegister from "./views/InventatioRegister/InventarioRegister";
 import PedidosRegister from "./views/Pedidos/PedidosRegister";
 import Pedidos from "./views/Pedidos/Pedidos";
+import Cortes from "./views/Cortes/Cortes";
 function App() {
   const { users } = useUsers();
   const currentLocalStorageUser = localStorage.getItem("user");
@@ -28,58 +29,17 @@ function App() {
       ),
       children: [
         {
-          path: "Reportes-KPI",
-          element: (
-            <PrivateRoute requiredRole="Administrador">
-              <p>q</p>
-            </PrivateRoute>
-          ),
-        },
-        {
-          path: "parte-general",
-          element: (
-            <PrivateRoute requiredRole="Administrador">
-              <p>q</p>
-            </PrivateRoute>
-          ),
-        },
-        {
           path: "registro-personal",
           element: (
-            <PrivateRoute requiredRole="Administrador">
+            <PrivateRoute requiredRole="administrador">
               <PersonalRegister />
             </PrivateRoute>
           ),
         },
         {
-          path: "reportes",
-          element: (
-            <PrivateRoute requiredRole="Administrador">
-              <p>q</p>
-            </PrivateRoute>
-          ),
-        },
-        {
-          path: "cuadro-de-mando",
-          element: (
-            <PrivateRoute requiredRole="Administrador">
-              <p>q</p>
-            </PrivateRoute>
-          ),
-        },
-        {
-          path: "reportes-novedades",
-          element: (
-            <PrivateRoute requiredRole="Administrador">
-              <p>q</p>
-            </PrivateRoute>
-          ),
-        },
-        
-        {
           path: "inventario",
           element: (
-            <PrivateRoute requiredRole="Administrador">
+            <PrivateRoute requiredRole="administrador">
               <InventarioRegister />
             </PrivateRoute>
           ),
@@ -87,7 +47,7 @@ function App() {
         {
           path: "Registrar-pedidos",
           element: (
-            <PrivateRoute requiredRole="Administrador">
+            <PrivateRoute requiredRole="administrador">
               <PedidosRegister />
             </PrivateRoute>
           ),
@@ -95,12 +55,19 @@ function App() {
         {
           path: "pedidos",
           element: (
-            <PrivateRoute requiredRole="Administrador">
+            <PrivateRoute requiredRole="administrador">
               <Pedidos />
             </PrivateRoute>
           ),
         },
-        
+        {
+          path: "cortes",
+          element: (
+            <PrivateRoute requiredRole="administrador">
+              <Cortes />
+            </PrivateRoute>
+          ),
+        },
       ],
     },
     {

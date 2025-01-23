@@ -10,12 +10,12 @@ import Content from "../../components/Content/Content";
 import ViewMore from "../../components/ViewMore/ViewMore";
 import type { Pedido } from "../../contexts/PedidoContext/interfacePedido";
 import { LuClipboardEdit, LuFileText } from "react-icons/lu";
+import { IoCutSharp } from "react-icons/io5";
 import ButtonIcon from "../../components/ButtonIcon/ButtonIcon";
 
 const firstState: Pedido = {
   clienteNombre: "",
   descripcion: "",
-  inventarioId: "",
   fechaCreacion: "",
   cortes: [],
 };
@@ -28,9 +28,12 @@ const Pedidos: React.FC = () => {
   const [formDataEdit, setFormDataEdit] = useState<Pedido>(firstState);
   const [selectedPedido, setSelectedPedido] = useState<Pedido | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const { pedidos, addPedido, removePedido, updatePedido } = usePedidos();
+  const { pedidos, addPedido, updatePedido } = usePedidos();
   const [modifiedData, setModifiedData] = useState<Partial<Pedido>>({});
+  const [isCuttingModalOpen, setCuttingModalOpen] = useState<boolean>(false);
+  const [cuttingData, setCuttingData] = useState();
 
+  console.log("Pedidos", cuttingData);
   const closeModal = () => {
     setOpenModal(false);
     setIsEdit(false);
@@ -42,6 +45,11 @@ const Pedidos: React.FC = () => {
     setSelectedPedido(null);
   };
 
+  const closeCuttingModal = () => {
+    setCuttingModalOpen(false);
+    setSelectedPedido(null);
+  };
+
   const openModal = () => {
     setOpenModal(true);
     setIsEdit(false);
@@ -49,15 +57,76 @@ const Pedidos: React.FC = () => {
   };
 
   const handleViewMore = (inventarioId: string) => {
-    const pedido = pedidos.find((pedido: Pedido) => pedido.inventarioId === inventarioId);
+    const pedido = pedidos.find(
+      (pedido: Pedido) => pedido.inventarioId === inventarioId,
+    );
     if (pedido) {
       setSelectedPedido(pedido);
       setViewMoreOpen(true);
     }
   };
 
+  const realizarCorte = async (id: string) => {
+    // http://127.0.0.1:8000/optimizar_cortes
+    // el json es asi :
+    // {
+    //   "id_pedido": "7087248d-5b61-4c6d-ae24-45caa46e389c"
+    // }
+    // y devuelve un json con los cortes optimizados
+    //   {
+    //     "message": "Optimización completada",
+    //     "resultado": {
+    //         "cantidad_de_laminas": 1,
+    //         "laminas_usadas": [
+    //             {
+    //                 "id_lamina": 1,
+    //                 "dimensiones_lamina": [
+    //                     12,
+    //                     12
+    //                 ],
+    //                 "cortes_realizados": [
+    //                     [
+    //                         1,
+    //                         1
+    //                     ]
+    //                 ]
+    //             }
+    //         ]
+    //     },
+    //     "imagenes": [
+    //         "cortes\\7087248d-5b61-4c6d-ae24-45caa46e389c\\lamina_1.png"
+    //     ]
+    // }
+    console.log("Realizar corte", id);
+    const response = await fetch("http://127.0.0.1:8000/optimizar_cortes", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ id_pedido: id }),
+    });
+    const data = await response.json();
+    return data;
+  };
+
+  const handleCutting = async (inventarioId: string) => {
+    try {
+      // Esperamos la respuesta JSON
+      const result = await realizarCorte(inventarioId);
+      console.log("Resultado de corte:", result);
+
+      // Una vez obtenido, lo guardamos en el estado
+      setCuttingData(result);
+
+      // Abrimos el modal
+      setCuttingModalOpen(true);
+    } catch (error) {
+      console.error("Error al realizar corte:", error);
+    }
+  };
+
   const handleChangeEdit = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     const { id, value } = e.target;
     setFormDataEdit((prevData) => ({
@@ -67,7 +136,9 @@ const Pedidos: React.FC = () => {
   };
 
   const handleEdit = (inventarioId: string) => {
-    const pedido = pedidos.find((pedido: Pedido) => pedido.inventarioId === inventarioId);
+    const pedido = pedidos.find(
+      (pedido: Pedido) => pedido.inventarioId === inventarioId,
+    );
     if (pedido) {
       setFormData(pedido);
       setFormDataEdit(pedido);
@@ -77,7 +148,7 @@ const Pedidos: React.FC = () => {
   };
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     const { id, value } = e.target;
     setFormData((prevData) => ({
@@ -106,15 +177,30 @@ const Pedidos: React.FC = () => {
   const renderCell = (item: Pedido, key: keyof Pedido) => {
     if (key === "cortes" && Array.isArray(item[key])) {
       return (
-        <ul>
-          {item[key].map((corte, index) => (
-            <li key={index}>
-              Longitud: {corte.longitud}, Ancho: {corte.ancho}, Cantidad: {corte.cantidad}
-            </li>
-          ))}
-        </ul>
+        <div style={{ padding: "10px" }}>
+          <h4 style={{ marginBottom: "5px" }}>Cortes:</h4>
+          <ul style={{ listStyleType: "none", padding: 0, margin: 0 }}>
+            {item[key].map((corte, index) => (
+              <li
+                key={index}
+                style={{
+                  padding: "8px",
+                  marginBottom: "5px",
+                  backgroundColor: "#f9f9f9",
+                  border: "1px solid #ddd",
+                  borderRadius: "5px",
+                }}
+              >
+                <strong>Longitud:</strong> {corte.longitud} <br />
+                <strong>Ancho:</strong> {corte.ancho} <br />
+                <strong>Cantidad:</strong> {corte.cantidad}
+              </li>
+            ))}
+          </ul>
+        </div>
       );
     }
+
     return <span>{item[key]}</span>;
   };
 
@@ -131,14 +217,19 @@ const Pedidos: React.FC = () => {
                 <div className="flex gap-2">
                   <ButtonIcon
                     icon={<LuFileText />}
-                    onClick={() => handleViewMore(item.inventarioId)}
+                    onClick={() => handleViewMore(item.id)}
                     textTooltip={"Ver más"}
                   />
                   <ButtonIcon
+                    icon={<IoCutSharp />}
+                    onClick={() => handleCutting(item.id)}
+                    textTooltip={"Realizar Corte"}
+                  />
+                  {/* <ButtonIcon
                     icon={<LuClipboardEdit />}
                     onClick={() => handleEdit(item.inventarioId)}
                     textTooltip={"Editar"}
-                  />
+                  /> */}
                 </div>
               )}
             </div>
@@ -146,11 +237,7 @@ const Pedidos: React.FC = () => {
         />
       </Content>
       <div className="flex justify-end mt-4">
-        <Button 
-        text={"Registrar Pedido"} 
-        onClick={openModal} 
-        textStyle={"" } 
-        />
+        <Button text={"Registrar Pedido"} onClick={openModal} textStyle={""} />
       </div>
       <Modal
         title={isEdit ? "Editar Pedido" : "Registrar Pedido"}
@@ -183,6 +270,106 @@ const Pedidos: React.FC = () => {
           <ViewMore titles={headersPedidos.verMas} data={selectedPedido} />
         </Modal>
       )}
+
+      <Modal
+        title="Optimización de cortes"
+        isOpen={isCuttingModalOpen}
+        onClose={closeCuttingModal}
+      >
+        {cuttingData && (
+          <div style={{ padding: "16px" }}>
+            <h2>{cuttingData.message}</h2>
+            <h3>
+              Cantidad de láminas: {cuttingData.resultado.cantidad_de_laminas}
+            </h3>
+
+            <hr style={{ margin: "16px 0" }} />
+
+            <h4>Láminas usadas:</h4>
+            {cuttingData.resultado.laminas_usadas.map((lamina, index) => (
+              <div
+                key={index}
+                style={{
+                  border: "1px solid #ddd",
+                  borderRadius: "5px",
+                  padding: "10px",
+                  marginBottom: "12px",
+                }}
+              >
+                <p>
+                  <strong>ID de lámina:</strong>{" "}
+                  {lamina.id_lamina !== null ? lamina.id_lamina : "N/A"}
+                </p>
+                <p>
+                  <strong>Dimensiones:</strong> {lamina.dimensiones_lamina[0]} x{" "}
+                  {lamina.dimensiones_lamina[1]}
+                </p>
+                <p>
+                  <strong>Cortes realizados:</strong>{" "}
+                  {lamina.cortes_realizados.map((corte, i) => (
+                    <span key={i}>
+                      [{corte[0]} x {corte[1]}]{" "}
+                    </span>
+                  ))}
+                </p>
+              </div>
+            ))}
+
+            {cuttingData.imagenes && cuttingData.imagenes.length > 0 && (
+              <>
+                <hr style={{ margin: "16px 0" }} />
+                <h4>Imágenes generadas:</h4>
+                <ul style={{ listStyleType: "none", paddingLeft: 0 }}>
+                  {cuttingData.imagenes.map((img, idx) => {
+                    // Construir la URL completa según tu configuración.
+                    // Ejemplo: Si montaste la carpeta "cortes" en "/cortes",:
+                    const imageUrl = `http://127.0.0.1:8000/${img}`;
+
+                    return (
+                      <li
+                        key={idx}
+                        style={{
+                          marginBottom: "16px",
+                          border: "1px solid #ccc",
+                          borderRadius: "4px",
+                          padding: "8px",
+                        }}
+                      >
+                        {/* Vista previa de la imagen dentro del modal */}
+                        <img
+                          src={imageUrl}
+                          alt={`lamina_${idx + 1}`}
+                          style={{
+                            maxWidth: "100%",
+                            display: "block",
+                            marginBottom: "8px",
+                          }}
+                        />
+
+                        {/* Botón/enlace de descarga */}
+                        <a
+                          href={imageUrl}
+                          download
+                          style={{
+                            display: "inline-block",
+                            padding: "6px 12px",
+                            backgroundColor: "#4caf50",
+                            color: "#fff",
+                            textDecoration: "none",
+                            borderRadius: "4px",
+                          }}
+                        >
+                          Descargar
+                        </a>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </>
+            )}
+          </div>
+        )}
+      </Modal>
     </>
   );
 };

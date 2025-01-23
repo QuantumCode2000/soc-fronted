@@ -5,13 +5,13 @@ import { optionsAdmin } from "../components/Sidebar/options";
 import { useState, useEffect } from "react";
 import { useAuthContext } from "../contexts/AuthContext/AuthContext";
 
-const Layout = ( ) => {
+const Layout = () => {
   const location = useLocation();
   const { user } = useAuthContext();
   const [selectedTitle, setSelectedTitle] = useState("");
 
   useEffect(() => {
-    const findSelectedTitle = (options : any, path) => {
+    const findSelectedTitle = (options: any, path) => {
       for (const option of options) {
         if (option.options) {
           const subOption = option.options.find((sub) => sub.to === path);
@@ -25,9 +25,7 @@ const Layout = ( ) => {
 
     setSelectedTitle(
       findSelectedTitle(
-        user?.rol === "Administrador"
-          ? optionsAdmin
-          : null, 
+        user?.rol === "administrador" ? optionsAdmin : null,
         location.pathname,
       ),
     );
@@ -37,11 +35,7 @@ const Layout = ( ) => {
     <div className="flex flex-grow min-h-screen bg-gray-100 text-gray-800">
       <Sidebar
         selectedTitle={selectedTitle}
-        options={
-          user?.rol === "Administrador"
-            ? optionsAdmin
-            : null
-        }
+        options={user?.rol === "administrador" ? optionsAdmin : null}
       />
       <main className="main flex flex-col flex-grow -ml-64 md:ml-0 transition-all duration-150 ease-in">
         {user && <Navbar rol={user.rol} nombre={user.nombre} />}

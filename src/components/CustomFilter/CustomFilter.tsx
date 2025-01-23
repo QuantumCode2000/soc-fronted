@@ -22,6 +22,14 @@ const CustomFilter: React.FC<CustomFilterProps> = ({
   onColumnChange,
   onFilterChange,
 }) => {
+  // Eliminar acciones y Id de columns
+  columns = columns.filter(
+    (column) =>
+      column.key !== "acciones" &&
+      column.key !== "id" &&
+      column.key !== "iDLamina" &&
+      column.key !== "estado",
+  );
   return (
     <div className="mb-4 flex flex-col space-y-4">
       <div className="flex flex-wrap items-center space-x-2">
