@@ -3,16 +3,16 @@ import { RiUserSettingsFill } from "react-icons/ri";
 import { BiSolidReport } from "react-icons/bi";
 
 const optionsAdmin = [
-  {
-    text: " Personal",
-    options: [
-      {
-        to: "/registro-personal",
-        icon: <RiUserSettingsFill />,
-        text: "Registro Personal",
-      },
-    ],
-  },
+  // {
+  //   text: " Personal",
+  //   options: [
+  //     {
+  //       to: "/registro-personal",
+  //       icon: <RiUserSettingsFill />,
+  //       text: "Registro Personal",
+  //     },
+  //   ],
+  // },
   // {
   //   text: "Cortes",
   //   options: [
