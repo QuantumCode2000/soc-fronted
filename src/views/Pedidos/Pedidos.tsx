@@ -183,11 +183,11 @@ const Pedidos: React.FC = () => {
               {key !== "acciones" && renderCell(item, key as keyof Pedido)}
               {key === "acciones" && (
                 <div className="flex gap-2">
-                  <ButtonIcon
+                  {/* <ButtonIcon
                     icon={<LuFileText />}
                     onClick={() => handleViewMore(item.id)}
                     textTooltip={"Ver más"}
-                  />
+                  /> */}
                   <ButtonIcon
                     icon={<IoCutSharp />}
                     onClick={() => handleCutting(item.id)}

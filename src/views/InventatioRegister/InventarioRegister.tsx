@@ -52,7 +52,9 @@ const InventarioRegister: React.FC = () => {
   };
 
   const handleViewMore = (id: string) => {
-    const InventarioItem = Items.find((InventarioItem) => InventarioItem.id === id);
+    const InventarioItem = Items.find(
+      (InventarioItem) => InventarioItem.id === id,
+    );
     if (InventarioItem) {
       setSelectedItem(InventarioItem);
       setViewMoreOpen(true);
@@ -70,7 +72,9 @@ const InventarioRegister: React.FC = () => {
   };
 
   const handleEdit = (id: string) => {
-    const InventarioItem = Items.find((InventarioItem) => InventarioItem.id === id);
+    const InventarioItem = Items.find(
+      (InventarioItem) => InventarioItem.id === id,
+    );
     if (InventarioItem) {
       setFormData(InventarioItem);
       setFormDataEdit(InventarioItem);
@@ -95,7 +99,7 @@ const InventarioRegister: React.FC = () => {
       if (isEdit) {
         await updateitem(modifiedData as InventarioItem);
       } else {
-        console.log ("erroror ")
+        console.log("erroror ");
         await additem(formData);
       }
       closeModal();
@@ -108,7 +112,10 @@ const InventarioRegister: React.FC = () => {
     }
   };
 
-  const renderCell = (InventarioItem: InventarioItem, key: keyof InventarioItem) => {
+  const renderCell = (
+    InventarioItem: InventarioItem,
+    key: keyof InventarioItem,
+  ) => {
     switch (key) {
       case "estado":
         return (
@@ -133,9 +140,13 @@ const InventarioRegister: React.FC = () => {
         <Table
           header={{ ...headersInventario.tabla, acciones: "Acciones" }}
           body={Items}
-          renderCell={(InventarioItem: InventarioItem, key: keyof InventarioItem | "acciones") => (
+          renderCell={(
+            InventarioItem: InventarioItem,
+            key: keyof InventarioItem | "acciones",
+          ) => (
             <div>
-              {key !== "acciones" && renderCell(InventarioItem, key as keyof InventarioItem)}
+              {key !== "acciones" &&
+                renderCell(InventarioItem, key as keyof InventarioItem)}
               {key === "acciones" && (
                 <div className="flex gap-2">
                   <ButtonIcon
@@ -143,11 +154,11 @@ const InventarioRegister: React.FC = () => {
                     onClick={() => handleViewMore(InventarioItem.id)}
                     textTooltip={"Ver más"}
                   />
-                  <ButtonIcon
+                  {/* <ButtonIcon
                     icon={<LuClipboardEdit />}
                     onClick={() => handleEdit(InventarioItem.id)}
                     textTooltip={"Editar"}
-                  />
+                  /> */}
                 </div>
               )}
             </div>
