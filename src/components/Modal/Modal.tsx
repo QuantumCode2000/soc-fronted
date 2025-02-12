@@ -11,9 +11,9 @@ const Modal = ({ children, isOpen, onClose, title }) => {
         display: isOpen ? "flex" : "none",
       }}
     >
-      <div className="modal-container mx-auto w-11/12 md:w-3/4 lg:w-1/2 h-3/4">
-        <div className="modal-content flex flex-col h-full">
-          <div className="modal-header flex justify-between items-center p-4 border-b">
+      <div className="modal-container mx-auto w-11/12 md:w-3/4 lg:w-1/2 h-3/4 ">
+        <div className="modal-content flex flex-col h-full ">
+          <div className="modal-header flex justify-between items-center   p-4 border-b">
             <p className="text-xl font-semibold text-gray-800">{title}</p>
             <div className="modal-close cursor-pointer" onClick={onClose}>
               <svg
@@ -31,7 +31,7 @@ const Modal = ({ children, isOpen, onClose, title }) => {
               </svg>
             </div>
           </div>
-          <div className="modal-body flex-grow overflow-y-auto p-4">
+          <div className="modal-body flex-grow overflow-y-auto p-4 ">
             {children}
           </div>
           <div className="modal-footer flex justify-end p-4 border-t">

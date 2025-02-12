@@ -9,9 +9,10 @@ import FormPedidoEdit from "./FormPedidoEdit";
 import Content from "../../components/Content/Content";
 import ViewMore from "../../components/ViewMore/ViewMore";
 import type { Pedido } from "../../contexts/PedidoContext/interfacePedido";
-import { LuClipboardEdit, LuFileText } from "react-icons/lu";
+import { LuFileText } from "react-icons/lu";
 import { IoCutSharp } from "react-icons/io5";
 import ButtonIcon from "../../components/ButtonIcon/ButtonIcon";
+import { FaCut } from "react-icons/fa";
 
 const firstState: Pedido = {
   clienteNombre: "",
@@ -32,6 +33,7 @@ const Pedidos: React.FC = () => {
   const [modifiedData, setModifiedData] = useState<Partial<Pedido>>({});
   const [isCuttingModalOpen, setCuttingModalOpen] = useState<boolean>(false);
   const [cuttingData, setCuttingData] = useState();
+  const [loading, setLoading] = useState<boolean>(false);
 
   console.log("Pedidos", cuttingData);
   const closeModal = () => {
@@ -67,37 +69,7 @@ const Pedidos: React.FC = () => {
   };
 
   const realizarCorte = async (id: string) => {
-    // http://127.0.0.1:8000/optimizar_cortes
-    // el json es asi :
-    // {
-    //   "id_pedido": "7087248d-5b61-4c6d-ae24-45caa46e389c"
-    // }
-    // y devuelve un json con los cortes optimizados
-    //   {
-    //     "message": "Optimización completada",
-    //     "resultado": {
-    //         "cantidad_de_laminas": 1,
-    //         "laminas_usadas": [
-    //             {
-    //                 "id_lamina": 1,
-    //                 "dimensiones_lamina": [
-    //                     12,
-    //                     12
-    //                 ],
-    //                 "cortes_realizados": [
-    //                     [
-    //                         1,
-    //                         1
-    //                     ]
-    //                 ]
-    //             }
-    //         ]
-    //     },
-    //     "imagenes": [
-    //         "cortes\\7087248d-5b61-4c6d-ae24-45caa46e389c\\lamina_1.png"
-    //     ]
-    // }
-    console.log("Realizar corte", id);
+    setLoading(true);
     const response = await fetch("http://127.0.0.1:8000/optimizar_cortes", {
       method: "POST",
       headers: {
@@ -106,20 +78,16 @@ const Pedidos: React.FC = () => {
       body: JSON.stringify({ id_pedido: id }),
     });
     const data = await response.json();
+    setLoading(false);
     return data;
   };
 
   const handleCutting = async (inventarioId: string) => {
     try {
-      // Esperamos la respuesta JSON
-      const result = await realizarCorte(inventarioId);
-      console.log("Resultado de corte:", result);
-
-      // Una vez obtenido, lo guardamos en el estado
-      setCuttingData(result);
-
-      // Abrimos el modal
       setCuttingModalOpen(true);
+      const result = await realizarCorte(inventarioId);
+
+      setCuttingData(result);
     } catch (error) {
       console.error("Error al realizar corte:", error);
     }
@@ -225,11 +193,6 @@ const Pedidos: React.FC = () => {
                     onClick={() => handleCutting(item.id)}
                     textTooltip={"Realizar Corte"}
                   />
-                  {/* <ButtonIcon
-                    icon={<LuClipboardEdit />}
-                    onClick={() => handleEdit(item.inventarioId)}
-                    textTooltip={"Editar"}
-                  /> */}
                 </div>
               )}
             </div>
@@ -276,98 +239,146 @@ const Pedidos: React.FC = () => {
         isOpen={isCuttingModalOpen}
         onClose={closeCuttingModal}
       >
-        {cuttingData && (
-          <div style={{ padding: "16px" }}>
-            <h2>{cuttingData.message}</h2>
-            <h3>
-              Cantidad de láminas: {cuttingData.resultado.cantidad_de_laminas}
-            </h3>
+        {loading ? (
+          // <div style={{ padding: "16px" }}>
+          //   <div
+          //     className="flex justify-center items-center"
+          //     style={{
+          //       animation: "spin 2s linear infinite",
+          //     }}
+          //   >
+          //     <FaCut style={{ fontSize: "64px", color: "#333" }} />
+          //   </div>
+          // </div>
+          <div style={{ padding: "16px", textAlign: "center" }}>
+            <div
+              className="cutting-animation flex justify-center items-center"
+              style={{
+                animation: "spin 2s linear infinite",
+              }}
+            >
+              <FaCut style={{ fontSize: "64px" }} />
+            </div>
+            <p className="cutting-text"></p>
 
-            <hr style={{ margin: "16px 0" }} />
+            <style>
+              {`
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
 
-            <h4>Láminas usadas:</h4>
-            {cuttingData.resultado.laminas_usadas.map((lamina, index) => (
-              <div
-                key={index}
-                style={{
-                  border: "1px solid #ddd",
-                  borderRadius: "5px",
-                  padding: "10px",
-                  marginBottom: "12px",
-                }}
-              >
-                <p>
-                  <strong>ID de lámina:</strong>{" "}
-                  {lamina.id_lamina !== null ? lamina.id_lamina : "N/A"}
-                </p>
-                <p>
-                  <strong>Dimensiones:</strong> {lamina.dimensiones_lamina[0]} x{" "}
-                  {lamina.dimensiones_lamina[1]}
-                </p>
-                <p>
-                  <strong>Cortes realizados:</strong>{" "}
-                  {lamina.cortes_realizados.map((corte, i) => (
-                    <span key={i}>
-                      [{corte[0]} x {corte[1]}]{" "}
-                    </span>
-                  ))}
-                </p>
-              </div>
-            ))}
+      @keyframes changeText {
+        0% { content: "Analizando..."; }
+        33% { content: "Cargando..."; }
+        66% { content: "Cortando..."; }
+        100% { content: "Creando Imagenes..."; }
+      }
 
-            {cuttingData.imagenes && cuttingData.imagenes.length > 0 && (
-              <>
-                <hr style={{ margin: "16px 0" }} />
-                <h4>Imágenes generadas:</h4>
-                <ul style={{ listStyleType: "none", paddingLeft: 0 }}>
-                  {cuttingData.imagenes.map((img, idx) => {
-                    // Construir la URL completa según tu configuración.
-                    // Ejemplo: Si montaste la carpeta "cortes" en "/cortes",:
-                    const imageUrl = `http://127.0.0.1:8000/${img}`;
+      .cutting-text::after {
+        content: "Cargando...";
+        animation: changeText 3s infinite;
+        font-size: 18px;
+        font-weight: bold;
+        color: #555;
+      }
+    `}
+            </style>
+          </div>
+        ) : (
+          cuttingData && (
+            <div style={{ padding: "16px" }}>
+              <h2>{cuttingData.message}</h2>
+              <h3>
+                Cantidad de láminas: {cuttingData.resultado.cantidad_de_laminas}
+              </h3>
 
-                    return (
-                      <li
-                        key={idx}
-                        style={{
-                          marginBottom: "16px",
-                          border: "1px solid #ccc",
-                          borderRadius: "4px",
-                          padding: "8px",
-                        }}
-                      >
-                        {/* Vista previa de la imagen dentro del modal */}
-                        <img
-                          src={imageUrl}
-                          alt={`lamina_${idx + 1}`}
+              <hr style={{ margin: "16px 0" }} />
+
+              <h4>Láminas usadas:</h4>
+              {cuttingData.resultado.laminas_usadas.map((lamina, index) => (
+                <div
+                  key={index}
+                  style={{
+                    border: "1px solid #ddd",
+                    borderRadius: "5px",
+                    padding: "10px",
+                    marginBottom: "12px",
+                  }}
+                >
+                  <p>
+                    <strong>ID de lámina:</strong>{" "}
+                    {lamina.id_lamina !== null ? lamina.id_lamina : "N/A"}
+                  </p>
+                  <p>
+                    <strong>Dimensiones:</strong> {lamina.dimensiones_lamina[0]}{" "}
+                    x {lamina.dimensiones_lamina[1]}
+                  </p>
+                  <p>
+                    <strong>Cortes realizados:</strong>{" "}
+                    {lamina.cortes_realizados.map((corte, i) => (
+                      <span key={i}>
+                        [{corte[0]} x {corte[1]}]{" "}
+                      </span>
+                    ))}
+                  </p>
+                </div>
+              ))}
+
+              {cuttingData.imagenes && cuttingData.imagenes.length > 0 && (
+                <>
+                  <hr style={{ margin: "16px 0" }} />
+                  <h4>Imágenes generadas:</h4>
+                  <ul style={{ listStyleType: "none", paddingLeft: 0 }}>
+                    {cuttingData.imagenes.map((img, idx) => {
+                      // Construir la URL completa según tu configuración.
+                      // Ejemplo: Si montaste la carpeta "cortes" en "/cortes",:
+                      const imageUrl = `http://127.0.0.1:8000/${img}`;
+
+                      return (
+                        <li
+                          key={idx}
                           style={{
-                            maxWidth: "100%",
-                            display: "block",
-                            marginBottom: "8px",
-                          }}
-                        />
-
-                        {/* Botón/enlace de descarga */}
-                        <a
-                          href={imageUrl}
-                          download
-                          style={{
-                            display: "inline-block",
-                            padding: "6px 12px",
-                            backgroundColor: "#4caf50",
-                            color: "#fff",
-                            textDecoration: "none",
+                            marginBottom: "16px",
+                            border: "1px solid #ccc",
                             borderRadius: "4px",
+                            padding: "8px",
                           }}
                         >
-                          Descargar
-                        </a>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </>
-            )}
-          </div>
+                          {/* Vista previa de la imagen dentro del modal */}
+                          <img
+                            src={imageUrl}
+                            alt={`lamina_${idx + 1}`}
+                            style={{
+                              maxWidth: "100%",
+                              display: "block",
+                              marginBottom: "8px",
+                            }}
+                          />
+
+                          {/* Botón/enlace de descarga */}
+                          <a
+                            href={imageUrl}
+                            download
+                            style={{
+                              display: "inline-block",
+                              padding: "6px 12px",
+                              backgroundColor: "#4caf50",
+                              color: "#fff",
+                              textDecoration: "none",
+                              borderRadius: "4px",
+                            }}
+                          >
+                            Descargar
+                          </a>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </>
+              )}
+            </div>
+          )
         )}
       </Modal>
     </>

@@ -10,7 +10,7 @@ const Navbar = ({ rol, nombre }) => {
   };
 
   return (
-    <header className="header bg-gray-800 shadow-md py-4 px-6">
+    <header className="header bg-[#1263b4] shadow-md py-4 px-6">
       <div className="header-content flex items-center">
         <div className="flex ml-auto">
           <a className="flex flex-row items-center">
